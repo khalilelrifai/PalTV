@@ -3,12 +3,13 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-# Create your views here.
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from .forms import LoginForm, SignUpForm
+from django.shortcuts import redirect, render
 
 from core.settings import GITHUB_AUTH
+
+from .forms import LoginForm, SignUpForm
+
 
 def login_view(request):
     form = LoginForm(request.POST or None)
