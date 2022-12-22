@@ -35,17 +35,14 @@ def pages(request):
             return HttpResponseRedirect(reverse('admin:index'))
         context['segment'] = load_template
         
-        
-        
-        
+
         user_id = request.user.id
         current_user = Employee.objects.get(employee_id=user_id)
-        current_user.employee
         date = datetime.now()
 
-
         
-        context['full']=current_user
+        
+        context['employee']=current_user
         context['date']=date
         
         

@@ -37,19 +37,19 @@
                     <!-- Form -->
                     <div class="mb-4">
                         <label for="fullname">Name</label>
-                        <input type="text" class="form-control"  disabled value="{{full}}" name="fullname">
+                        <input type="text" class="form-control"  disabled value="{{employee.fullname}}" name="fullname">
                     </div>
                 </div>
                 <div class="col-sm-3 mb-3">
                     <div class="mb-4">
                         <label for="job-title">Job Title</label>
-                        <input type="text" class="form-control" disabled value="Journalist">
+                        <input type="text" class="form-control" disabled value="{{employee.job_title}}" name="job_title">
                     </div>
                 </div>
                 <div class="col-sm-3 mb-3">
                     <div class="mb-4">
                         <label for="department">Department</label>
-                        <input type="text" class="form-control" disabled value="News">
+                        <input type="text" class="form-control" disabled value="{{employee.department}}" name="department">
                     </div>
                 </div>
             </div>
