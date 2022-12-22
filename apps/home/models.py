@@ -58,7 +58,8 @@ class Employee(models.Model):
 
 class Journalist_Report(models.Model):
     WORK_DESCRIPTION=(
-        ('VT ','VT'),
+        ('','Please select your task type'),
+        ('VT','VT'),
         ('OOV','OOV'),
         ('SB','SB'),
         ('CAP','CAP'),
