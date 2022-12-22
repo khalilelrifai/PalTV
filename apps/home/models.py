@@ -32,9 +32,18 @@ class Employee(models.Model):
     ('JOURNALIST', 'JOURNALIST'),
     ('PA', 'PA'),
     ('PRODUCER', 'PRODUCER'))
+    
+    DEP_CHOICES= (
+    ('Engineering', 'Engineering'),
+    ('MCR', 'MCR'),
+    ('ETESALAT', 'ETESALAT'),
+    ('JOURNALIST', 'JOURNALIST'),
+    ('PA', 'PA'),
+    ('PRODUCER', 'PRODUCER'))
     id=models.AutoField(primary_key=True,editable=False)
     employee = models.OneToOneField(User,on_delete=models.CASCADE,null=True)
     job_title = models.CharField(max_length=50,choices=JOB_CHOICES)
+    department = models.CharField(max_length=50,choices=DEP_CHOICES)
 
     
     def __str__(self):

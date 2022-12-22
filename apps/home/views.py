@@ -4,10 +4,14 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django import template
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
+from .models import *
+from datetime import datetime
+
 
 
 @login_required(login_url="/login/")
@@ -34,8 +38,15 @@ def pages(request):
         
         
         
+        user_id = request.user.id
+        current_user = Employee.objects.get(employee_id=user_id)
+        current_user.employee
+        date = datetime.now()
+
+
         
-        
+        context['full']=current_user
+        context['date']=date
         
         
 

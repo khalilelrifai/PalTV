@@ -31,12 +31,13 @@
 <div class="row">
     <div class="card border-0 shadow components-section">
         <div class="card-body">
+            <form method="get">
             <div class="row mb-4">
                 <div class="col-sm-3 mb-3">
                     <!-- Form -->
                     <div class="mb-4">
                         <label for="fullname">Name</label>
-                        <input type="text" class="form-control"  disabled value="khalil">
+                        <input type="text" class="form-control"  disabled value="{{full}}" name="fullname">
                     </div>
                 </div>
                 <div class="col-sm-3 mb-3">
@@ -78,8 +79,7 @@
                                         clip-rule="evenodd"></path>
                                 </svg>
                             </span>
-                            <input data-datepicker="" class="form-control" type="text" placeholder="dd/mm/yyyy"
-                                required>
+                            <input type="text" class="form-control" disabled value="{{date}}">
                         </div>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                 </div>
                 <!-- End of Form -->
             </div>
-
+            </form>
         </div>
     </div>
 </div>
