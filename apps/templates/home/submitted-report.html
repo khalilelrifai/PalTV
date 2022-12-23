@@ -61,8 +61,13 @@
                             <td>
 
                                 <span class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked disabled>
-                                    <label class="form-check-label" for="flexSwitchCheckChecked">switch input</label>
+                                    {% if i.status == 'Approved' %}
+                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"  checked style="background-color: green;"  disabled>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Approved</label>
+                                    {% else %}
+                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" disabled>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Pending</label>
+                                    {% endif %}
                                 </span>
 
 
@@ -75,8 +80,8 @@
                                         <span class="">Action</span>
                                     </button>
                                     <div class="dropdown-menu py-0">
-                                        <a class="dropdown-item rounded-top" href="{{i.report_id}}"><span class="fas fa-eye me-2"></span>View Details</a>
-                                        <a class="dropdown-item" href="#"><span class="fas fa-edit me-2"></span>Edit</a>
+                                        <a class="dropdown-item rounded-top" href="{{i.report_id}}xview"><span class="fas fa-eye me-2"></span>View Details</a>
+                                        <a class="dropdown-item" href="{{i.report_id}}xedit"><span class="fas fa-edit me-2"></span>Edit</a>
                                         <a class="dropdown-item text-danger rounded-bottom" href="#"><span class="fas fa-trash-alt me-2"></span>Remove</a>
                                     </div>
                                 </div>

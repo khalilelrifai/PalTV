@@ -11,6 +11,7 @@
 
 <div class="row">
     <div class="card border-0 shadow components-section">
+        {{set_details.report_id}}
         <div class="card-body">
             <div class="row mb-4">
                 <div class="col-sm-3 mb-3">
@@ -64,9 +65,9 @@
                     <div class="my-4">
                         <label for="textarea">Task info</label>
                         <textarea class="form-control"  rows="10" disabled>{{set_details.task}}</textarea>
-                        {% if not set_details.status == Pending %}
+                        {% if set_details.status == 'Pending' %}
                         <form method="get">
-                        <div class="float-end"><input type="button" class="btn btn-success" value="approve" ></div>
+                        <div class="float-end"><a href="home/submitted-reports"><input type="button" class="btn btn-success" value="approve" ></a></div>
                         </form>
                         {% endif %}
                     </div>

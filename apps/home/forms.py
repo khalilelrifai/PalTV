@@ -12,6 +12,7 @@ def get_work():
 
 
 class JournalistForm(forms.Form):
+    
     work_type =forms.CharField(
         widget=forms.Select(choices=get_work(),
             attrs={
