@@ -4,11 +4,13 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.contrib import admin
+
 from .models import *
+
 
 class JAdmin(admin.ModelAdmin):
 
-    list_display =['report_id','employee','work_desc','date']
+    list_display =['report_id','employee','work_type','date']
 
 admin.site.register(Journalist_Report,JAdmin)
 admin.site.register(Employee)

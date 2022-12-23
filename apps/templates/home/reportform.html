@@ -1,7 +1,6 @@
 {% extends "layouts/base.html" %}
 
 {% block title %} UI Forms {% endblock %}
-{% load widget_tweaks %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
@@ -32,7 +31,7 @@
 <div class="row">
     <div class="card border-0 shadow components-section">
         <div class="card-body">
-            <form method="get">
+            <form method="get" id="form">
             <div class="row mb-4">
                 <div class="col-sm-3 mb-3">
                     <!-- Form -->
@@ -85,8 +84,8 @@
                 <div class="col-sm-6 mb-6">
                     <div class="my-4">
                         <label for="textarea">Task info</label>
-                        <textarea class="form-control" placeholder="Enter your message..." rows="5" name="task_info" required></textarea>
-                        <div class="float-end"><input type="submit" class="btn btn-primary" ></div>
+                        {{form.task}}
+                        <div class="float-end"><input type="button" class="btn btn-success" id="successAlert" value="submit" ></div>
                     </div>
                 </div>
 
@@ -102,4 +101,42 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+        $("#successAlert").on("click", function() {
+            
+            if($("#form")[0].checkValidity()) {
+                var title = $("#form [name='title']").val();
+
+            const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+            swalWithBootstrapButtons.fire({
+                icon: 'success',
+                title: 'Success alert',
+                text: 'Your work has been saved',
+                showConfirmButton: true,
+                timer: 1500
+            });
+            document.getElementById("form").reset();
+
+
+                // ajax here
+            } else {
+                $("#form")[0].reportValidity();
+            }
+
+            
+        });
+    })
+</script>
+
+{% endblock javascripts %}

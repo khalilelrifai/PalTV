@@ -3,15 +3,18 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+from datetime import datetime
+
 from django import template
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse
-from .models import *
-from datetime import datetime
+
 from .forms import *
+from .models import *
 
 
 @login_required(login_url="/login/")
@@ -41,19 +44,51 @@ def pages(request):
         date = datetime.now()
         work_type_list=[i[0] for i in Journalist_Report.WORK_DESCRIPTION]
         form=JournalistForm(request.GET)
+        get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
+        get_report_count=Journalist_Report.objects.values_list('report_id').count()
+
+        
         if request.method == "GET":
             work_type=request.GET.get('work_type')
-            task_info=request.GET.get('task_info')
+            task_info=request.GET.get('task')
             
-            data=Journalist_Report(employee_id=current_user.id,work_desc=work_type,date=date,task=task_info)
+            data=Journalist_Report(employee_id=current_user.id,work_type=work_type,date=date,task=task_info)
             if form.is_valid():
                 data.save()
+
+        
+        if load_template=='10':
+            n=10
+            context["n"]=range(n)
+            return render(request,'/transactions.html',context)
+        
+        
+        
+        lst = Journalist_Report.objects.values_list('report_id', flat=True)
+
+        if load_template in lst:
+            set_details = Journalist_Report.objects.get(report_id=load_template)
+            context['set_details'] = set_details
+            return render(request, 'home/details.html', context)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
         
         context['employee']=current_user
         context['date']=date
         context['work_type']=work_type_list
         context['form']=form
+        context["show"]=get_all_data
+        
         
         
         
@@ -66,6 +101,6 @@ def pages(request):
         html_template = loader.get_template('home/page-404.html')
         return HttpResponse(html_template.render(context, request))
 
-    # except:
-    #     html_template = loader.get_template('home/page-500.html')
-    #     return HttpResponse(html_template.render(context, request))
+    except:
+        html_template = loader.get_template('home/page-500.html')
+        return HttpResponse(html_template.render(context, request))

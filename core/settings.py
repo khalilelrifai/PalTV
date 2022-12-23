@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',                        # OAuth new 
     'allauth.socialaccount.providers.github',       # OAuth new 
     "sslserver",
-    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

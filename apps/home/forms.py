@@ -1,6 +1,6 @@
 from django import forms
-from .models import*
 
+from .models import *
 
 
 def get_work():
@@ -17,6 +17,14 @@ class JournalistForm(forms.Form):
             attrs={
                 
                 "class":"form-select"
+            }
+        )
+    )
+    
+    task=forms.CharField(
+        widget=forms.Textarea(
+            attrs=
+            {"class":"form-control" ,"placeholder":"Enter your message...", "rows":"5"
             }
         )
     )

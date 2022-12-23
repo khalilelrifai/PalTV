@@ -1,11 +1,10 @@
 # -*- encoding: utf-8 -*-
 
 
-from django.db import models
-from django.contrib.auth.models import User
 from datetime import datetime
 
-
+from django.contrib.auth.models import User
+from django.db import models
 
 # Create your models here.
 
@@ -66,12 +65,20 @@ class Journalist_Report(models.Model):
         ('GFX','GFX'),
         ('Filler','Filler'),
     )
+    
+    
+    
+    STATUS_CHOICES= (
+    ('Pending', 'Pending'),
+    ('Approved', 'Approved'),
+    )
     id=models.AutoField(primary_key=True,editable=False)
     report_id=models.CharField(max_length=20,default=journalist_id)
     employee=models.ForeignKey(Employee,on_delete=models.CASCADE,null=True,blank=True)
-    work_desc=models.CharField(max_length=30,choices=WORK_DESCRIPTION)
+    work_type=models.CharField(max_length=30,choices=WORK_DESCRIPTION)
     date=models.DateField(default=datetime.now)
     task=models.TextField()
+    status=models.CharField(max_length=20,choices=STATUS_CHOICES,default='Pending')
 
 
     def __str__(self):
