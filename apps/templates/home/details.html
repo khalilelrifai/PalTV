@@ -64,9 +64,11 @@
                     <div class="my-4">
                         <label for="textarea">Task info</label>
                         <textarea class="form-control"  rows="10" disabled>{{set_details.task}}</textarea>
-                        <form action="approve">
-                        <div class="float-end"><input type="button" class="btn btn-success" id="successAlert" value="Approve" ></div>
+                        {% if not set_details.status == Pending %}
+                        <form method="get">
+                        <div class="float-end"><input type="button" class="btn btn-success" value="approve" ></div>
                         </form>
+                        {% endif %}
                     </div>
                 </div>
                 <!-- End of Form -->

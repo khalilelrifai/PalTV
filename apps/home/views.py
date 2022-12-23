@@ -57,11 +57,7 @@ def pages(request):
                 data.save()
 
         
-        if load_template=='10':
-            n=10
-            context["n"]=range(n)
-            return render(request,'/transactions.html',context)
-        
+            
         
         
         lst = Journalist_Report.objects.values_list('report_id', flat=True)
