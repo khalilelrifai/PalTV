@@ -1,7 +1,5 @@
 # -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
+
 
 from django.urls import path, re_path
 
@@ -13,6 +11,8 @@ urlpatterns = [
     path('', views.index, name='home'),
 
     # Matches any html file
-    re_path('reportform', views.pages, name='pages'),
+    path('reportform/', views.reportform, name='reportform'),
+    path('submitted-report/', views.submitted_form, name='submitted'),
+    path('submitted-report/details/<id>', views.view_report, name='view')
 
 ]

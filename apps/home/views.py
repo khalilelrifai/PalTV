@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+import re
 from datetime import datetime
 
 from django import template
@@ -12,7 +13,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse
-import re
 
 from .forms import *
 from .models import *
@@ -28,17 +28,47 @@ def index(request):
 
 
 @login_required(login_url="/login/")
-def pages(request):
+def view_report(request,id):
+    context = {}
+        
+
+        
+    set_details = Journalist_Report.objects.get(id=id)
+    context['set_details'] = set_details
+                
+    html_template = loader.get_template('home/details.html')
+    return HttpResponse(html_template.render(context, request))
+
+
+    
+
+
+
+
+@login_required(login_url="/login/")
+def submitted_form(request):
+    context = {}
+    context['segment'] = request.path.split('/')[-1]
+
+
+    get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
+
+    context["show"]=get_all_data
+       
+    html_template = loader.get_template('home/submitted-report.html')
+    return HttpResponse(html_template.render(context, request))
+
+
+
+
+@login_required(login_url="/login/")
+def reportform(request):
     context = {}
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.
     try:
 
-        load_template = request.path.split('/')[-1]
-        print(load_template)
-        if load_template == 'admin':
-            return HttpResponseRedirect(reverse('admin:index'))
-        context['segment'] = load_template
+        context['segment'] = request.path.split('/')[-1]
         
 
         user_id = request.user.id
@@ -98,7 +128,7 @@ def pages(request):
         #     return render(request, 'home/details.html', context)
 
 
-        html_template = loader.get_template('home/' + load_template)
+        html_template = loader.get_template('home/reportform.html')
         return HttpResponse(html_template.render(context, request))
 
     except template.TemplateDoesNotExist:
