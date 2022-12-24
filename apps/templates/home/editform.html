@@ -41,7 +41,7 @@
                 <div class="col-sm-3 mb-3">
                     <div class="mb-4">
                         <label class="my-1 me-2" for="work-desc">Work type</label>
-                            <select class="form-select" name="" id="">
+                            <select class="form-select" name="work_type" id="" required>
                                 {% for i in work_type %}
 
                                 <option value="{{i}}"  {% if i == set_details.work_type %} selected {% endif %}>{{i}}</option>
@@ -71,8 +71,8 @@
                 <div class="col-sm-6 mb-6">
                     <div class="my-4">
                         <label for="textarea">Task info</label>
-                        <textarea class="form-control" rows="5">{{set_details.task}}</textarea>
-                        <div class="float-end"><input type="button" class="btn btn-success" id="successAlert" value="save" ></div>
+                        <textarea class="form-control" rows="5" name="task" required>{{set_details.task}}</textarea>
+                        <div class="float-end"><input type="submit" class="btn btn-success" value="save" name="save" ></div>
                     </div>
                 </div>
             </div>

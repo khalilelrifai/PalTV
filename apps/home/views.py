@@ -48,7 +48,32 @@ def view_report(request,id):
     return HttpResponse(html_template.render(context, request))
 
 
+
+@login_required(login_url="/login/")
+def edit_report(request,id):
     
+    context = {}
+    
+    context['segment'] =  request.path.split('/')
+    
+    
+    
+    work_type_list=[i[0] for i in Journalist_Report.WORK_DESCRIPTION]
+    set_details = Journalist_Report.objects.get(id=id)
+    context['set_details'] = set_details
+    context['work_type'] = work_type_list
+    
+    
+   
+    work_type=request.GET.get('work_type')
+    task_info=request.GET.get('task')
+    if request.GET.get('save')=='save':
+        Journalist_Report.objects.filter(id=id).update(work_type=work_type,task=task_info)
+        return HttpResponseRedirect('/submitted-report')
+
+
+    html_template = loader.get_template('home/editform.html')
+    return HttpResponse(html_template.render(context, request))
 
 
 
@@ -70,6 +95,24 @@ def submitted_form(request):
 
 
 
+
+
+@login_required(login_url="/login/")
+def profile(request):
+    context = {}
+    context['segment'] =  request.path.split('/')
+
+
+
+    get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
+
+    context["show"]=get_all_data
+       
+    html_template = loader.get_template('home/profile.html')
+    return HttpResponse(html_template.render(context, request))
+
+
+
 @login_required(login_url="/login/")
 def reportform(request):
     context = {}
@@ -78,6 +121,8 @@ def reportform(request):
 
     try:
 
+        
+        default_id = Journalist_Report._meta.get_field('report_id').default
         user_id = request.user.id
         current_user = Employee.objects.get(employee_id=user_id)
         date = datetime.now()
@@ -104,6 +149,7 @@ def reportform(request):
         context['work_type']=work_type_list
         context['form']=form
         context["show"]=get_all_data
+        context['default_id']=default_id
                 
         # lst = Journalist_Report.objects.values_list('report_id', flat=True)
 
@@ -148,21 +194,4 @@ def reportform(request):
     
     
     
-@login_required(login_url="/login/")
-def edit_report(request,id):
-    
-    context = {}
-    
-    context['segment'] =  request.path.split('/')
-    
-    work_type_list=[i[0] for i in Journalist_Report.WORK_DESCRIPTION]
-    set_details = Journalist_Report.objects.get(id=id)
-    context['set_details'] = set_details
-    context['work_type'] = work_type_list
-    
-    
-    if request.method == "GET":
-        Journalist_Report.objects.filter(report_id=id).update(status='Approved')
 
-    html_template = loader.get_template('home/editform.html')
-    return HttpResponse(html_template.render(context, request))
