@@ -41,8 +41,12 @@
                 <div class="col-sm-3 mb-3">
                     <div class="mb-4">
                         <label class="my-1 me-2" for="work-desc">Work type</label>
-                            {{form.work_type}}
-                            
+                            <select class="form-select" name="" id="">
+                                {% for i in work_type %}
+
+                                <option value="{{i}}"  {% if i == set_details.work_type %} selected {% endif %}>{{i}}</option>
+                                {% endfor %}
+                            </select>      
                     </div>
                 </div>
                 <div class="col-sm-3 mb-3">
@@ -57,7 +61,7 @@
                                         clip-rule="evenodd"></path>
                                 </svg>
                             </span>
-                            <input type="text" class="form-control" disabled value="{{set_details.date}}">
+                            <input type="text" class="form-control" disabled  value="{{set_details.date}}">
                         </div>
                     </div>
                 </div>
@@ -67,15 +71,11 @@
                 <div class="col-sm-6 mb-6">
                     <div class="my-4">
                         <label for="textarea">Task info</label>
-                        <textarea class="form-control">{{set_details.task}}</textarea>
+                        <textarea class="form-control" rows="5">{{set_details.task}}</textarea>
                         <div class="float-end"><input type="button" class="btn btn-success" id="successAlert" value="save" ></div>
                     </div>
                 </div>
-
-
-                <!-- End of Form -->
             </div>
-
             </form>
         </div>
     </div>
@@ -85,41 +85,5 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        
-        $("#successAlert").on("click", function() {
-            
-            if($("#form")[0].checkValidity()) {
-                var title = $("#form [name='title']").val();
-
-            const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-primary',
-                cancelButton: 'btn btn-gray'
-            },
-            buttonsStyling: false
-        });
-
-            swalWithBootstrapButtons.fire({
-                icon: 'success',
-                title: 'Success alert',
-                text: 'Your work has been saved',
-                showConfirmButton: true,
-                timer: 1500
-            });
-            document.getElementById("form").reset();
-
-
-                // ajax here
-            } else {
-                $("#form")[0].reportValidity();
-            }
-
-            
-        });
-    })
-</script>
 
 {% endblock javascripts %}

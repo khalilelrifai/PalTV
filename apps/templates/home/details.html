@@ -67,7 +67,9 @@
                         <textarea class="form-control"  rows="10" disabled>{{set_details.task}}</textarea>
                         {% if set_details.status == 'Pending' %}
                         <form method="get">
-                        <div class="float-end"><a href="home/submitted-reports"><input type="button" class="btn btn-success" value="approve" ></a></div>
+                        <div class="float-end">
+                            <input type="submit" class="btn btn-success" value="approve" name="approve">
+                        </div>
                         </form>
                         {% endif %}
                     </div>

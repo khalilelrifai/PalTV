@@ -31,10 +31,18 @@ def index(request):
 def view_report(request,id):
     context = {}
         
-
+    context['segment'] =  request.path.split('/')
         
     set_details = Journalist_Report.objects.get(id=id)
     context['set_details'] = set_details
+    
+    
+    if request.GET.get('approve')=='approve':
+        Journalist_Report.objects.filter(id=id).update(status='Approved')
+        return HttpResponseRedirect('/submitted-report')
+    
+    
+    
                 
     html_template = loader.get_template('home/details.html')
     return HttpResponse(html_template.render(context, request))
@@ -48,7 +56,8 @@ def view_report(request,id):
 @login_required(login_url="/login/")
 def submitted_form(request):
     context = {}
-    context['segment'] = request.path.split('/')[-1]
+    context['segment'] =  request.path.split('/')
+
 
 
     get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
@@ -64,12 +73,10 @@ def submitted_form(request):
 @login_required(login_url="/login/")
 def reportform(request):
     context = {}
-    # All resource paths end in .html.
-    # Pick out the html file name from the url. And load that template.
-    try:
+    
+    context['segment'] =  request.path.split('/')
 
-        context['segment'] = request.path.split('/')[-1]
-        
+    try:
 
         user_id = request.user.id
         current_user = Employee.objects.get(employee_id=user_id)
@@ -79,9 +86,6 @@ def reportform(request):
         get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
         get_report_count=Journalist_Report.objects.values_list('report_id').count()
 
-        
-
-        
         
         if request.method == "GET":
             work_type=request.GET.get('work_type')
@@ -139,3 +143,26 @@ def reportform(request):
     except:
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
+    
+    
+    
+    
+    
+@login_required(login_url="/login/")
+def edit_report(request,id):
+    
+    context = {}
+    
+    context['segment'] =  request.path.split('/')
+    
+    work_type_list=[i[0] for i in Journalist_Report.WORK_DESCRIPTION]
+    set_details = Journalist_Report.objects.get(id=id)
+    context['set_details'] = set_details
+    context['work_type'] = work_type_list
+    
+    
+    if request.method == "GET":
+        Journalist_Report.objects.filter(report_id=id).update(status='Approved')
+
+    html_template = loader.get_template('home/editform.html')
+    return HttpResponse(html_template.render(context, request))

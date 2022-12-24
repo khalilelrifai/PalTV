@@ -13,6 +13,6 @@ urlpatterns = [
     # Matches any html file
     path('reportform/', views.reportform, name='reportform'),
     path('submitted-report/', views.submitted_form, name='submitted'),
-    path('submitted-report/details/<id>', views.view_report, name='view')
-
+    path('submitted-report/view/<id>', views.view_report, name='view'),
+    path('submitted-report/edit/<id>', views.edit_report, name='view'),
 ]
