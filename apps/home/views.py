@@ -26,7 +26,7 @@ class AllKeywordsView(ListView):
     model = Journalist_Report
     template_name = "home/test.html"
 
-@login_required(login_url="/login/")
+
 def listing_api(request):
     page_number = request.GET.get("page", 1)
     per_page = request.GET.get("per_page", 5)
@@ -36,7 +36,7 @@ def listing_api(request):
     )
     paginator = Paginator(keywords, per_page)
     page_obj = paginator.get_page(page_number)
-    data = [{"report_id": kw.report_id} for kw in page_obj.object_list]
+    data = [{"name": kw.report_id} for kw in page_obj.object_list]
 
     payload = {
         "page": {
