@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 import re
-from datetime import datetime
+from datetime import datetime,timedelta
 
 from django import template
 from django.contrib.auth.decorators import login_required
@@ -13,6 +13,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 from .forms import *
 from .models import *
@@ -79,15 +80,22 @@ def edit_report(request,id):
 
 
 @login_required(login_url="/login/")
-def submitted_form(request):
+def submitted_form(request,page):
     context = {}
     context['segment'] =  request.path.split('/')
 
 
+    # lst=[]
+    # get_all_data = reverse(Journalist_Report.objects.all().order_by('date'))
 
-    get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
+    get = Journalist_Report.objects.all().order_by('date')
+    paginator = Paginator(get,per_page=1)
+    page_object =paginator.get_page(page)
+    page_object.adjusted_elided_pages = paginator.get_elided_page_range(page)
 
-    context["show"]=get_all_data
+    context['show']=page_object
+
+    #context["show"]=get_all_data
        
     html_template = loader.get_template('home/submitted-report.html')
     return HttpResponse(html_template.render(context, request))
@@ -105,8 +113,18 @@ def profile(request):
 
 
     get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
-
+    today=datetime.now().date()
+    last_week = datetime.now().date() - timedelta(days=7)
+    last_month= datetime.now().date() - timedelta(days=30)
+    today_count=Journalist_Report.objects.filter(date=today).count()
+    last_week_count=Journalist_Report.objects.filter(date__gte=last_week).count()
+    last_month_count=Journalist_Report.objects.filter(date__gte=last_month).count()
+    
+    
     context["show"]=get_all_data
+    context["today"]=today_count
+    context["week"]=last_week_count
+    context["month"]=last_month_count
        
     html_template = loader.get_template('home/profile.html')
     return HttpResponse(html_template.render(context, request))
