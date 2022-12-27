@@ -65,7 +65,11 @@
                 .then(response => {
                     this.container.innerHTML = '';
                     response.data.forEach((el) => {
-                        this.addElement(el.name)
+                        this.addElement(el.report_id)
+                        this.addElement(el.employee)
+                        this.addElement(el.date)
+                        this.addElement(el.status)
+                        this.addElement(el.work_type)
                     });
                     this.label.innerText = this.pageIndex
                     const firstPage = this.pageIndex === 1

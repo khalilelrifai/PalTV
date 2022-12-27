@@ -3,8 +3,10 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-import os, environ
-from   unipath import Path
+import os
+
+import environ
+from unipath import Path
 
 env = environ.Env(
     # set casting, default value
