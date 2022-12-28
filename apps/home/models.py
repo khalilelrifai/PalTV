@@ -84,4 +84,5 @@ class Journalist_Report(models.Model):
     def __str__(self):
         return str(self.report_id)
 
-
+    class Meta:
+        permissions=[('can_view_submitted_reports','Can View Submitted Reports'),('can_view_journalists_profiles','Can View Journalists Profiles')]
