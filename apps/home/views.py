@@ -160,9 +160,9 @@ def profile(request):
 
 
 @login_required(login_url="/login/")
+@permission_required('home.add_journalist_report')
 def reportform(request):
-    context = {}
-    
+    context = {} 
     context['segment'] =  request.path.split('/')
 
     try:
@@ -174,8 +174,7 @@ def reportform(request):
         date = datetime.now()
         work_type_list=[i[0] for i in Journalist_Report.WORK_DESCRIPTION]
         form=JournalistForm(request.GET)
-        get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
-        get_report_count=Journalist_Report.objects.values_list('report_id').count()
+
 
         
         if request.method == "GET":
@@ -194,7 +193,6 @@ def reportform(request):
         context['date']=date
         context['work_type']=work_type_list
         context['form']=form
-        context["show"]=get_all_data
         context['default_id']=default_id
                 
         # lst = Journalist_Report.objects.values_list('report_id', flat=True)
@@ -232,9 +230,7 @@ def reportform(request):
         html_template = loader.get_template('home/page-404.html')
         return HttpResponse(html_template.render(context, request))
 
-    except:
-        html_template = loader.get_template('home/page-500.html')
-        return HttpResponse(html_template.render(context, request))
+
     
     
     

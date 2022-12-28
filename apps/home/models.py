@@ -75,7 +75,7 @@ class Journalist_Report(models.Model):
     id=models.AutoField(primary_key=True,editable=False)
     report_id=models.CharField(max_length=20,default=journalist_id)
     employee=models.ForeignKey(Employee,on_delete=models.CASCADE,null=True,blank=True)
-    work_type=models.CharField(max_length=30,choices=WORK_DESCRIPTION)
+    work_type=models.CharField(max_length=30,choices=WORK_DESCRIPTION,null=True)
     date=models.DateField(default=datetime.now)
     task=models.TextField()
     status=models.CharField(max_length=20,choices=STATUS_CHOICES,default='Pending')
