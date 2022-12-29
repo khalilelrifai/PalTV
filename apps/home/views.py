@@ -134,22 +134,26 @@ def submitted_form(request,page):
 
 
 @login_required(login_url="/login/")
-def profile(request):
+def profile(request,page):
     context = {}
     context['segment'] =  request.path.split('/')
 
 
 
-    get_all_data = reversed(Journalist_Report.objects.all().order_by('date'))
     today=datetime.now().date()
     last_week = datetime.now().date() - timedelta(days=7)
     last_month= datetime.now().date() - timedelta(days=30)
     today_count=Journalist_Report.objects.filter(date=today).count()
     last_week_count=Journalist_Report.objects.filter(date__gte=last_week).count()
     last_month_count=Journalist_Report.objects.filter(date__gte=last_month).count()
+
+    get = Journalist_Report.objects.all().order_by('date')
+    paginator = Paginator(get,per_page=10)
+    page_object =paginator.get_page(page)
+    page_object.adjusted_elided_pages = paginator.get_elided_page_range(page)
+
+    context['show']=page_object
     
-    
-    context["show"]=get_all_data
     context["today"]=today_count
     context["week"]=last_week_count
     context["month"]=last_month_count
@@ -160,7 +164,6 @@ def profile(request):
 
 
 @login_required(login_url="/login/")
-@permission_required('home.add_journalist_report')
 def reportform(request):
     context = {} 
     context['segment'] =  request.path.split('/')

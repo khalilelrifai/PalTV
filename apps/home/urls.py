@@ -16,8 +16,9 @@ urlpatterns = [
     path('reportform/', views.reportform, name='reportform'),
     path('submitted-report/<int:page>/', views.submitted_form, name='submitted'),
     path('submitted-report/view/<id>', views.view_report, name='view'),
-    path('submitted-report/edit/<id>', views.edit_report, name='edit'),
-    path('profile/', views.profile, name='profile'),
+    path('profile/edit/<id>', views.edit_report, name='edit_profile'),
+    path('profile/view/<id>', views.view_report, name='view_profile'),
+    path('profile/<int:page>/', views.profile, name='profile'),
     ]
 #     path(
 #     "terms.json",

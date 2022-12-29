@@ -65,12 +65,14 @@
                     <div class="my-4">
                         <label for="textarea">Task info</label>
                         <textarea class="form-control"  rows="10" disabled>{{set_details.task}}</textarea>
-                        {% if set_details.status == 'Pending' %}
-                        <form method="get">
-                        <div class="float-end">
-                            <input type="submit" class="btn btn-success" value="approve" name="approve">
-                        </div>
-                        </form>
+                        {% if perms.home.can_view_submitted_reports %}
+                            {% if set_details.status == 'Pending' %}
+                            <form method="get">
+                            <div class="float-end">
+                                <input type="submit" class="btn btn-success" value="approve" name="approve">
+                            </div>
+                            </form>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
