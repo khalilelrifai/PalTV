@@ -33,9 +33,9 @@ class DetailView(DetailView):
     
     def post(self, request, *args, **kwargs):
         if request.POST.get('approve')=='approve':
-            self.model.objects.filter(id=id).update(status='Approved')
+            self.model.objects.filter(id=self.kwargs['pk']).update(status='Approved')
             
-            return HttpResponseRedirect('/submitted-report/')
+            return HttpResponseRedirect('/submitted-report/1')
 
 
 
