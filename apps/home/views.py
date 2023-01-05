@@ -14,36 +14,30 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse
-from django.views.generic import ListView, View
+from django.views.generic import DetailView, ListView, View
 
 from .forms import *
 from .models import *
 
-# class AllKeywordsView(ListView):
-#     model = Journalist_Report
-#     template_name = "home/test.html"
+
+class DetailView(DetailView):
+    model=Journalist_Report
+    template_name='home/details.html'
+    context_object_name = 'set_details'
+    
+    
+    def get_queryset (self):
+        print(self.request.path)
+        return Journalist_Report.objects.filter(id=self.kwargs['pk'])
+    
+    
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('approve')=='approve':
+            self.model.objects.filter(id=id).update(status='Approved')
+            
+            return HttpResponseRedirect('/submitted-report/')
 
 
-# def listing_api(request):
-#     page_number = request.GET.get("page", 1)
-#     per_page = request.GET.get("per_page", 5)
-#     startswith = request.GET.get("startswith", "")
-#     keywords = Journalist_Report.objects.filter(
-#         report_id__startswith=startswith
-#     )
-#     paginator = Paginator(keywords, per_page)
-#     page_obj = paginator.get_page(page_number)
-#     data = [{"report_id": kw.report_id,"work_type":kw.work_type,'date':kw.date,'status':kw.status,'employee':kw.employee.fullname} for kw in page_obj.object_list]
-
-#     payload = {
-#         "page": {
-#             "current": page_obj.number,
-#             "has_next": page_obj.has_next(),
-#             "has_previous": page_obj.has_previous(),
-#         },
-#         "data": data
-#     }
-#     return JsonResponse(payload)
 
 
 
@@ -124,7 +118,7 @@ def submitted_form(request,page):
     context['show']=page_object
 
     #context["show"]=get_all_data
-       
+     
     html_template = loader.get_template('home/submitted-report.html')
     return HttpResponse(html_template.render(context, request))
 

@@ -67,7 +67,8 @@
                         <textarea class="form-control"  rows="10" disabled>{{set_details.task}}</textarea>
                         {% if perms.home.can_view_submitted_reports %}
                             {% if set_details.status == 'Pending' %}
-                            <form method="get">
+                            <form method="post">
+                                {% csrf_token %}
                             <div class="float-end">
                                 <input type="submit" class="btn btn-success" value="approve" name="approve">
                             </div>
