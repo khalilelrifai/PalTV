@@ -39,6 +39,17 @@ class DetailView(DetailView):
 
 
 
+class ReportsListView(ListView):
+    model=Journalist_Report
+    paginate_by = 10
+    template_name='home/submitted-report.html'
+    queryset = Journalist_Report.objects.all().order_by('-date')
+
+
+
+
+
+
 
 
 @login_required(login_url="/login/")
@@ -50,25 +61,25 @@ def index(request):
 
 
 
-@login_required(login_url="/login/")
-def view_report(request,id):
-    context = {}
+# @login_required(login_url="/login/")
+# def view_report(request,id):
+#     context = {}
         
-    context['segment'] =  request.path.split('/')
+#     context['segment'] =  request.path.split('/')
         
-    set_details = Journalist_Report.objects.get(id=id)
-    context['set_details'] = set_details
+#     set_details = Journalist_Report.objects.get(id=id)
+#     context['set_details'] = set_details
     
     
-    if request.GET.get('approve')=='approve':
-        Journalist_Report.objects.filter(id=id).update(status='Approved')
-        return HttpResponseRedirect('/submitted-report')
+#     if request.GET.get('approve')=='approve':
+#         Journalist_Report.objects.filter(id=id).update(status='Approved')
+#         return HttpResponseRedirect('/submitted-report')
     
     
     
                 
-    html_template = loader.get_template('home/details.html')
-    return HttpResponse(html_template.render(context, request))
+#     html_template = loader.get_template('home/details.html')
+#     return HttpResponse(html_template.render(context, request))
 
 
 

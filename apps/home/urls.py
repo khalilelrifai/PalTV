@@ -8,7 +8,6 @@ from . import views
 # from .views import AllKeywordsView
 
 
-app_name= 'home'
 
 urlpatterns = [
 
@@ -17,7 +16,7 @@ urlpatterns = [
 
     # Matches any html file
     path('reportform/', views.reportform, name='reportform'),
-    path('submitted-report/<int:page>/', views.submitted_form, name='submitted'),
+    path('submitted-report/<int:page>/', views.ReportsListView.as_view(), name='submitted'),
     
     path('submitted-report/view/<int:pk>', views.DetailView.as_view(), name='view'),
     
