@@ -42,8 +42,18 @@ class DetailView(DetailView):
 class ReportsListView(ListView):
     model=Journalist_Report
     paginate_by = 10
-    template_name='home/submitted-report.html'
+    submitted_template='home/submitted-report.html'
+    profile_template ='home/profile'
     queryset = Journalist_Report.objects.all().order_by('-date')
+    
+    
+    def get_template_names(self) :
+        
+        if self.request.path =="submitted-report/1/":
+            return self.submitted_template
+        else:
+            re
+            
 
 
 

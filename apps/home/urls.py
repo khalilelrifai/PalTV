@@ -7,7 +7,7 @@ from . import views
 
 # from .views import AllKeywordsView
 
-
+app_name='home'
 
 urlpatterns = [
 
@@ -22,7 +22,7 @@ urlpatterns = [
     
     path('profile/edit/<id>', views.edit_report, name='edit_profile'),
     path('profile/view/<int:pk>', views.DetailView.as_view(), name='view_profile'),
-    path('profile/<int:page>/', views.profile, name='profile'),
+    path('profile/<int:page>/', views.ReportsListView.as_view(), name='profile'),
     ]
 #     path(
 #     "terms.json",
