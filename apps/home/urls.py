@@ -23,6 +23,7 @@ urlpatterns = [
     path('profile/edit/<id>', views.edit_report, name='edit_profile'),
     path('profile/view/<int:pk>', login_required(views.DetailView.as_view()), name='view_profile'),
     path('profile/<int:page>/', login_required(views.ReportsListView.as_view()), name='profile'),
+    path('all/', login_required(views.ReportsListView.as_view()), name='all'),
     ]
 #     path(
 #     "terms.json",

@@ -42,6 +42,7 @@ class ReportsListView(ListView):
     paginate_by = 10
     submitted_template='home/submitted-report.html'
     profile_template ='home/profile.html'
+    all_template ='home/all.html'
     queryset = Journalist_Report.objects.all().order_by('-date')
     
     
@@ -63,6 +64,8 @@ class ReportsListView(ListView):
         
         if 'profile' in self.request.path.split('/'):      
             return [self.profile_template]
+        elif 'all' in self.request.path.split('/'): 
+            return [self.all_template]
         return [self.submitted_template]
             
 
