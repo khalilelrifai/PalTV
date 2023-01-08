@@ -4,10 +4,10 @@
 from django.urls import path, re_path
 
 from . import views
+from django.contrib.auth.decorators import login_required
 
 # from .views import AllKeywordsView
 
-app_name='home'
 
 urlpatterns = [
 
@@ -16,13 +16,13 @@ urlpatterns = [
 
     # Matches any html file
     path('reportform/', views.reportform, name='reportform'),
-    path('submitted-report/<int:page>/', views.ReportsListView.as_view(), name='submitted'),
+    path('submitted-report/<int:page>/',login_required(views.ReportsListView.as_view()), name='submitted'),
     
-    path('submitted-report/view/<int:pk>', views.DetailView.as_view(), name='view'),
+    path('submitted-report/view/<int:pk>', login_required(views.DetailView.as_view()), name='view'),
     
     path('profile/edit/<id>', views.edit_report, name='edit_profile'),
-    path('profile/view/<int:pk>', views.DetailView.as_view(), name='view_profile'),
-    path('profile/<int:page>/', views.ReportsListView.as_view(), name='profile'),
+    path('profile/view/<int:pk>', login_required(views.DetailView.as_view()), name='view_profile'),
+    path('profile/<int:page>/', login_required(views.ReportsListView.as_view()), name='profile'),
     ]
 #     path(
 #     "terms.json",

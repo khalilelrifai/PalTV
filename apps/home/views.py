@@ -14,7 +14,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse
-from django.views.generic import DetailView, ListView, View
+from django.views.generic import *
 
 from .forms import *
 from .models import *
@@ -27,14 +27,12 @@ class DetailView(DetailView):
     
     
     def get_queryset (self):
-        print(self.request.path)
         return Journalist_Report.objects.filter(id=self.kwargs['pk'])
     
     
     def post(self, request, *args, **kwargs):
         if request.POST.get('approve')=='approve':
             self.model.objects.filter(id=self.kwargs['pk']).update(status='Approved')
-            
             return HttpResponseRedirect('/submitted-report/1')
 
 
@@ -43,22 +41,34 @@ class ReportsListView(ListView):
     model=Journalist_Report
     paginate_by = 10
     submitted_template='home/submitted-report.html'
-    profile_template ='home/profile'
+    profile_template ='home/profile.html'
     queryset = Journalist_Report.objects.all().order_by('-date')
     
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today=datetime.now().date()
+        last_week = datetime.now().date() - timedelta(days=7)
+        last_month= datetime.now().date() - timedelta(days=30)
+        today_count=Journalist_Report.objects.filter(date=today).count()
+        last_week_count=Journalist_Report.objects.filter(date__gte=last_week).count()
+        last_month_count=Journalist_Report.objects.filter(date__gte=last_month).count()
+        
+        context["today"]=today_count
+        context["week"]=last_week_count
+        context["month"]=last_month_count
+        return context
+    
     def get_template_names(self) :
         
-        if self.request.path =="submitted-report/1/":
-            return self.submitted_template
-        else:
-            re
+        if 'profile' in self.request.path.split('/'):      
+            return [self.profile_template]
+        return [self.submitted_template]
             
 
-
-
-
-
+class EditReportView(UpdateView):
+    model=Journalist_Report
+    
 
 
 
@@ -122,59 +132,59 @@ def edit_report(request,id):
 
 
 
-@login_required(login_url="/login/")
-def submitted_form(request,page):
-    context = {}
-    context['segment'] =  request.path.split('/')
+# @login_required(login_url="/login/")
+# def submitted_form(request,page):
+#     context = {}
+#     context['segment'] =  request.path.split('/')
 
 
-    # lst=[]
-    # get_all_data = reverse(Journalist_Report.objects.all().order_by('date'))
+#     # lst=[]
+#     # get_all_data = reverse(Journalist_Report.objects.all().order_by('date'))
 
-    get = Journalist_Report.objects.all().order_by('date')
-    paginator = Paginator(get,per_page=10)
-    page_object =paginator.get_page(page)
-    page_object.adjusted_elided_pages = paginator.get_elided_page_range(page)
+#     get = Journalist_Report.objects.all().order_by('date')
+#     paginator = Paginator(get,per_page=10)
+#     page_object =paginator.get_page(page)
+#     page_object.adjusted_elided_pages = paginator.get_elided_page_range(page)
 
-    context['show']=page_object
+#     context['show']=page_object
 
-    #context["show"]=get_all_data
+#     #context["show"]=get_all_data
      
-    html_template = loader.get_template('home/submitted-report.html')
-    return HttpResponse(html_template.render(context, request))
+#     html_template = loader.get_template('home/submitted-report.html')
+#     return HttpResponse(html_template.render(context, request))
 
 
 
 
 
 
-@login_required(login_url="/login/")
-def profile(request,page):
-    context = {}
-    context['segment'] =  request.path.split('/')
+# @login_required(login_url="/login/")
+# def profile(request,page):
+#     context = {}
+#     context['segment'] =  request.path.split('/')
 
 
 
-    today=datetime.now().date()
-    last_week = datetime.now().date() - timedelta(days=7)
-    last_month= datetime.now().date() - timedelta(days=30)
-    today_count=Journalist_Report.objects.filter(date=today).count()
-    last_week_count=Journalist_Report.objects.filter(date__gte=last_week).count()
-    last_month_count=Journalist_Report.objects.filter(date__gte=last_month).count()
+#     today=datetime.now().date()
+#     last_week = datetime.now().date() - timedelta(days=7)
+#     last_month= datetime.now().date() - timedelta(days=30)
+#     today_count=Journalist_Report.objects.filter(date=today).count()
+#     last_week_count=Journalist_Report.objects.filter(date__gte=last_week).count()
+#     last_month_count=Journalist_Report.objects.filter(date__gte=last_month).count()
 
-    get = Journalist_Report.objects.all().order_by('date')
-    paginator = Paginator(get,per_page=10)
-    page_object =paginator.get_page(page)
-    page_object.adjusted_elided_pages = paginator.get_elided_page_range(page)
+#     get = Journalist_Report.objects.all().order_by('date')
+#     paginator = Paginator(get,per_page=10)
+#     page_object =paginator.get_page(page)
+#     page_object.adjusted_elided_pages = paginator.get_elided_page_range(page)
 
-    context['show']=page_object
+#     context['show']=page_object
     
-    context["today"]=today_count
-    context["week"]=last_week_count
-    context["month"]=last_month_count
+#     context["today"]=today_count
+#     context["week"]=last_week_count
+#     context["month"]=last_month_count
        
-    html_template = loader.get_template('home/profile.html')
-    return HttpResponse(html_template.render(context, request))
+#     html_template = loader.get_template('home/profile.html')
+#     return HttpResponse(html_template.render(context, request))
 
 
 
