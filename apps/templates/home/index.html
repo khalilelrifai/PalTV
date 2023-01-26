@@ -85,8 +85,11 @@
                         </div>
                     </div>
                     <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
-                        <li class="nav-item me-2">
+                        <!-- <li class="nav-item me-2">
                             <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                        </li> -->
+                        <li class="nav-item me-2">
+                            <a href="{% url 'reports:main_reports' %}" class="nav-link">Reports</a>
                         </li>
                         {% if user.is_superuser %}
                             <li class="nav-item me-2">

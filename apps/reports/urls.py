@@ -3,16 +3,18 @@
 
 from django.contrib.auth.decorators import login_required
 from django.urls import path, re_path
+from django.views.generic.base import TemplateView
 
 from . import views
 
 # from .views import AllKeywordsView
 
+app_name='reports'
 
 urlpatterns = [
 
     # The home page
-    path('', views.index, name='reports'),
+    path('', TemplateView.as_view(template_name='reports/main.html'), name='main_reports'),
 
     # Matches any html file
     path('reportform/', views.reportform, name='reportform'),

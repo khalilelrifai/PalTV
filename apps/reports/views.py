@@ -17,7 +17,7 @@ from .models import *
 
 class DetailView(DetailView):
     model=Journalist_Report
-    template_name='home/details.html'
+    template_name='reports/details.html'
     context_object_name = 'set_details'
     
     
@@ -35,9 +35,9 @@ class DetailView(DetailView):
 class ReportsListView(ListView):
     model=Journalist_Report
     paginate_by = 10
-    submitted_template='home/submitted-report.html'
-    profile_template ='home/profile.html'
-    all_template ='home/all.html'
+    submitted_template='reports/submitted-report.html'
+    profile_template ='reports/profile.html'
+    all_template ='reports/all.html'
     queryset = Journalist_Report.objects.all().order_by('-date')
     
     
@@ -69,16 +69,6 @@ class EditReportView(UpdateView):
     
 
 
-
-@login_required(login_url="/login/")
-def index(request):
-    context = {'segment': 'index'}
-
-    html_template = loader.get_template('home/main.html')
-    return HttpResponse(html_template.render(context, request))
-
-
-
 @login_required(login_url="/login/")
 def edit_report(request,id):
     
@@ -102,7 +92,7 @@ def edit_report(request,id):
         return HttpResponseRedirect('/submitted-report')
 
 
-    html_template = loader.get_template('home/editform.html')
+    html_template = loader.get_template('reports/editform.html')
     return HttpResponse(html_template.render(context, request))
 
 
