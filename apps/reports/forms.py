@@ -1,31 +1,61 @@
-from django import forms
+from django.forms import *
 
 from .models import *
 
 
-def get_work():
-    choices=[]
-    get=Journalist_Report.WORK_DESCRIPTION
-    for i in get:
-        choices.append((i))
-    return choices
 
 
-class JournalistForm(forms.Form):
-    
-    work_type =forms.CharField(
-        widget=forms.Select(choices=get_work(),
-            attrs={
-                
-                "class":"form-select"
-            }
-        )
-    )
-    
-    task=forms.CharField(
-        widget=forms.Textarea(
-            attrs=
-            {"class":"form-control" ,"placeholder":"Enter your message...", "rows":"5"
-            }
-        )
-    )
+class CreateReportForm(ModelForm):
+    class Meta:
+        model = Report
+        fields='__all__'
+        # widgets = { 
+        #     'reg_date': forms.DateInput(attrs={'type':'date'}),
+        #     'ren_date': forms.DateInput(attrs={'type':'date'})
+        # }
+        # labels = {
+        #     'employee': ('Name'),
+        #     'ren_date': ('Renewal Date'),
+        # }
+
+
+
+
+# class DriverForm(forms.ModelForm):
+#     class Meta:
+#         model = Driver
+#         fields='__all__'
+#         widgets = { 
+#             'dob': forms.DateInput(attrs={'type':'date'}),
+#             'address':forms.Textarea(attrs={'rows':'4'}),
+#         }
+
+# class SecurityForm(forms.ModelForm):
+#     class Meta:
+#         model = Security
+#         fields='__all__'
+#         widgets = { 
+#             'dob': forms.DateInput(attrs={'type':'date'}),
+#             'address':forms.Textarea(attrs={'rows':'4'}),
+#         }
+        
+# class AssetForm(forms.ModelForm):
+#     class Meta:
+#         model = Asset
+#         fields='__all__'
+#         widgets = { 
+#             'reg_date': forms.DateInput(attrs={'type':'date'}),
+#             'ren_date': forms.DateInput(attrs={'type':'date'})
+#         }
+#         labels = {
+#             'reg_date': ('Registeration Date'),
+#             'ren_date': ('Renewal Date'),
+#         }
+        
+        
+# class TripForm(forms.ModelForm):
+#     class Meta:
+#         model = Trip
+#         fields='__all__'
+            
+        

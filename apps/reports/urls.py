@@ -13,20 +13,20 @@ app_name='reports'
 
 urlpatterns = [
 
-    # The home page
-    path('', TemplateView.as_view(template_name='reports/main.html'), name='main_reports'),
 
-    # Matches any html file
-    path('reportform/', views.reportform, name='reportform'),
-    path('submitted-report/<int:page>/',login_required(views.ReportsListView.as_view()), name='submitted'),
+    path('', TemplateView.as_view(template_name='reports/main.html'), name='main'),
+]
+    # # Matches any html file
+    # path('reportform/', views.reportform, name='reportform'),
+    # path('submitted-report/<int:page>/',login_required(views.ReportsListView.as_view()), name='submitted'),
     
-    path('submitted-report/view/<int:pk>', login_required(views.DetailView.as_view()), name='view'),
+    # path('submitted-report/view/<int:pk>', login_required(views.DetailView.as_view()), name='view'),
     
-    path('profile/edit/<id>', views.edit_report, name='edit_profile'),
-    path('profile/view/<int:pk>', login_required(views.DetailView.as_view()), name='view_profile'),
-    path('profile/<int:page>/', login_required(views.ReportsListView.as_view()), name='profile'),
-    path('all/', login_required(views.ReportsListView.as_view()), name='all'),
-    ]
+    # path('profile/edit/<id>', views.edit_report, name='edit_profile'),
+    # path('profile/view/<int:pk>', login_required(views.DetailView.as_view()), name='view_profile'),
+    # path('profile/<int:page>/', login_required(views.ReportsListView.as_view()), name='profile'),
+    # path('all/', login_required(views.ReportsListView.as_view()), name='all'),
+    # ]
 #     path(
 #     "terms.json",
 #     views.listing_api,
