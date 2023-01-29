@@ -18,7 +18,7 @@ class CreateReportForm(ModelForm):
         widgets = { 
             'employee':TextInput(attrs={'disabled':True}),
             'task_type': Select(attrs={}),
-            
+            'description': Textarea(attrs={'rows':'4'}),
         }
         
     # def __init__(self, *args, **kwargs):

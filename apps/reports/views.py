@@ -22,12 +22,13 @@ class CreateReport(LoginRequiredMixin,CreateView):
     
     def get_context_data(self, **kwargs):
         context = super(CreateReport, self).get_context_data(**kwargs)
-        # context['photo'] = self.kwargs['pk']
-        x =Job_title.objects.get(employee__id=self.request.user.id).id
-        y = Employee.objects.get(id=self.request.user.id)
-        context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x)
-        context['form'].fields['employee'].queryset = Employee.objects.get(id=self.request.user.id)
-        print(y)
+
+        x =Job_title.objects.get(employee__id=self.request.user.id)
+        context['job_title'] = x
+        context['department'] = x.department
+        context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
+        context['form'].fields['employee'].initial  = Employee.objects.get(id=self.request.user.id).fullname
+        print(x.department)
         return context
     
     # def get(self, request):

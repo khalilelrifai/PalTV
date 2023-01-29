@@ -28,16 +28,21 @@
         </div>
         <div class="col-sm-4">
             <label for="job_title">Job Title</label>
-            <input type="text" class="form-control"  disabled value="{{i.job_title}}" name="job_title">
+            <input type="text" class="form-control"  disabled value="{{job_title}}" name="job_title">
         </div>
         <div class="col-sm-4">
-            <label for="department">Job Title</label>
-            <input type="text" class="form-control"  disabled value="{{i.job_title.department}}" name="department">
+            <label for="department">Department</label>
+            <input type="text" class="form-control"  disabled value="{{department}}" name="department">
         </div>
     </div>
-    <div class="row mb-6">
+    <div class="row mb-5">
         <div class="col-sm-4">
             {{form.task_type|as_crispy_field}}
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-sm-8">
+            {{form.description|as_crispy_field}}
         </div>
     </div>
     <div class="row mb-10" >
