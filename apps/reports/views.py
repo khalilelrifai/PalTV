@@ -1,4 +1,3 @@
-from django import template
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -14,16 +13,35 @@ from .models import *
 
 
 class CreateReport(LoginRequiredMixin,CreateView):
-    model = Report
+    # model = Report
     form_class = CreateReportForm
     success_url = reverse_lazy('reports:main')
+    template_name = 'reports/report_form.html'
     
+    # def get(self, request):
+    #     user =self.request.user
+    #     form = CreateReportForm()
+    #     x = Employee.objects.filter(id=user.id)
+    #     context = {'x':x,'form':form}
+    #     return render(request, self.template_name, context)
+    
+    
+    def get_form_kwargs(self):
+        kwargs = super(CreateReport, self).get_form_kwargs()
+        kwargs['user'] = self.request.user.id
+        return kwargs
+
+    
+    def post(self, request):
+        form = CreateReportForm(request.POST)
+        if not form.is_valid():
+            x = {'form': form}
+            return render(request, self.template_name, x)
+        data = form.save()
+
+        return redirect(self.success_url)
     
 
-# class NewDriver(LoginRequiredMixin,CreateView):
-#     form_class = DriverForm
-#     model = Driver
-#     success_url = reverse_lazy('home:home')
 
 
     

@@ -3,16 +3,28 @@ from django.forms import *
 from .models import *
 
 
-
-
 class CreateReportForm(ModelForm):
+    # name =CharField()
+    # task_type=CharField()
+    # created_at=DateTimeField()
+    # status=CharField()
+    # description=CharField()
     class Meta:
         model = Report
         fields='__all__'
-        # widgets = { 
-        #     'reg_date': forms.DateInput(attrs={'type':'date'}),
-        #     'ren_date': forms.DateInput(attrs={'type':'date'})
-        # }
+        
+        widgets = { 
+            'task_type': Select(attrs={}),
+            
+        }
+        
+    def __init__(self, *args, **kwargs):
+       user = kwargs.pop('user')
+       super(CreateReportForm, self).__init__(*args, **kwargs)
+       self.fields['task_type'].queryset = Task_type.objects.filter(user=user)
+        
+        
+        
         # labels = {
         #     'employee': ('Name'),
         #     'ren_date': ('Renewal Date'),

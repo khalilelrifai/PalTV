@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+
 
 
 from django.contrib.auth.decorators import login_required
@@ -7,7 +7,6 @@ from django.views.generic.base import TemplateView
 
 from . import views
 
-# from .views import AllKeywordsView
 
 app_name='reports'
 
@@ -15,6 +14,7 @@ urlpatterns = [
 
 
     path('', TemplateView.as_view(template_name='reports/main.html'), name='main'),
+    path('create_report/',views.CreateReport.as_view(),name='create_report'),
 ]
     # # Matches any html file
     # path('reportform/', views.reportform, name='reportform'),

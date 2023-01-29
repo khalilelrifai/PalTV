@@ -21,15 +21,24 @@
             {% csrf_token %}
     <div class="row mb-5">
         <div class="col-sm-4">
-                {{form.employee|as_crispy_field}}
+            {% for i in x %}
+            <label for="fullname">Name</label>
+            <input type="text" class="form-control"  disabled value="{{i.fullname}}" name="fullname">
+            
         </div>
         <div class="col-sm-4">
-            {{form.dob|as_crispy_field}}
+            <label for="job_title">Job Title</label>
+            <input type="text" class="form-control"  disabled value="{{i.job_title}}" name="job_title">
         </div>
+        <div class="col-sm-4">
+            <label for="department">Job Title</label>
+            <input type="text" class="form-control"  disabled value="{{i.job_title.department}}" name="department">
+        </div>
+        {% endfor %}
     </div>
     <div class="row mb-6">
         <div class="col-sm-4">
-            {{form.address|as_crispy_field}}
+            {{form.task_type|as_crispy_field}}
         </div>
     </div>
     <div class="row mb-10" >
