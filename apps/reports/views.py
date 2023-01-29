@@ -13,10 +13,22 @@ from .models import *
 
 
 class CreateReport(LoginRequiredMixin,CreateView):
-    # model = Report
+    
+    model = Report
     form_class = CreateReportForm
+    
     success_url = reverse_lazy('reports:main')
     template_name = 'reports/report_form.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(CreateReport, self).get_context_data(**kwargs)
+        # context['photo'] = self.kwargs['pk']
+        x =Job_title.objects.get(employee__id=self.request.user.id).id
+        y = Employee.objects.get(id=self.request.user.id)
+        context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x)
+        context['form'].fields['employee'].queryset = Employee.objects.get(id=self.request.user.id)
+        print(y)
+        return context
     
     # def get(self, request):
     #     user =self.request.user
@@ -26,10 +38,10 @@ class CreateReport(LoginRequiredMixin,CreateView):
     #     return render(request, self.template_name, context)
     
     
-    def get_form_kwargs(self):
-        kwargs = super(CreateReport, self).get_form_kwargs()
-        kwargs['user'] = self.request.user.id
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs = super(CreateReport, self).get_form_kwargs()
+    #     kwargs['user'] = self.request.user.id
+    #     return kwargs
 
     
     def post(self, request):

@@ -4,6 +4,8 @@ from .models import *
 
 
 class CreateReportForm(ModelForm):
+    
+
     # name =CharField()
     # task_type=CharField()
     # created_at=DateTimeField()
@@ -14,14 +16,15 @@ class CreateReportForm(ModelForm):
         fields='__all__'
         
         widgets = { 
+            'employee':TextInput(attrs={'disabled':True}),
             'task_type': Select(attrs={}),
             
         }
         
-    def __init__(self, *args, **kwargs):
-       user = kwargs.pop('user')
-       super(CreateReportForm, self).__init__(*args, **kwargs)
-       self.fields['task_type'].queryset = Task_type.objects.filter(user=user)
+    # def __init__(self, *args, **kwargs):
+    #    user = kwargs.pop('user')
+    #    super(CreateReportForm, self).__init__(*args, **kwargs)
+    #    self.fields['task_type'].queryset = Task_type.objects.filter(user=user)
         
         
         
