@@ -14,15 +14,13 @@ from .models import *
 
 class CreateReport(LoginRequiredMixin,CreateView):
     
-    model = Report
+    # model = Report
     form_class = CreateReportForm
-    
     success_url = reverse_lazy('reports:main')
     template_name = 'reports/report_form.html'
     
     def get_context_data(self, **kwargs):
         context = super(CreateReport, self).get_context_data(**kwargs)
-
         x =Job_title.objects.get(employee__id=self.request.user.id)
         context['job_title'] = x
         context['department'] = x.department
@@ -45,14 +43,14 @@ class CreateReport(LoginRequiredMixin,CreateView):
     #     return kwargs
 
     
-    def post(self, request):
-        form = CreateReportForm(request.POST)
-        if not form.is_valid():
-            x = {'form': form}
-            return render(request, self.template_name, x)
-        data = form.save()
+    # def post(self, request):
+    #     form = CreateReportForm(request.POST)
+    #     if not form.is_valid():
+    #         x = {'form': form}
+    #         return render(request, self.template_name, x)
+    #     data = form.save()
 
-        return redirect(self.success_url)
+    #     return redirect(self.success_url)
     
 
 
