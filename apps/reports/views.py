@@ -14,7 +14,7 @@ from .models import *
 class CreateReport(LoginRequiredMixin,CreateView):
     
     # model = Report
-    form_class = CreateReportForm
+    # form_class = CreateReportForm
     success_url = reverse_lazy('reports:main')
     template_name = 'reports/report_form.html'
     
@@ -30,8 +30,8 @@ class CreateReport(LoginRequiredMixin,CreateView):
     def post(self, request):
         form = CreateReportForm(request.POST)
         if not form.is_valid():
-            x = {'form': form}
-            return render(request, self.template_name, x)
+            ctx = {'form': form}
+            return render(request, self.template_name, ctx)
         data = form.save(commit=False)
         data.owner_id=self.request.user.id
         data.status='Pending'
