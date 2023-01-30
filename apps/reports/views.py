@@ -48,7 +48,9 @@ class CreateReport(LoginRequiredMixin,CreateView):
     #     if not form.is_valid():
     #         x = {'form': form}
     #         return render(request, self.template_name, x)
-    #     data = form.save()
+    #     data = form.save(commit=False)
+    #     data.employee = self.request.user
+    #     data.save()
 
     #     return redirect(self.success_url)
     

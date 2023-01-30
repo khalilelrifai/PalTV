@@ -5,18 +5,12 @@ from .models import *
 
 class CreateReportForm(ModelForm):
     
-
-    # name =CharField()
-    # task_type=CharField()
-    # created_at=DateTimeField()
-    # status=CharField()
-    # description=CharField()
     class Meta:
         model = Report
         fields='__all__'
         
         widgets = { 
-            'employee':TextInput(attrs={'disabled':True}),
+            'employee':TextInput(attrs={}),
             'task_type': Select(attrs={}),
             'description': Textarea(attrs={'rows':'4'}),
         }
