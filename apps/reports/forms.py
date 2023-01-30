@@ -7,12 +7,17 @@ class CreateReportForm(ModelForm):
     
     class Meta:
         model = Report
-        fields='__all__'
+        fields=['task_type','description']
         
         widgets = { 
-            'employee':TextInput(attrs={}),
+            'employee':TextInput(attrs={'disabled':True}),
             'task_type': Select(attrs={}),
             'description': Textarea(attrs={'rows':'4'}),
+        }
+        
+        labels = {
+            'owner': ('Name'),
+
         }
         
     # def __init__(self, *args, **kwargs):
@@ -22,10 +27,6 @@ class CreateReportForm(ModelForm):
         
         
         
-        # labels = {
-        #     'employee': ('Name'),
-        #     'ren_date': ('Renewal Date'),
-        # }
 
 
 

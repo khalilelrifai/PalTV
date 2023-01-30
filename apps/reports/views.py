@@ -11,23 +11,37 @@ from .forms import *
 from .models import *
 
 
-
 class CreateReport(LoginRequiredMixin,CreateView):
-    
-    # model = Report
-    form_class = CreateReportForm
     success_url = reverse_lazy('reports:main')
     template_name = 'reports/report_form.html'
     
-    def get_context_data(self, **kwargs):
-        context = super(CreateReport, self).get_context_data(**kwargs)
-        x =Job_title.objects.get(employee__id=self.request.user.id)
-        context['job_title'] = x
-        context['department'] = x.department
-        context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
-        context['form'].fields['employee'].initial  = Employee.objects.get(id=self.request.user.id).fullname
-        print(x.department)
-        return context
+    def get(self,request):
+        form=CreateReportForm()
+        x= get_object_or_404 (Job_title,employee__id=self.request.user.id)
+        ctx={'form':form}
+        ctx['job_title'] = x
+        ctx['department'] = x.department
+        ctx['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
+        return render(request,self.template_name,ctx)
+
+    def post(self, request):
+        form = CreateReportForm(request.POST)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template_name, ctx)
+        data = form.save(commit=False)
+        data.owner_id=self.request.user.id
+        data.status='Pending'
+        data.save()
+
+        return redirect(self.success_url)
+    
+    
+    
+class ReportListView(LoginRequiredMixin,ListView):
+    model = Report
+        
+    
     
     # def get(self, request):
     #     user =self.request.user
@@ -48,9 +62,7 @@ class CreateReport(LoginRequiredMixin,CreateView):
     #     if not form.is_valid():
     #         x = {'form': form}
     #         return render(request, self.template_name, x)
-    #     data = form.save(commit=False)
-    #     data.employee = self.request.user
-    #     data.save()
+    #     data = form.save()
 
     #     return redirect(self.success_url)
     
