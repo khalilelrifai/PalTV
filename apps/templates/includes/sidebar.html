@@ -42,7 +42,6 @@
                   <span class="mt-1 ms-1 sidebar-text">Volt Overview</span>
                 </a>
               </li> -->
-              <!-- {% if perms.home.add_journalist_report %} -->
               <li class="nav-item {% if 'create_report' in request.path %} active {% endif %}">
                 <a href="{% url 'reports:create_report' %}" class="nav-link">
                   <span class="sidebar-icon">
@@ -51,7 +50,6 @@
                   <span class="sidebar-text">New Report</span>
                 </a>
               </li>
-              <!-- {% endif %} -->
               <!-- {% if perms.home.can_view_submitted_reports %} -->
               <!-- <li class="nav-item {% if 'submitted-report' in request.path %} active {% endif %}">
                 <a href="/submitted-report/1" class="nav-link">

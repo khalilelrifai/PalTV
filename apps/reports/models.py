@@ -1,8 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import *
 
-
-
 # def journalist_id():
 #     year = datetime.now().year
 
@@ -89,7 +87,7 @@ class Report(Model):
     ('Approved', 'Approved'),
     )
     id=AutoField(primary_key=True,editable=False)
-    employee=ForeignKey(Employee,on_delete=SET_NULL,null=True)
+    owner = ForeignKey(Employee,on_delete=SET_NULL,null=True)
     task_type=ForeignKey(Task_type,on_delete=SET_NULL,null=True)
     created_at=DateTimeField(auto_now_add=True)
     status=CharField(max_length=50,choices=STATUS_CHOICES,default='Pending')
@@ -97,7 +95,7 @@ class Report(Model):
 
 
     def __str__(self):
-        return str(self.employee)
+        return str(self.owner)
 
     # class Meta:
     #     permissions=[('can_view_submitted_reports','Can View Submitted Reports'),('can_view_journalists_profiles','Can View Journalists Profiles'),(('can_view_all','Can View Journalists ALL'))]
