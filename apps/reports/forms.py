@@ -17,14 +17,14 @@ class CreateReportForm(ModelForm):
         
         widgets = { 
             # 'owner':TextInput(attrs={'disabled':True}),
-            'task_type': Select(attrs={}),
+            'task_type': Select(attrs={'placeholder':'select please'}),
             'description': Textarea(attrs={'rows':'4'}),
         }
         
         labels = {
             'owner': ('Name'),
-        }
 
+        }
         
     # def __init__(self, *args, **kwargs):
     #    user = kwargs.pop('user')

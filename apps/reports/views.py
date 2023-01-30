@@ -12,9 +12,6 @@ from .models import *
 
 
 class CreateReport(LoginRequiredMixin,CreateView):
-    
-    # model = Report
-    # form_class = CreateReportForm
     success_url = reverse_lazy('reports:main')
     template_name = 'reports/report_form.html'
     
@@ -38,6 +35,12 @@ class CreateReport(LoginRequiredMixin,CreateView):
         data.save()
 
         return redirect(self.success_url)
+    
+    
+    
+class ReportListView(LoginRequiredMixin,ListView):
+    model = Report
+        
     
     
     # def get(self, request):

@@ -6,7 +6,7 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-
+{% load humanize %}
   
   <div class="table-settings mb-4">
       <div class="row align-items-center justify-content-between">
@@ -43,25 +43,27 @@
               <tr>
                   <!-- <th class="border-gray-200">Report ID</th> -->
                   <th class="border-gray-200">Employee Name</th>						
-                  <th class="border-gray-200">Work Type</th>
+                  <th class="border-gray-200">Task Type</th>
                   <th class="border-gray-200">Issued Date</th>
-                  <th class="border-gray-200">Approval</th>
+                  <th class="border-gray-200">Status</th>
                   <th class="border-gray-200">Action</th>
 
               </tr>
           </thead>
           <tbody>
               <!-- Item -->
-              {% for i in page_obj %}
+              {% if report_list%}
+              {% for report in report_list %}
+              {% if report.owner.user == user %}
                         <tr>
                             <!-- <td><span class="fw-bold">{{i.report_id}}</span></td> -->
-                            <td><span class="fw-normal">{{i.employee}}</span></td>
-                            <td><span class="fw-normal">{{i.work_type}}</span></td>                        
-                            <td><span class="fw-normal">{{i.date}}</span></td>
+                            <td><span class="fw-normal">{{report.owner.fullname}}</span></td>
+                            <td><span class="fw-normal">{{report.task_type}}</span></td>                        
+                            <td><span class="fw-normal">{{report.created_at|naturalday}}</span></td>
                             <td>
 
                                 <span class="form-check form-switch">
-                                    {% if i.status == 'Approved' %}
+                                    {% if report.status == 'Approved' %}
                                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"  checked style="background-color: green;"  disabled>
                                     <label class="form-check-label" for="flexSwitchCheckChecked">Approved</label>
                                     {% else %}
@@ -80,12 +82,14 @@
                                         <span class="">Action</span>
                                     </button>
                                     <div class="dropdown-menu py-0">
-                                        <a class="dropdown-item rounded-top" href="/submitted-report/view/{{i.id}}"><span class="fas fa-eye me-2"></span>View Details</a>
+                                        <a class="dropdown-item rounded-top" href="#"><span class="fas fa-eye me-2"></span>View Details</a>
                                     </div>
                                 </div>
                             </td>
                         </tr>
-              {% endfor %}
+                        {% endif %}
+                {% endfor %}
+              {% endif %}
               <!-- Item -->                                
           </tbody>
       </table>
@@ -95,7 +99,7 @@
                 <!-- {% block pagination  %} -->
                 {% if page_obj.has_previous %}
                   <li class="page-item">
-                      <a class="page-link" href="/submitted-report/{{page_obj.previous_page_number}}">Previous</a>
+                      <a class="page-link" href="/report_list/{{page_obj.previous_page_number}}">Previous</a>
                   </li>
                 {% endif%}
                         {% for page_number in page_obj.paginator.page_range %}
@@ -103,13 +107,13 @@
                                 {{page_number}}
                             {% else %} -->
                                 <li {% if page_number == page_obj.number %} class="page-item active" {% else %} class="page-item" {% endif %}>
-                                <a class="page-link" href="/submitted-report/{{page_number}}">{{page_number}}</a>
+                                <a class="page-link" href="/report_list/{{page_number}}">{{page_number}}</a>
                                 </li>
                             <!-- {% endif %} -->
                         {% endfor %}
                 {% if page_obj.has_next %}
                   <li class="page-item">
-                      <a class="page-link" href="/submitted-report/{{page_obj.next_page_number}}">Next</a>
+                      <a class="page-link" href="/report_list/{{page_obj.next_page_number}}">Next</a>
                   </li>
                   {% endif %}
                   <!-- {% endblock %} -->

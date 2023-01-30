@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',       # OAuth new 
     "sslserver",
     'crispy_forms',
+    'django.contrib.humanize' ,
     
 ]
 
