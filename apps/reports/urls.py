@@ -13,10 +13,11 @@ urlpatterns = [
 
 
     path('', TemplateView.as_view(template_name='reports/main.html'), name='main'),
-    path('create',views.CreateReport.as_view(),name='create_report'),
-    path('list',views.ReportListView.as_view(),name='list_report'),
-    path('detail/<int:pk>',views.ReportDetailView.as_view(),name='report_detail'),
-    path('edit/<int:pk>',views.ReportUpdateView.as_view(),name='edit_report'),
+    path('create',views.CreateReport.as_view(),name='create'),
+    path('list',views.ReportListView.as_view(),name='list'),
+    path('detail/<int:pk>',views.ReportDetailView.as_view(),name='detail'),
+    path('edit/<int:pk>',views.ReportUpdateView.as_view(),name='edit'),
+    path('delete/<int:pk>',views.ReportDeleteView.as_view(),name='delete'),
 ]
     # # Matches any html file
     # path('reportform/', views.reportform, name='reportform'),

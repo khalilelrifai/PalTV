@@ -50,8 +50,8 @@
     <div class="row mb-10" >
         <div class="col-md-12 text-center">
             {% if report.owner.user == user %}
-            <a href="{% url 'reports:edit_report' report.id %}" class="btn btn-success"  id="successAlert" >Edit</a>
-            <a href="" class="btn btn-danger" id="successAlert" >Delete</a>
+            <a href="{% url 'reports:edit' report.id %}" class="btn btn-success"  id="successAlert" >Edit</a>
+            <a href="{% url 'reports:delete' report.id %}" class="btn btn-danger" id="successAlert" >Delete</a>
             {% endif %}
         </div>
     </div>

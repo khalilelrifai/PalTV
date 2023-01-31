@@ -50,7 +50,7 @@ class ReportDetailView(LoginRequiredMixin,DetailView):
 class ReportUpdateView(LoginRequiredMixin,UpdateView):
     model = Report
     form_class = CreateReportForm
-    success_url = reverse_lazy('reports:list_report')
+    success_url = reverse_lazy('reports:list')
     template_name = 'reports/report_form.html'
     
     def get_context_data(self, **kwargs):
@@ -61,6 +61,9 @@ class ReportUpdateView(LoginRequiredMixin,UpdateView):
         context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
         return context
 
+class ReportDeleteView(LoginRequiredMixin,DeleteView):
+    model = Report
+    success_url = reverse_lazy('reports:list')
 
     
 
