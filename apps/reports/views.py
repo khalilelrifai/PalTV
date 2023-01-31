@@ -47,32 +47,23 @@ class ReportDetailView(LoginRequiredMixin,DetailView):
     model = Report
     template_name= "reports/report_detail.html"
     
-    # def get(self,request,pk):
-    #     report = Report.objects.get(id=pk)
-    #     x= get_object_or_404 (Job_title,employee__id=report.owner.id)
-    #     ctx={'report':report}
-    #     ctx['job_title'] = x
-    #     ctx['department'] = x.department
-    #     # ctx['task_type'] = Task_type.objects.filter(job_title_id=x.id)
-        
-    #     return render(request,self.template_name,ctx)
+
 
 
 class ReportUpdateView(LoginRequiredMixin,UpdateView):
-    model=Report
-    fields='__all__'
-    # form_class = CreateReportForm
-    success_url = reverse_lazy('reports:main')
-    template_name = 'reports/edit_report.html'
+    model = Report
+    form_class = CreateReportForm
+    success_url = reverse_lazy('reports:list_report')
+    template_name = 'reports/report_form.html'
     
     def get_context_data(self, **kwargs):
-
         context= super().get_context_data(**kwargs)
         x = get_object_or_404 (Job_title,employee__id=self.request.user.id)
+        context['job_title'] = x
+        context['department'] = x.department
         context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
         return context
-        #x = get_object_or_404 (Job_title,employee__id=self.request.user.id)
-        #context['report'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
+
         
 
 
