@@ -21,10 +21,8 @@
             {% csrf_token %}
     <div class="row mb-5">
         <div class="col-sm-4">
-
             <label for="fullname">Name</label>
             <input type="text" class="form-control"  disabled value="{{user.get_full_name}}" name="fullname">
-            
         </div>
         <div class="col-sm-4">
             <label for="job_title">Job Title</label>
@@ -47,12 +45,10 @@
     </div>
     <div class="row mb-10" >
         <div class="col-md-12 text-center">
-            <input type="reset" class="btn btn-success" id="successAlert"  >
-            <input type="submit" class="btn btn-success" id="successAlert"  >
-            
+            <a href="{% url 'reports:main' %}" class="btn btn-gray-300">Cancel</a>
+            <input type="submit" class="btn btn-success"  >
         </div>
     </div>
-
     </form>
     </div>
     </div> 

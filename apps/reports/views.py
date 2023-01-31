@@ -37,7 +37,6 @@ class CreateReport(LoginRequiredMixin,View):
         return redirect(self.success_url)
     
     
-    
 class ReportListView(LoginRequiredMixin,ListView):
     model = Report
     queryset = Report.objects.all().order_by('-created_at')
@@ -47,8 +46,6 @@ class ReportDetailView(LoginRequiredMixin,DetailView):
     model = Report
     template_name= "reports/report_detail.html"
     
-
-
 
 class ReportUpdateView(LoginRequiredMixin,UpdateView):
     model = Report
@@ -64,36 +61,6 @@ class ReportUpdateView(LoginRequiredMixin,UpdateView):
         context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
         return context
 
-        
-
-
-
-    
-    
-    # def get(self,request,pk):
-    #     form=CreateReportForm()
-    #     report = Report.objects.get(id=pk)
-    #     x= get_object_or_404 (Job_title,employee__id=report.owner.id)
-    #     ctx={'form':form}
-    #     ctx['job_title'] = x
-    #     ctx['department'] = x.department
-    #     ctx['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
-    #     return render(request,self.template_name,ctx)
-    
-    
-    
-    # def get(self, request):
-    #     user =self.request.user
-    #     form = CreateReportForm()
-    #     x = Employee.objects.filter(id=user.id)
-    #     context = {'x':x,'form':form}
-    #     return render(request, self.template_name, context)
-    
-    
-    # def get_form_kwargs(self):
-    #     kwargs = super(CreateReport, self).get_form_kwargs()
-    #     kwargs['user'] = self.request.user.id
-    #     return kwargs
 
     
 
