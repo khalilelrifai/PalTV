@@ -10,7 +10,7 @@ class CreateReportForm(ModelForm):
         fields=['task_type','description']
         
         widgets = { 
-            'employee':TextInput(attrs={'disabled':True}),
+            # 'owner':TextInput(attrs={'disabled':True}),
             'task_type': Select(attrs={}),
             'description': Textarea(attrs={'rows':'4'}),
         }
@@ -18,6 +18,16 @@ class CreateReportForm(ModelForm):
         labels = {
             'owner': ('Name'),
 
+        }
+        
+        
+class DetailReportForm(ModelForm):
+    class Meta:
+        fields=['task_type','description']
+        widgets = { 
+            'owner':TextInput(attrs={'disabled':True}),
+            'task_type': Select(attrs={'disabled':True}),
+            'description': Textarea(attrs={'rows':'4','disabled':True}),
         }
         
     # def __init__(self, *args, **kwargs):

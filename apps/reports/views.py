@@ -11,13 +11,13 @@ from .forms import *
 from .models import *
 
 
-class CreateReport(LoginRequiredMixin,CreateView):
+class CreateReport(LoginRequiredMixin,View):
     success_url = reverse_lazy('reports:main')
     template_name = 'reports/report_form.html'
-    
+
     def get(self,request):
         form=CreateReportForm()
-        x= get_object_or_404 (Job_title,employee__id=self.request.user.id)
+        x = get_object_or_404 (Job_title,employee__id=self.request.user.id)
         ctx={'form':form}
         ctx['job_title'] = x
         ctx['department'] = x.department
@@ -40,7 +40,53 @@ class CreateReport(LoginRequiredMixin,CreateView):
     
 class ReportListView(LoginRequiredMixin,ListView):
     model = Report
+    queryset = Report.objects.all().order_by('-created_at')
+
+
+class ReportDetailView(LoginRequiredMixin,DetailView):
+    model = Report
+    template_name= "reports/report_detail.html"
+    
+    # def get(self,request,pk):
+    #     report = Report.objects.get(id=pk)
+    #     x= get_object_or_404 (Job_title,employee__id=report.owner.id)
+    #     ctx={'report':report}
+    #     ctx['job_title'] = x
+    #     ctx['department'] = x.department
+    #     # ctx['task_type'] = Task_type.objects.filter(job_title_id=x.id)
         
+    #     return render(request,self.template_name,ctx)
+
+
+class ReportUpdateView(LoginRequiredMixin,UpdateView):
+    model=Report
+    fields='__all__'
+    # form_class = CreateReportForm
+    success_url = reverse_lazy('reports:main')
+    template_name = 'reports/edit_report.html'
+    
+    def get_context_data(self, **kwargs):
+        print(super().get_context_data(**kwargs))
+
+        return super().get_context_data(**kwargs)
+        #x = get_object_or_404 (Job_title,employee__id=self.request.user.id)
+        #context['report'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
+        
+
+
+
+    
+    
+    # def get(self,request,pk):
+    #     form=CreateReportForm()
+    #     report = Report.objects.get(id=pk)
+    #     x= get_object_or_404 (Job_title,employee__id=report.owner.id)
+    #     ctx={'form':form}
+    #     ctx['job_title'] = x
+    #     ctx['department'] = x.department
+    #     ctx['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
+    #     return render(request,self.template_name,ctx)
+    
     
     
     # def get(self, request):
@@ -57,15 +103,7 @@ class ReportListView(LoginRequiredMixin,ListView):
     #     return kwargs
 
     
-    # def post(self, request):
-    #     form = CreateReportForm(request.POST)
-    #     if not form.is_valid():
-    #         x = {'form': form}
-    #         return render(request, self.template_name, x)
-    #     data = form.save()
 
-    #     return redirect(self.success_url)
-    
 
 
 
