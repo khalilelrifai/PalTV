@@ -66,9 +66,11 @@ class ReportUpdateView(LoginRequiredMixin,UpdateView):
     template_name = 'reports/edit_report.html'
     
     def get_context_data(self, **kwargs):
-        print(super().get_context_data(**kwargs))
 
-        return super().get_context_data(**kwargs)
+        context= super().get_context_data(**kwargs)
+        x = get_object_or_404 (Job_title,employee__id=self.request.user.id)
+        context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
+        return context
         #x = get_object_or_404 (Job_title,employee__id=self.request.user.id)
         #context['report'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
         
