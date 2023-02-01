@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} New Report {% endblock %}
+{% block title %} Deleting Report {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
@@ -11,17 +11,18 @@
 {% block content %}
 <div class="container-fluid">
     <div class="mb-3 mb-lg-0">
-        <h1 class="h4">Delete Report</h1>
+        <h1 class="h4">Deleting Report</h1>
     </div>
 </div>
 <div class="container-fluid">
+    <div class="row mb-5">
     <div class="card border-0 shadow components-section">
         <div class="card-body">
         <form method="post" >
             {% csrf_token %}
     <div class="row mb-5">
         <div class="col-sm-4">
-            <h3>Are you sure you want to delete the Report</h3>
+            <h4>Are you sure you want to delete the Report</h4>
         </div>
     </div>
     <div class="row mb-5" >
@@ -33,6 +34,7 @@
     </form>
     </div>
     </div> 
+</div>
 </div>
 
 {% endblock content %}

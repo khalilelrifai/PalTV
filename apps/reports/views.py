@@ -39,8 +39,11 @@ class CreateReport(LoginRequiredMixin,View):
     
 class ReportListView(LoginRequiredMixin,ListView):
     model = Report
+    paginate_by = 5
     queryset = Report.objects.all().order_by('-created_at')
-
+    # def get_context_data(self, **kwargs):
+    #     print( super().get_context_data(**kwargs))
+        
 
 class ReportDetailView(LoginRequiredMixin,DetailView):
     model = Report
