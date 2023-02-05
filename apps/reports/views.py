@@ -17,7 +17,7 @@ class CreateReport(LoginRequiredMixin,View):
 
     def get(self,request):
         form=CreateReportForm()
-        x = get_object_or_404 (Job_title,employee__id=self.request.user.id)
+        x = get_object_or_404 (Job_title,employee__user=self.request.user)
         ctx={'form':form}
         ctx['job_title'] = x
         ctx['department'] = x.department
@@ -30,7 +30,8 @@ class CreateReport(LoginRequiredMixin,View):
             ctx = {'form': form}
             return render(request, self.template_name, ctx)
         data = form.save(commit=False)
-        data.owner_id=self.request.user.id
+        data.owner_id = Employee.objects.get(user = self.request.user).id
+        print(data.owner)
         data.status='Pending'
         data.save()
 
@@ -58,7 +59,7 @@ class ReportUpdateView(LoginRequiredMixin,UpdateView):
     
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
-        x = get_object_or_404 (Job_title,employee__id=self.request.user.id)
+        x = get_object_or_404 (Job_title,employee__user=self.request.user)
         context['job_title'] = x
         context['department'] = x.department
         context['form'].fields['task_type'].queryset = Task_type.objects.filter(job_title_id=x.id)
@@ -67,6 +68,18 @@ class ReportUpdateView(LoginRequiredMixin,UpdateView):
 class ReportDeleteView(LoginRequiredMixin,DeleteView):
     model = Report
     success_url = reverse_lazy('reports:list')
+    
+    
+class DirectiorView(ReportListView):
+    
+    
+    def get_queryset(self):
+
+        x = get_object_or_404(Job_title,employee__user=self.request.user)
+        queryset = Report.objects.filter(task_type__job_title=x).order_by('-created_at')
+        
+        return queryset
+    
 
     
 

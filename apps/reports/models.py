@@ -13,31 +13,31 @@ from django.db.models import *
 #     return form
 
 
-JOB_CHOICES= (
-('IT', 'IT'),
-('MCR', 'MCR'),
-('ETESALAT', 'ETESALAT'),
-('JOURNALIST', 'JOURNALIST'),
-('PA', 'PA'),
-('PRODUCER', 'PRODUCER'),
-('EDITOR','EDITOR'),
-('GRAPHIC','GRAPHIC'))
+# JOB_CHOICES= (
+# ('IT', 'IT'),
+# ('MCR', 'MCR'),
+# ('ETESALAT', 'ETESALAT'),
+# ('JOURNALIST', 'JOURNALIST'),
+# ('PA', 'PA'),
+# ('PRODUCER', 'PRODUCER'),
+# ('EDITOR','EDITOR'),
+# ('GRAPHIC','GRAPHIC'))
 
-DEP_CHOICES= (
-('Engineering', 'Engineering'),
-('NEWS', 'NEWS'),
-('PROGRAMS', 'PROGRAMS'))
+# DEP_CHOICES= (
+# ('Engineering', 'Engineering'),
+# ('NEWS', 'NEWS'),
+# ('PROGRAMS', 'PROGRAMS'))
 
 
-WORK_DESCRIPTION=(
-    ('','Please select your task type'),
-    ('VT','VT'),
-    ('OOV','OOV'),
-    ('SB','SB'),
-    ('CAP','CAP'),
-    ('GFX','GFX'),
-    ('Filler','Filler'),
-)
+# WORK_DESCRIPTION=(
+#     ('','Please select your task type'),
+#     ('VT','VT'),
+#     ('OOV','OOV'),
+#     ('SB','SB'),
+#     ('CAP','CAP'),
+#     ('GFX','GFX'),
+#     ('Filler','Filler'),
+# )
 
 
 
