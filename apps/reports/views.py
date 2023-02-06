@@ -40,7 +40,7 @@ class CreateReport(LoginRequiredMixin,View):
 class ReportListView(LoginRequiredMixin,ListView):
     model = Report
     paginate_by = 5
-    queryset = Report.objects.all().order_by('-created_at')
+    queryset = Report.objects.filter().order_by('-created_at')
     
 
 class ReportDetailView(LoginRequiredMixin,DetailView):
@@ -80,6 +80,12 @@ class DirectiorView(ReportListView):
         x = get_object_or_404(Job_title,employee__user=self.request.user)
         queryset = Report.objects.filter(task_type__job_title=get_object_or_404(Job_title,employee__user=self.request.user)).order_by('-created_at')
         
+        return queryset
+    
+class EmployeeView(ReportListView):
+    
+    def get_queryset(self):
+        queryset = Report.objects.filter(owner__user=self.request.user).order_by('-created_at')
         return queryset
     
 
