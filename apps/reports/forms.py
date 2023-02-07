@@ -1,9 +1,9 @@
-from django.forms import *
+from django import forms
 
 from .models import *
 
 
-class CreateReportForm(ModelForm):
+class CreateReportForm(forms.ModelForm):
     
     class Meta:
         model = Report
@@ -11,8 +11,8 @@ class CreateReportForm(ModelForm):
         
         widgets = { 
             # 'owner':TextInput(attrs={'disabled':True}),
-            'task_type': Select(attrs={}),
-            'description': Textarea(attrs={'rows':'4'}),
+            'task_type': forms.Select(attrs={}),
+            'description': forms.Textarea(attrs={'rows':'4'}),
         }
         
         labels = {
@@ -21,15 +21,40 @@ class CreateReportForm(ModelForm):
         }
         
         
-class DetailReportForm(ModelForm):
+class DetailReportForm(forms.ModelForm):
     class Meta:
         fields=['task_type','description']
         widgets = { 
-            'owner':TextInput(attrs={'disabled':True}),
-            'task_type': Select(attrs={'disabled':True}),
-            'description': Textarea(attrs={'rows':'4','disabled':True}),
+            'owner':forms.TextInput(attrs={'disabled':True}),
+            'task_type': forms.Select(attrs={'disabled':True}),
+            'description': forms.Textarea(attrs={'rows':'4','disabled':True}),
         }
         
+        
+        
+        
+        
+class ReportSearchForm(forms.Form):
+    search_text =  forms.CharField(
+        required = False,
+        label='Search name or surname!',
+        widget=forms.TextInput(attrs={'placeholder': 'search here!'})
+    )
+
+    search_age_exact = forms.IntegerField(
+        required = False,
+        label='Search age (exact match)!'
+    )
+
+    search_age_min = forms.IntegerField(
+        required = False,
+        label='Min age'
+    )
+
+    search_age_max = forms.IntegerField(
+      required = False,
+      label='Max age'
+    )
     # def __init__(self, *args, **kwargs):
     #    user = kwargs.pop('user')
     #    super(CreateReportForm, self).__init__(*args, **kwargs)

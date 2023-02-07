@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, Permission, User
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse_lazy
 from django.views.generic import *
-from django.contrib.auth.models import Group, Permission
+from search_views.filters import BaseFilter
+from search_views.search import SearchListView
 
 from .forms import *
 from .models import *
@@ -97,6 +98,22 @@ def approve(request,pk):
     
     
     
-    
+class ReportsFilter(BaseFilter):
+    search_fields = {
+        'search_text' : ['name', 'surname'],
+        'search_age_exact' : { 'operator' : '__exact', 'fields' : ['age'] },
+        'search_age_min' : { 'operator' : '__gte', 'fields' : ['age'] },
+        'search_age_max' : { 'operator' : '__lte', 'fields' : ['age'] },  
+    }
+
+class ReportsSearchList(LoginRequiredMixin,SearchListView):
+  # regular django.views.generic.list.ListView configuration
+    model = Report
+#   paginate_by = 10
+    template_name = "reports/test.html"
+
+  # additional configuration for SearchListView
+    form_class = ReportSearchForm
+    filter_class = ReportsFilter
     
 

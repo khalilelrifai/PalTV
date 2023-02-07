@@ -20,6 +20,7 @@ urlpatterns = [
     path('list/delete/<int:pk>',views.ReportDeleteView.as_view(),name='delete'),
     path('director',views.DirectiorView.as_view(),name='director'),
     path('approve/<int:pk>',views.approve,name='approve'),
+    path('search',views.ReportsSearchList.as_view(),name='search'),
 ]
     # # Matches any html file
     # path('reportform/', views.reportform, name='reportform'),
