@@ -98,8 +98,21 @@ class DirectiorView(LoginRequiredMixin,ListView):
     template_name = 'reports/director_list.html'
     
     def get(self,request):
+        strval =  request.GET.get("search", False)
         x = get_object_or_404(Job_title,employee__user=self.request.user)
         report_list = Report.objects.filter(task_type__job_title=x).order_by('-created_at')
+        if request.user.is_authenticated:
+            if strval :
+                query = Q(description__icontains=strval)
+                query.add(Q(owner__user__first_name__icontains=strval), Q.OR)
+                query.add(Q(owner__user__last_name__icontains=strval), Q.OR)
+                query.add(Q(task_type__type__icontains=strval), Q.OR)
+                query.add(Q(task_type__job_title=x), Q.AND)
+                report_list = Report.objects.filter(query).select_related().order_by('-created_at')
+            else :
+                report_list = Report.objects.filter(task_type__job_title=x).order_by('-created_at')
+                
+
         ctx={'report_list':report_list}
         return render(request, self.template_name, ctx)
     
