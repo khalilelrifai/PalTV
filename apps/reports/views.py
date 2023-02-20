@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group, Permission, User
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
@@ -39,10 +40,28 @@ class CreateReport(LoginRequiredMixin,View):
     
     
 class ReportListView(LoginRequiredMixin,ListView):
-    model = Report
+    # model = Report
     paginate_by = 5
-    queryset = Report.objects.filter().order_by('-created_at')
-    
+    template_name='reports/report_list.html'
+    # queryset = Report.objects.filter().order_by('-created_at')
+    def get(self, request):
+        strval =  request.GET.get("search", False)
+        if request.user.is_authenticated:
+            if strval :
+                query = Q(description__icontains=strval)
+                query.add(Q(owner__user__first_name__icontains=strval), Q.OR)
+                query.add(Q(owner__user__last_name__icontains=strval), Q.OR)
+                query.add(Q(task_type__type__icontains=strval), Q.OR)
+                query.add(Q(owner__user=self.request.user), Q.AND)
+                report_list = Report.objects.filter(query).select_related().order_by('-created_at')
+            else :
+                report_list = Report.objects.filter(owner__user=self.request.user).order_by('-created_at')
+                
+                
+            ctx = {'report_list' : report_list, 'search': strval}
+
+            return render(request, self.template_name, ctx)
+
 
 class ReportDetailView(LoginRequiredMixin,DetailView):
     model = Report
@@ -74,20 +93,21 @@ class ReportDeleteView(LoginRequiredMixin,DeleteView):
     success_url = reverse_lazy('reports:list')
     
     
-class DirectiorView(ReportListView):
+class DirectiorView(LoginRequiredMixin,ListView):
+    # model=Report
     template_name = 'reports/director_list.html'
     
-    def get_queryset(self):
+    def get(self,request):
         x = get_object_or_404(Job_title,employee__user=self.request.user)
-        queryset = Report.objects.filter(task_type__job_title=get_object_or_404(Job_title,employee__user=self.request.user)).order_by('-created_at')
-        
-        return queryset
+        report_list = Report.objects.filter(task_type__job_title=x).order_by('-created_at')
+        ctx={'report_list':report_list}
+        return render(request, self.template_name, ctx)
     
-class EmployeeView(ReportListView):
+# class EmployeeView(ReportListView):
     
-    def get_queryset(self):
-        queryset = Report.objects.filter(owner__user=self.request.user).order_by('-created_at')
-        return queryset
+#     def get_queryset(self):
+#         queryset = Report.objects.filter(owner__user=self.request.user).order_by('-created_at')
+#         return queryset
     
 
 def approve(request,pk):
@@ -98,22 +118,22 @@ def approve(request,pk):
     
     
     
-class ReportsFilter(BaseFilter):
-    search_fields = {
-        'search_text' : ['name', 'surname'],
-        'search_age_exact' : { 'operator' : '__exact', 'fields' : ['age'] },
-        'search_age_min' : { 'operator' : '__gte', 'fields' : ['age'] },
-        'search_age_max' : { 'operator' : '__lte', 'fields' : ['age'] },  
-    }
+# class ReportsFilter(BaseFilter):
+#     search_fields = {
+#         'search_text' : ['name', 'surname'],
+#         'search_age_exact' : { 'operator' : '__exact', 'fields' : ['age'] },
+#         'search_age_min' : { 'operator' : '__gte', 'fields' : ['age'] },
+#         'search_age_max' : { 'operator' : '__lte', 'fields' : ['age'] },  
+#     }
 
-class ReportsSearchList(LoginRequiredMixin,SearchListView):
-  # regular django.views.generic.list.ListView configuration
-    model = Report
-#   paginate_by = 10
-    template_name = "reports/test.html"
+# class ReportsSearchList(LoginRequiredMixin,SearchListView):
+#   # regular django.views.generic.list.ListView configuration
+#     model = Report
+# #   paginate_by = 10
+#     template_name = "reports/test.html"
 
-  # additional configuration for SearchListView
-    form_class = ReportSearchForm
-    filter_class = ReportsFilter
+#   # additional configuration for SearchListView
+#     form_class = ReportSearchForm
+#     filter_class = ReportsFilter
     
 
