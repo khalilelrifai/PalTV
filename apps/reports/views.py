@@ -98,7 +98,6 @@ class DirectiorView(LoginRequiredMixin,ListView):
     def get(self,request):
         strval =  request.GET.get("search", False)
         x = get_object_or_404(Job_title,employee__user=self.request.user)
-        report_list = Report.objects.filter(task_type__job_title=x).order_by('-created_at')
         if request.user.is_authenticated:
             if strval :
                 query = Q(description__icontains=strval)
@@ -111,8 +110,8 @@ class DirectiorView(LoginRequiredMixin,ListView):
                 report_list = Report.objects.filter(task_type__job_title=x).order_by('-created_at')
                 
 
-        ctx={'report_list':report_list}
-        return render(request, self.template_name, ctx)
+            ctx={'report_list':report_list,'search': strval}
+            return render(request, self.template_name, ctx)
     
 # class EmployeeView(ReportListView):
     
