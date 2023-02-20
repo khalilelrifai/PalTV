@@ -40,10 +40,8 @@ class CreateReport(LoginRequiredMixin,View):
     
     
 class ReportListView(LoginRequiredMixin,ListView):
-    # model = Report
     paginate_by = 5
     template_name='reports/report_list.html'
-    # queryset = Report.objects.filter().order_by('-created_at')
     def get(self, request):
         strval =  request.GET.get("search", False)
         if request.user.is_authenticated:
@@ -96,7 +94,7 @@ class ReportDeleteView(LoginRequiredMixin,DeleteView):
 class DirectiorView(LoginRequiredMixin,ListView):
     # model=Report
     template_name = 'reports/director_list.html'
-    
+    paginate_by = 5
     def get(self,request):
         strval =  request.GET.get("search", False)
         x = get_object_or_404(Job_title,employee__user=self.request.user)
