@@ -39,9 +39,10 @@ class CreateReport(LoginRequiredMixin,View):
         return redirect(self.success_url)
     
     
-class ReportListView(LoginRequiredMixin,ListView):
+class ReportListView(LoginRequiredMixin,View):
     paginate_by = 5
     template_name='reports/report_list.html'
+
     def get(self, request):
         strval =  request.GET.get("search", False)
         if request.user.is_authenticated:
@@ -91,7 +92,7 @@ class ReportDeleteView(LoginRequiredMixin,DeleteView):
     success_url = reverse_lazy('reports:list')
     
     
-class DirectiorView(LoginRequiredMixin,ListView):
+class DirectiorView(LoginRequiredMixin,View):
     # model=Report
     template_name = 'reports/director_list.html'
     paginate_by = 5
