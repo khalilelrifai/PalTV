@@ -7,8 +7,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse_lazy
 from django.views.generic import *
-from search_views.filters import BaseFilter
-from search_views.search import SearchListView
+# from search_views.filters import BaseFilter
+# from search_views.search import SearchListView
 
 from .forms import *
 from .models import *
