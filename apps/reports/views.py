@@ -124,21 +124,23 @@ class HRView(LoginRequiredMixin,View):
     def get(self,request):
         dep= request.GET.get("department",False)
         strval =  request.GET.get("search", False)
-        department = Department.objects.all().values('department')
+        department = Department.objects.all().values_list('department',flat=True)
 
         if request.user.is_authenticated:
-            if strval :
+            if dep:
+                report_list = Report.objects.filter(owner__job_title__department__department=dep).order_by('-created_at')
+            elif strval :
                 query = Q(description__icontains=strval)
                 query.add(Q(owner__user__first_name__icontains=strval), Q.OR)
                 query.add(Q(owner__user__last_name__icontains=strval), Q.OR)
-                # query.add(Q(task_type__type__icontains=strval), Q.OR)
+                query.add(Q(task_type__type__icontains=strval), Q.OR)
                 # query.add(Q(task_type__job_title=x), Q.AND)
                 report_list = Report.objects.filter(query).select_related().order_by('-created_at')
             else :
                 report_list = Report.objects.all().order_by('-created_at')
                 
 
-            ctx={'report_list':report_list,'search': strval}
+            ctx={'report_list':report_list,'search': strval,'de':dep,'department':department}
             return render(request, self.template_name, ctx)
     
     
