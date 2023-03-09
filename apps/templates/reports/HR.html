@@ -8,19 +8,33 @@
 {% block content %}
 {% load humanize %}
   
+
+<div class="container-fluid">
+    <form>
+        <div class="row mb-2">
+            <div class="col-sm-3" >
+                <select class="form-select w-100 mb-0"  name="department" >
+                    <option selected>State</option>
+                    <option value="AL">Alabama</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+        <div class="input-group">
+            <input type="text" class="form-control"  placeholder="Search"  name="search"  {% if search %} value="{{ search }}" {% endif %}>
+            <button type="submit" style="border: none;">
+            <span class="input-group-text" id="basic-addon2">
+                <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>  
+            </span>
+            </button>
+        </div>
+    </div>
+    </div>
+    </form>
+</div>
+
   <div class="table-settings mb-4">
       <div class="row align-items-center justify-content-between">
           <div class="col col-md-6 col-lg-3 col-xl-4">
-            <form>
-                <div class="input-group">
-                    <input type="text" class="form-control"  placeholder="Search"  name="search"  {% if search %} value="{{ search }}" {% endif %}>
-                    <button type="submit" style="border: none;">
-                    <span class="input-group-text" id="basic-addon2">
-                        <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>  
-                    </span>
-                    </button>
-                </div>
-            </form>
           </div>
           <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
               <div class="dropdown">

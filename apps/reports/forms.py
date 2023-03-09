@@ -35,6 +35,9 @@ class DetailReportForm(forms.ModelForm):
         
         
 class ReportSearchForm(forms.Form):
+    search_department = forms.Select(
+        
+    )
     search_text =  forms.CharField(
         required = False,
         label='Search name or surname!',

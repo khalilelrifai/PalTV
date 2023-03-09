@@ -37,13 +37,17 @@ class CreateReport(LoginRequiredMixin,View):
         data.save()
 
         return redirect(self.success_url)
+
+
     
     
 class ReportListView(LoginRequiredMixin,View):
     paginate_by = 5
     template_name='reports/report_list.html'
-
+    
     def get(self, request):
+        department = Department.objects.all().values_list('department',flat=True)
+        print(department)
         strval =  request.GET.get("search", False)
         if request.user.is_authenticated:
             if strval :
@@ -95,7 +99,6 @@ class ReportDeleteView(LoginRequiredMixin,DeleteView):
 class DirectiorView(LoginRequiredMixin,View):
     # model=Report
     template_name = 'reports/director_list.html'
-    paginate_by = 5
     def get(self,request):
         strval =  request.GET.get("search", False)
         x = get_object_or_404(Job_title,employee__user=self.request.user)
@@ -113,13 +116,57 @@ class DirectiorView(LoginRequiredMixin,View):
 
             ctx={'report_list':report_list,'search': strval}
             return render(request, self.template_name, ctx)
+        
+        
+class HRView(LoginRequiredMixin,View):
+
+    template_name = 'reports/hr.html'
+    def get(self,request):
+        dep= request.GET.get("department",False)
+        strval =  request.GET.get("search", False)
+        department = Department.objects.all().values('department')
+
+        if request.user.is_authenticated:
+            if strval :
+                query = Q(description__icontains=strval)
+                query.add(Q(owner__user__first_name__icontains=strval), Q.OR)
+                query.add(Q(owner__user__last_name__icontains=strval), Q.OR)
+                # query.add(Q(task_type__type__icontains=strval), Q.OR)
+                # query.add(Q(task_type__job_title=x), Q.AND)
+                report_list = Report.objects.filter(query).select_related().order_by('-created_at')
+            else :
+                report_list = Report.objects.all().order_by('-created_at')
+                
+
+            ctx={'report_list':report_list,'search': strval}
+            return render(request, self.template_name, ctx)
     
-# class EmployeeView(ReportListView):
     
-#     def get_queryset(self):
-#         queryset = Report.objects.filter(owner__user=self.request.user).order_by('-created_at')
-#         return queryset
     
+
+
+
+# class ReportSearchList(LoginRequiredMixin,View):
+#     template_name = "reports/HR.html"
+#     department = Department.objects.all().values('department')
+#     def get(self,request):
+#         dep= request.GET.get("department",False)
+#         strval =  request.GET.get("search", False)
+#         x = get_object_or_404(Job_title,employee__user=self.request.user)
+#         if request.user.is_authenticated:
+#             if strval :
+#                 query = Q(description__icontains=strval)
+#                 query.add(Q(owner__user__first_name__icontains=strval), Q.OR)
+#                 query.add(Q(owner__user__last_name__icontains=strval), Q.OR)
+#                 query.add(Q(task_type__type__icontains=strval), Q.OR)
+#                 query.add(Q(task_type__job_title=x), Q.AND)
+#                 report_list = Report.objects.filter(query).select_related().order_by('-created_at')
+#             else :
+#                 report_list = Report.objects.filter(task_type__job_title=x).order_by('-created_at')
+                
+
+#             ctx={'report_list':report_list,'search': strval}
+#             return render(request, self.template_name, ctx)
 
 def approve(request,pk):
     Report.objects.filter(id=pk).update(status='Approved')
@@ -137,11 +184,7 @@ def approve(request,pk):
 #         'search_age_max' : { 'operator' : '__lte', 'fields' : ['age'] },  
 #     }
 
-# class ReportsSearchList(LoginRequiredMixin,SearchListView):
-#   # regular django.views.generic.list.ListView configuration
-#     model = Report
-# #   paginate_by = 10
-#     template_name = "reports/test.html"
+
 
 #   # additional configuration for SearchListView
 #     form_class = ReportSearchForm

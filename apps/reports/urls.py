@@ -21,6 +21,8 @@ urlpatterns = [
     path('list/delete/<int:pk>',views.ReportDeleteView.as_view(),name='delete'),
     path('director',views.DirectiorView.as_view(),name='director'),
     path('approve/<int:pk>',views.approve,name='approve'),
+    path('hr',views.HRView.as_view(),name='hr'),
+    
     # path('search',views.ReportsSearchList.as_view(),name='search'),
 ]
     # # Matches any html file
