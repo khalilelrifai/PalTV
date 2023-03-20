@@ -68,8 +68,8 @@
 </head>
 <body>
 
-    <header class="header-global">
-        <nav id="navbar-main" aria-label="Primary navigation" class="navbar navbar-main navbar-expand-lg navbar-theme-primary pt-4 navbar-dark">
+    <header class="header-global" >
+        <nav id="navbar-main" aria-label="Primary navigation" class="navbar navbar-main navbar-expand-lg navbar-theme-primary pt-4 navbar-dark position-fixed">
             <div class="container position-relative">
                 <div class="navbar-collapse collapse me-auto" id="navbar_global">
                     <div class="navbar-collapse-header">
@@ -117,18 +117,18 @@
         <!-- Hero -->
         <section class="section section-lg bg-white-800 text-white">
             <div class="container">
-                <div class="row justify-content-center mb-5 mb-lg-6">
+                <!-- <div class="row justify-content-center mb-5 mb-lg-6">
                     <div class="col-12 text-center">
                         <h2 class="h1 px-lg-5">Awesome Features</h2>
                         <p class="lead px-lg-8">You get all Bootstrap components fully customized. Besides, you receive numerous plugins out of the box and ready to use.</p>
                     </div>
-                </div>
+                </div> -->
                 <div class="row">
                     <div class="col-12 col-sm-6 col-lg-3">
                         <a href="{% url 'reports:create' %}">
                         <div class="card bg-white shadow-soft text-primary rounded mb-4">
                             <div class="px-3 px-lg-4 py-5 text-center">
-                                <svg class="icon icon-md mb-3" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="bootstrap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M292.3 311.93c0 42.41-39.72 41.43-43.92 41.43h-80.89v-81.69h80.89c42.56 0 43.92 31.9 43.92 40.26zm-50.15-73.13c.67 0 38.44 1 38.44-36.31 0-15.52-3.51-35.87-38.44-35.87h-74.66v72.18h74.66zM448 106.67v298.66A74.89 74.89 0 0 1 373.33 480H74.67A74.89 74.89 0 0 1 0 405.33V106.67A74.89 74.89 0 0 1 74.67 32h298.66A74.89 74.89 0 0 1 448 106.67zM338.05 317.86c0-21.57-6.65-58.29-49.05-67.35v-.73c22.91-9.78 37.34-28.25 37.34-55.64 0-7 2-64.78-77.6-64.78h-127v261.33c128.23 0 139.87 1.68 163.6-5.71 14.21-4.42 52.71-17.98 52.71-67.12z"></path></svg>
+                                <svg class="icon icon-md mb-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path></svg>
                                 <h5 class="fw-bold text-primary">Reports </h5>
                                 <p class="mb-0 text-gray-600">Reporting System</p>
                             </div>
@@ -241,71 +241,7 @@
 
     <footer class="footer py-6 bg-gray-800 text-white">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <img class="navbar-brand-dark mb-4" height="35" src="{{ ASSETS_ROOT }}/img/brand/light.svg" alt="Logo light">
-                    <p>Volt is a Premium Bootstrap 5 Admin Dashboard bringing together beautiful UI/UX design and functional elements.</p>
-                    <ul class="social-buttons mb-5 mb-lg-0">
-                        <li>
-                            <a href="https://twitter.com/themesberg" aria-label="twitter social link" class="icon-white me-2">
-                                <span class="fab fa-twitter"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://www.facebook.com/themesberg/" class="icon-white me-2" aria-label="facebook social link">
-                                <span class="fab fa-facebook"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/themesberg" aria-label="github social link" class="icon-white me-2">
-                                <span class="fab fa-github"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://dribbble.com/themesberg" class="icon-white" aria-label="dribbble social link" >
-                                <span class="fab fa-dribbble"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md-2 mb-5 mb-lg-0">
-                    <span class="h5">Themesberg</span>
-                    <ul class="links-vertical mt-2">
-                        <li><a target="_blank" href="https://themesberg.com/blog">Blog</a></li>
-                        <li><a target="_blank" href="https://themesberg.com/products">Products</a></li>
-                        <li><a target="_blank" href="https://themesberg.com/about">About Us</a></li>
-                        <li><a target="_blank" href="https://themesberg.com/contact">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md-2 mb-5 mb-lg-0">
-                    <span class="h5">Other</span>
-                    <ul class="links-vertical mt-2">
-                        <li><a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/quick-start/" target="_blank">Docs
-                                <span class="badge badge-sm bg-secondary text-dark ms-2">v1.4</span></a></li>
-                        <li><a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/changelog/" target="_blank">Changelog</a></li>
-                        <li><a target="_blank" href="https://themesberg.com/licensing">License</a>
-                        </li>
-                        <li><a target="_blank" href="https://themesberg.com/contact">Support</a></li>
-                    </ul>
-                </div>
-                <div class="col-12 col-md-4 mb-5 mb-lg-0">
-                    <span class="h5 mb-3 d-block">Subscribe</span>
-                    <form action="#">
-                        <div class="form-row mb-2">
-                            <div class="col-12">
-                                <input type="email" class="form-control mb-2" placeholder="example@company.com" name="email" aria-label="Subscribe form" required>
-                            </div>
-                            <div class="col-12 d-grid">
-                                <button type="submit" class="btn btn-secondary" data-loading-text="Sending">
-                                    <span>Subscribe</span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <p class="text-muted font-small m-0">We’ll never share your details. See our <a class="text-white" href="#">Privacy Policy</a></p>
-                </div>
-            </div>
-            <hr class="bg-gray-700 my-5">
+
             <div class="row">
                 <div class="col mb-md-0">
                     <a href="https://themesberg.com" target="_blank" class="d-flex justify-content-center">
@@ -313,7 +249,7 @@
                     </a>
                 <div class="d-flex text-center justify-content-center align-items-center" role="contentinfo">
                     <p class="fw-normal font-small mb-0">
-                        &copy; Themesberg 2019-<span class="current-year">2020</span> - coded by <a target="_blank" href="https://appseed.us">AppSeed</a>.</p>
+                        &copy; PALTODAY <span class="current-year">2023</span> - coded by Khalil El Rifai.</p>
                     </div>
                 </div>
             </div>
