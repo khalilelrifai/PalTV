@@ -12,8 +12,6 @@ from .forms import *
 from .models import *
 
 
-
-
 class CreateReport(LoginRequiredMixin,View):
     success_url = reverse_lazy('reports:main')
     template_name = 'reports/report_form.html'

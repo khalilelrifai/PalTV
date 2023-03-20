@@ -61,6 +61,7 @@
                   <span class="sidebar-text">List Reports</span>
                 </a>
               </li>
+              {% if request.user|has_group:"Director" %} 
               <li class="nav-item {% if 'director' in request.path %} active {% endif %}">
                 <a href="{% url 'reports:director' %}" class="nav-link">
                   <span class="sidebar-icon">
@@ -69,6 +70,7 @@
                   <span class="sidebar-text">Director</span>
                 </a>
               </li>
+              {% endif %}
               {% if request.user|has_group:"HR Director" %} 
               <li class="nav-item {% if 'hr' in request.path %} active {% endif %}">
                 <a href="{% url 'reports:hr' %}" class="nav-link">
