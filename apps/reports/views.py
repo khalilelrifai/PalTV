@@ -7,11 +7,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse_lazy
 from django.views.generic import *
-# from search_views.filters import BaseFilter
-# from search_views.search import SearchListView
 
 from .forms import *
 from .models import *
+
+
 
 
 class CreateReport(LoginRequiredMixin,View):
@@ -109,9 +109,9 @@ class DirectiorView(LoginRequiredMixin,View):
                 query.add(Q(owner__user__last_name__icontains=strval), Q.OR)
                 query.add(Q(task_type__type__icontains=strval), Q.OR)
                 query.add(Q(task_type__job_title=x), Q.AND)
-                report_list = Report.objects.filter(query).select_related().order_by('-created_at')
+                report_list = Report.objects.filter(query).select_related().exclude(owner_user=request.user).order_by('-created_at')
             else :
-                report_list = Report.objects.filter(task_type__job_title=x).order_by('-created_at')
+                report_list = Report.objects.filter(task_type__job_title=x).exclude(owner__user=request.user).order_by('-created_at')
                 
 
             ctx={'report_list':report_list,'search': strval}
