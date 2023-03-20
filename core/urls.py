@@ -3,8 +3,13 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+import os
+
 from django.contrib import admin
 from django.urls import include, path  # add this
+from django.views.static import serve
+
+from core.settings import BASE_DIR
 
 urlpatterns = [
     path('admin/', admin.site.urls),          # Django admin route
@@ -14,4 +19,14 @@ urlpatterns = [
 
     path("reports/", include("apps.reports.urls")),
     path("", include("apps.home.urls")),
+]
+
+
+
+urlpatterns += [
+    path('favicon.ico', serve, {
+            'path': 'favicon.ico',
+            'document_root': os.path.join(BASE_DIR, 'apps/static'),
+        }
+    ),
 ]
