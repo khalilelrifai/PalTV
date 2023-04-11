@@ -55,8 +55,8 @@
           </thead>
           <tbody>
               <!-- Item -->
-              {% if report_list%}
-              {% for report in report_list %}
+              {% if page_obj%}
+              {% for report in page_obj %}
 
                         <tr>
                             <!-- <td><span class="fw-bold">{{i.report_id}}</span></td> -->
@@ -99,7 +99,7 @@
       <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
           <nav aria-label="Page navigation example">
               <ul class="pagination mb-0">
-                {% if is_paginated %}
+                {% if page_obj %}
                 {% if page_obj.has_previous %}
                   <li class="page-item">
                       <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
@@ -127,6 +127,7 @@
     </div>
 </div>
   </div>
+  
 
 {% endblock content %}
 

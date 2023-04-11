@@ -7,36 +7,38 @@
 
 {% block content %}
 {% load humanize %}
-  
 
-<div class="container-fluid">
-    <form>
+
+{% load crispy_forms_tags %}
+
+
+ <div class="container-fluid">
+    <form method="GET">
+    {% csrf_token %}
         <div class="row mb-2">
-            <div class="col-sm-3" >
-                <select class="form-select w-100 mb-0"  name="department" >
-                    <option selected value="">select department</option>
-                    {% for dep in department %}
-                    <option value="{{dep}}" {% if de == dep %}  selected {% endif %} >{{dep}}</option>
-                    {% endfor %}
-                    
-                </select>
+            <div class="col-sm-2" >
+            {{ form.department|as_crispy_field }}
+            </div>
+            <div class="col-sm-2">
+                {{form.employee|as_crispy_field}}
+            </div>
+            <div class="col-sm-2">
+                {{form.job_title|as_crispy_field}}
             </div>
             <div class="col-sm-3">
-        <div class="input-group">
-            <input type="text" class="form-control"  placeholder="Search"  name="search"  {% if search %} value="{{ search }}" {% endif %}>
-        </div>
-    </div>
-    <div  class="col-sm-1">
-        <button type="submit" style="border: none;">
-            <span class="input-group-text" id="basic-addon2">
-                <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>  
-            </span>
+            {{ form.search|as_crispy_field }}
+            </div>
+        <div class="col-sm-3">
+        <a href="{% url 'reports:hr' %}" class="btn btn-gray-300">
+            Reset
+        </a>
+            <button type="submit" class="btn btn-success">
+                search
             </button>
-    </div>
+        </div>
     </div>
     </form>
 </div>
-
   <div class="table-settings mb-4">
       <div class="row align-items-center justify-content-between">
           <div class="col col-md-6 col-lg-3 col-xl-4">
@@ -73,12 +75,14 @@
           </thead>
           <tbody>
               <!-- Item -->
-              {% if report_list%}
-              {% for report in report_list %}
+              {% if page_obj%}
+              {% for report in page_obj %}
               
                         <tr>
                             <!-- <td><span class="fw-bold">{{i.report_id}}</span></td> -->
-                            <td><span class="fw-normal">{{report.owner.fullname}}</span></td>
+
+                            <td><a style="color:blueviolet;" href="{% url 'reports:profile' report.owner.id %}" ><span class="fw-normal">{{report.owner.fullname}}</span></a>
+                                </td>
                             <td><span class="fw-normal">{{report.task_type}}</span></td>                        
                             <td><span class="fw-normal">{{report.created_at|naturalday}}</span></td>
                             <td>
@@ -93,7 +97,7 @@
                                 </span>
                             </td>
                             <td>
-                                <a style="color:blueviolet;" href="{% url 'reports:D-detail' report.id %}">View Details</a>
+                                <a style="color:blueviolet;" href="{% url 'reports:H-detail' report.id %}">View Details</a>
                             </td>
                         </tr>
                 {% endfor %}
@@ -104,7 +108,7 @@
       <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
           <nav aria-label="Page navigation example">
               <ul class="pagination mb-0">
-                {% if is_paginated %}
+                {% if page_obj %}
                 {% if page_obj.has_previous %}
                   <li class="page-item">
                       <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
@@ -129,7 +133,7 @@
           </nav>
           <div class="fw-normal small mt-4 mt-lg-0">Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }}</div>
       </div>
-  </div>
+  </div> 
 
 {% endblock content %}
 

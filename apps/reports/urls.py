@@ -22,6 +22,8 @@ urlpatterns = [
     path('director',views.DirectiorView.as_view(),name='director'),
     path('approve/<int:pk>',views.approve,name='approve'),
     path('hr',views.HRView.as_view(),name='hr'),
+    path('hr/detail/<int:pk>',views.ReportDetailView.as_view(),name='H-detail'),
+    path('hr/profile/<int:pk>',views.ProfileView.as_view(),name='profile'),
     
     # path('search',views.ReportsSearchList.as_view(),name='search'),
 ]

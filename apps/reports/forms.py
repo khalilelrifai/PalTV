@@ -31,33 +31,54 @@ class DetailReportForm(forms.ModelForm):
         }
         
         
-        
-        
-        
-class ReportSearchForm(forms.Form):
-    search_department = forms.Select(
-        
-    )
-    search_text =  forms.CharField(
-        required = False,
-        label='Search name or surname!',
-        widget=forms.TextInput(attrs={'placeholder': 'search here!'})
-    )
 
-    search_age_exact = forms.IntegerField(
-        required = False,
-        label='Search age (exact match)!'
-    )
 
-    search_age_min = forms.IntegerField(
-        required = False,
-        label='Min age'
-    )
 
-    search_age_max = forms.IntegerField(
-      required = False,
-      label='Max age'
-    )
+
+
+class ReportFilterForm(forms.Form):
+    department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label='Select Department', required=False)
+    employee = forms.ModelChoiceField(queryset=Employee.objects.all(), empty_label='Select Employee', required=False)
+    job_title = forms.ModelChoiceField(queryset=Job_title.objects.all(), empty_label='Select Job Title', required=False)
+    search = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Search by text'}), required=False)
+
+    def filter_reports(self):
+        department = self.cleaned_data.get('department')
+        employee = self.cleaned_data.get('employee')
+        job_title = self.cleaned_data.get('job_title')
+        search = self.cleaned_data.get('search')
+
+        reports = Report.objects.all()
+
+        if department:
+            reports = reports.filter(owner__job_title__department=department)
+
+        if employee:
+            reports = reports.filter(owner=employee)
+
+        if job_title:
+            reports = reports.filter(owner__job_title=job_title)
+
+        if search:
+            reports = reports.filter(
+                Q(description__icontains=search) |
+                Q(owner__user__first_name__icontains=search) |
+                Q(owner__user__last_name__icontains=search) |
+                Q(task_type__type__icontains=search)
+            )
+
+        reports = reports.filter(status='Approved').order_by('-created_at')
+
+        return reports
+
+
+
+
+
+
+
+
+
     # def __init__(self, *args, **kwargs):
     #    user = kwargs.pop('user')
     #    super(CreateReportForm, self).__init__(*args, **kwargs)
