@@ -28,14 +28,16 @@
             <div class="col-sm-3">
             {{ form.search|as_crispy_field }}
             </div>
-        <div class="col-sm-3">
+        <div class="col-sm-3 ">
+            <br>
         <a href="{% url 'reports:hr' %}" class="btn btn-gray-300">
             Reset
         </a>
             <button type="submit" class="btn btn-success">
                 search
             </button>
-        </div>
+
+    </div>
     </div>
     </form>
 </div>

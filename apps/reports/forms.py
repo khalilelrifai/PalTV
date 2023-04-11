@@ -70,6 +70,30 @@ class ReportFilterForm(forms.Form):
         reports = reports.filter(status='Approved').order_by('-created_at')
 
         return reports
+    
+    
+
+
+class SearchFilterForm(forms.Form):
+    search = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Search by text'}), required=False)
+
+    def filter_reports(self):
+        search = self.cleaned_data.get('search')
+
+        reports = Report.objects.all()
+
+        if search:
+            reports = reports.filter(
+                Q(description__icontains=search) |
+                Q(owner__user__first_name__icontains=search) |
+                Q(owner__user__last_name__icontains=search) |
+                Q(task_type__type__icontains=search)
+            )
+
+        reports = reports.order_by('-created_at')
+
+        return reports
+
 
 
 

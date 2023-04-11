@@ -101,36 +101,38 @@ class ReportDeleteView(LoginRequiredMixin,DeleteView):
     success_url = reverse_lazy('reports:list')
     
     
-class DirectiorView(LoginRequiredMixin,View):
+class DirectorView(LoginRequiredMixin, View):
     paginate_by = 10
     template_name = 'reports/director_list.html'
-    def get(self,request):
-        strval =  request.GET.get("search", False)
-        x = get_object_or_404(Job_title,employee__user=self.request.user)
-        if request.user.is_authenticated:
-            if strval :
-                query = Q(description__icontains=strval)
-                query.add(Q(owner__user__first_name__icontains=strval), Q.OR)
-                query.add(Q(owner__user__last_name__icontains=strval), Q.OR)
-                query.add(Q(task_type__type__icontains=strval), Q.OR)
-                query.add(Q(task_type__job_title=x), Q.AND)
-                report_list = Report.objects.filter(query).select_related().exclude(owner_user=request.user).order_by('-created_at')
-            else :
-                report_list = Report.objects.filter(task_type__job_title=x).exclude(owner__user=request.user).order_by('-created_at')
-                
-                
-            paginator = Paginator(report_list, self.paginate_by)
-            page_number = request.GET.get('page')
-            page_obj = paginator.get_page(page_number)
+
+    def get(self, request):
+        search_value = request.GET.get('search')
+ 
+        form = SearchFilterForm(request.GET or None)
+        form.fields['search'].initial = search_value
+        x = get_object_or_404(Job_title, employee__user=self.request.user)
+        
+        if form.is_valid():
+            report_list = form.filter_reports().exclude(owner__user=request.user)
+            report_list = report_list.filter(task_type__job_title=x)
+        else:
+            report_list = Report.objects.filter(task_type__job_title=x).exclude(owner__user=request.user).order_by('-created_at')
+        
+        
+        
+        paginator = Paginator(report_list, self.paginate_by)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'page_obj': page_obj,
+            'form': form,
             
-            context = {
+        }
+        
 
-                'page_obj':page_obj,
-                'search': strval,
-            }
+        return render(request, self.template_name, context)
 
-
-            return render(request, self.template_name, context)
         
         
         
