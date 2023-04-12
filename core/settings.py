@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "sslserver",
     'crispy_forms',
     'django.contrib.humanize' ,
+    'apps.trips',
     
 ]
 
@@ -157,6 +158,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(CORE_DIR, 'apps/static'),
 )
+
+
+
 
 #############################################################
 # OAuth settings 

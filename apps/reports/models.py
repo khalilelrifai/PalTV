@@ -1,50 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import *
 
-# def journalist_id():
-#     year = datetime.now().year
-
-#     if not (Journalist_Report.objects.values_list('id',flat=True)) :
-#         form ="01-JN-{}".format(year)
-#     else :
-#         id=(Journalist_Report.objects.last()).report_id
-#         lst=id.partition('-')
-#         form="{}-JN-{}".format(int(lst[0]) + 1 ,year)
-#     return form
-
-
-# JOB_CHOICES= (
-# ('IT', 'IT'),
-# ('MCR', 'MCR'),
-# ('ETESALAT', 'ETESALAT'),
-# ('JOURNALIST', 'JOURNALIST'),
-# ('PA', 'PA'),
-# ('PRODUCER', 'PRODUCER'),
-# ('EDITOR','EDITOR'),
-# ('GRAPHIC','GRAPHIC'))
-
-# DEP_CHOICES= (
-# ('Engineering', 'Engineering'),
-# ('NEWS', 'NEWS'),
-# ('PROGRAMS', 'PROGRAMS'))
-
-
-# WORK_DESCRIPTION=(
-#     ('','Please select your task type'),
-#     ('VT','VT'),
-#     ('OOV','OOV'),
-#     ('SB','SB'),
-#     ('CAP','CAP'),
-#     ('GFX','GFX'),
-#     ('Filler','Filler'),
-# )
-
-
-
-
-
-
-
 
 class Department(Model):
     id=AutoField(primary_key=True,editable=False)
