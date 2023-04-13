@@ -1,36 +1,54 @@
-import os
+
 from io import BytesIO
 
 import qrcode
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.db.models import *
+from django.urls import reverse
 from PIL import Image, ImageDraw
+import random
 
-from core.settings import CORE_DIR
+
+class QrCode(Model):
+    
+   url=URLField(default='http://127.0.0.1:8000/trips/detail/')
+   image=ImageField(upload_to='qrcode',blank=True)
+
+   def save(self,*args,**kwargs):
+      qrcode_img=qrcode.make(self.url)
+      canvas=Image.new("RGB", (400,400),"white")
+      draw=ImageDraw.Draw(canvas)
+      canvas.paste(qrcode_img)
+      buffer=BytesIO()
+      canvas.save(buffer,"PNG")
+      self.image.save(f'image{random.randint(0,9999)}.png',File(buffer),save=False)
+      canvas.close()
+      super().save(*args,**kwargs)
+      
+      
 
 
 class Vehicle(Model):
     id = AutoField(primary_key=True, editable=False)
-    qr_code = ImageField(blank=True,upload_to= 'apps/static/qr_code/vehicles', unique=True)
+    qrcode = OneToOneField(QrCode,on_delete=SET_NULL,null=True,blank=True)
     make = CharField(max_length=50, null=True)
     model = CharField(max_length=50, null=True)
     license_plate = CharField(max_length=10, unique=True)
 
+
+    def save(self, *args, **kwargs):
+
+        super().save(*args, **kwargs)  # call the original save method to save the instance
+        if not self.qrcode:
+            url = f"http://127.0.0.1:8000/trips/detail/{self.id}/"
+            qrcode_instance = QrCode.objects.create(url=url)
+            self.qrcode = qrcode_instance
+            self.save()
+
     def __str__(self):
         return f'{self.make} {self.model} ({self.license_plate})'
-    def save(self,*args,**kwargs):
-        qr_image = qrcode.make(f'{self.make} {self.model} ({self.license_plate})')
-        qr_offset = Image.new('RGB',(320,320),'white')
-        qr_offset.paste(qr_image)
-        files_name = f'{self.make}-{self.model}-({self.license_plate})qr.png'
-        stream = BytesIO()
-        qr_offset.save(stream,'PNG')
-        self.qr_code.save(files_name,File(stream),save=False)
-        qr_offset.close()
-        super().save(*args, **kwargs)
-        
-        
+    
         
 class Driver(Model):
     id = AutoField(primary_key=True, editable=False)
@@ -58,7 +76,6 @@ class Security(Model):
     
     
 class Trip(Model):
-    
 
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
@@ -70,10 +87,10 @@ class Trip(Model):
     starting_location = CharField(max_length=255,default='Main Branch')
     destination = CharField(max_length=255)
     created_at=DateTimeField(auto_now_add=True)
-    check_in = TimeField()
-    check_out = TimeField()
+    check_in = TimeField(null=True,blank=True)
+    check_out = TimeField(null=True,blank=True)
     status = CharField(max_length=50,choices=STATUS_CHOICES,default='Pending')
-    verified_by  = ForeignKey(Security, on_delete=SET_NULL,null=True)
+    verified_by  = ForeignKey(Security, on_delete=SET_NULL,null=True,blank=True)
 
 
     def __str__(self):

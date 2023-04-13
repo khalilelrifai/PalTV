@@ -1,0 +1,16 @@
+{% extends "layouts/base.html" %}
+
+
+{% block content %}
+    <h1>Trip Details</h1>
+    <p>Starting Location: {{ trip.starting_location }}</p>
+    <p>Destination: {{ trip.destination }}</p>
+    <p>Driver: {{ trip.driver.fullname }}</p>
+    <p>Vehicle: {{ trip.vehicle }}</p>
+    <p>Check-in time: {{ trip.check_in }}</p>
+    <p>Check-out time: {{ trip.check_out }}</p>
+    <p>Status: {{ trip.status }}</p>
+    {% if trip.verified_by %}
+        <p>Verified By: {{ trip.verified_by.fullname }}</p>
+    {% endif %}
+{% endblock %}
