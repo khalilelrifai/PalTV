@@ -3,7 +3,9 @@
 {% block title %} Submitted Reports {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}{% include 'includes/sidebar.html' %}
+{% endblock stylesheets %}
+
 
 {% block content %}
 {% load humanize %}

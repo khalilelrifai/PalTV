@@ -41,7 +41,7 @@ class Vehicle(Model):
 
         super().save(*args, **kwargs)  # call the original save method to save the instance
         if not self.qrcode:
-            url = f"http://127.0.0.1:8000/trips/detail/{self.id}/"
+            url = f"http://127.0.0.1:8000/trips/approve/{self.id}/"
             qrcode_instance = QrCode.objects.create(url=url)
             self.qrcode = qrcode_instance
             self.save()
