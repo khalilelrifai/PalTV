@@ -1,9 +1,10 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/trip_base.html' %}
 
 {% load crispy_forms_tags %}
 
 {% block content %}
   <div class="container">
+    <div class="card border-0 shadow components-section">
     <div class="row">
       <div class="col-md-6 offset-md-3">
         <div class="card mt-5">
@@ -13,8 +14,11 @@
           <div class="card-body">
             <form method="post" class="trip-approve-form">
               {% csrf_token %}
-              {{form}}
-              <button type="submit" class="btn btn-success">Select</button>
+              <div class="text-center">
+                <button type="submit" name="action" value='approve' class="btn btn-success" onclick="confirmAction('approve')">Approve</button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger" onclick="confirmAction('reject')">Reject</button>
+                <button type="submit" name="action" value="cancel" class="btn btn-secondary" onclick="confirmAction('cancel')">Cancel</button>
+              </div>
             </form>
           </div>
         </div>
@@ -32,7 +36,6 @@
               <li>Driver: {{ trip.driver.fullname }}</li>
               <li>Starting Location: {{ trip.starting_location }}</li>
               <li>Destination: {{ trip.destination }}</li>
-              <li>Created At: {{ trip.created_at }}</li>
               <li>Check In: {{ trip.check_in }}</li>
               <li>Check Out: {{ trip.check_out }}</li>
               <li>Status: {{ trip.status }}</li>
@@ -43,4 +46,15 @@
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+function confirmAction(action) {
+  if (confirm("Are you sure you want to " + action + " this trip?")) {
+    // User clicked OK, submit the form
+    document.querySelector('.trip-approve-form').submit();
+  }
+}
+</script>
 {% endblock %}

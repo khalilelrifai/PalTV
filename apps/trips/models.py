@@ -80,6 +80,8 @@ class Trip(Model):
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+        
     )
     
     vehicle = ForeignKey(Vehicle,on_delete=SET_NULL,null=True)
