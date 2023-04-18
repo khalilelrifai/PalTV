@@ -5,7 +5,7 @@ from django import forms
 from .models import *
 
 
-class CreateReportForm(forms.ModelForm):
+class CreateTripForm(forms.ModelForm):
     
     class Meta:
         model = Trip

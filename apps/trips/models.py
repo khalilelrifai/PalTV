@@ -77,12 +77,17 @@ class Security(Model):
     
 class Trip(Model):
 
-    STATUS_CHOICES = (
+    APP_CHOICES = (
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
         ('Rejected', 'Rejected'),
         
     )
+    STATUS_CHOICES = (
+    ('Open', 'Open'),
+    ('Closed', 'Closed'),
+
+)
     
     vehicle = ForeignKey(Vehicle,on_delete=SET_NULL,null=True)
     driver = ForeignKey(Driver, on_delete=SET_NULL,null=True)
@@ -91,10 +96,11 @@ class Trip(Model):
     created_at=DateTimeField(auto_now_add=True)
     check_in = TimeField(null=True,blank=True)
     check_out = TimeField(null=True,blank=True)
-    status = CharField(max_length=50,choices=STATUS_CHOICES,default='Pending')
+    approval_request = CharField(max_length=50,choices=APP_CHOICES,default='Pending')
     verified_by  = ForeignKey(Security, on_delete=SET_NULL,null=True,blank=True)
     note = TextField(blank=True,null=True)
-
+    status = CharField(max_length=50,choices=STATUS_CHOICES,default='Open')
+    
 
     def __str__(self):
         return f'Trip from {self.starting_location} to {self.destination} by {self.driver.fullname}'
