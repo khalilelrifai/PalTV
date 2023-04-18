@@ -1,4 +1,5 @@
 
+import random
 from io import BytesIO
 
 import qrcode
@@ -7,7 +8,6 @@ from django.core.files import File
 from django.db.models import *
 from django.urls import reverse
 from PIL import Image, ImageDraw
-import random
 
 
 class QrCode(Model):
@@ -93,6 +93,7 @@ class Trip(Model):
     check_out = TimeField(null=True,blank=True)
     status = CharField(max_length=50,choices=STATUS_CHOICES,default='Pending')
     verified_by  = ForeignKey(Security, on_delete=SET_NULL,null=True,blank=True)
+    note = TextField(blank=True,null=True)
 
 
     def __str__(self):

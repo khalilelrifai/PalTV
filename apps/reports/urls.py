@@ -12,7 +12,7 @@ app_name='reports'
 urlpatterns = [
 
 
-    path('', TemplateView.as_view(template_name='reports/main.html'), name='main'),
+    path('', login_required(TemplateView.as_view(template_name='reports/main.html')), name='main'),
     path('create',views.CreateReport.as_view(),name='create'),
     path('list',views.ReportListView.as_view(),name='list'),
     path('list/detail/<int:pk>',views.ReportDetailView.as_view(),name='L-detail'),

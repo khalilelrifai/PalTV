@@ -21,6 +21,8 @@ class CreateReportForm(forms.ModelForm):
         }
         
         
+        
+        
 class DetailReportForm(forms.ModelForm):
     class Meta:
         fields=['task_type','description']

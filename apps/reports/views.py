@@ -15,6 +15,7 @@ class CreateReport(LoginRequiredMixin,View):
     success_url = reverse_lazy('reports:main')
     template_name = 'reports/report_form.html'
 
+
     def get(self,request):
         form=CreateReportForm()
         x = get_object_or_404 (Job_title,employee__user=self.request.user)
