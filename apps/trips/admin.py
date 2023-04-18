@@ -8,8 +8,13 @@ from .models import *
 #     list_display =  ('id',)
     
     
+
 class TripAdmin(admin.ModelAdmin):
-    list_display = ('driver', 'vehicle', 'destination', 'verified_by', 'check_in', 'check_out')
+    list_display = ('vehicle', 'driver', 'starting_location', 'destination', 'created_at', 'status')
+    search_fields = ('vehicle__license_plate', 'driver__fullname', 'starting_location', 'destination')
+    list_filter = ('status',)
+    
+
 
 admin.site.register(Trip, TripAdmin)
 

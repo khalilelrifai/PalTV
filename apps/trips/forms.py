@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
+from django.db.models import Q
 
 from .models import *
 
@@ -20,28 +21,19 @@ class CreateTripForm(forms.ModelForm):
             'note':forms.Textarea(attrs={'rows':'4'}),
         }
         
+        labels = {
+            'vehicle': ('Available Cars'),
+            'driver': ('Available Drivers'),
+            
+
+        }
+        
         
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['vehicle'].queryset = Vehicle.objects.filter(qrcode__isnull=False)
-        self.fields['driver'].queryset = Driver.objects.all()
-        
-        # labels = {
-        #     'owner': ('Name'),
-
-        # }
-        
-        
-# class TripApproveForm(forms.ModelForm):
-#     class Meta:
-#         model = Trip
-#         fields = []
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.helper = FormHelper()
-#         self.helper.form_method = 'post'
-#         self.helper.add_input(Submit('Approved', 'Approve', css_class='btn-success'))
-#         self.helper.add_input(Submit('Rejected', 'Reject', css_class='btn-danger'))
+        # Get all vehicles that have only closed trips
+        self.fields['vehicle'].queryset = Vehicle.objects.filter(~Q(trip__status='Open') | Q(trip__isnull=True)).distinct()
+        # Get all drivers that have only closed trips
+        self.fields['driver'].queryset = Driver.objects.filter(~Q(trip__status='Open') | Q(trip__isnull=True)).distinct()
 

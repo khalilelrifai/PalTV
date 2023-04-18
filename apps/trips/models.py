@@ -8,6 +8,8 @@ from django.core.files import File
 from django.db.models import *
 from django.urls import reverse
 from PIL import Image, ImageDraw
+from django.db.models import Q
+
 
 
 class QrCode(Model):
@@ -74,6 +76,7 @@ class Security(Model):
         return self.user.first_name + " " + self.user.last_name
 
     
+
     
 class Trip(Model):
 
@@ -101,6 +104,8 @@ class Trip(Model):
     note = TextField(blank=True,null=True)
     status = CharField(max_length=50,choices=STATUS_CHOICES,default='Open')
     
+    
+
 
     def __str__(self):
         return f'Trip from {self.starting_location} to {self.destination} by {self.driver.fullname}'
