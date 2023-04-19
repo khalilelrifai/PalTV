@@ -17,52 +17,58 @@
 <div class="container-fluid">
     <div class="card border-0 shadow components-section">
         <div class="card-body">
-        <form method="post" >
-            {% csrf_token %}
-    <div class="row mb-5">
-        <div class="col-sm-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row mb-5">
+                    <div class="col-sm-4">
 
-            <label for="fullname">Name</label>
-            <input type="text" class="form-control"  disabled value="{{report.owner}}" name="fullname">
-            
-        </div>
-        <div class="col-sm-4">
-            <label for="job_title">Job Title</label>
-            <input type="text" class="form-control"  disabled value="{{report.owner.job_title}}" name="job_title">
-        </div>
-        <div class="col-sm-4">
-            <label for="department">Department</label>
-            <input type="text" class="form-control"  disabled value="{{report.owner.job_title.department}}" name="department">
-        </div>
-    </div>
-    <div class="row mb-5">
-        <div class="col-sm-4">
-            <label for="department">Task Type</label>
-            <input type="text" class="form-control"  disabled value="{{report.task_type}}" name="task_type">
-        </div>
-    </div>
-    <div class="row mb-5">
-        <div class="col-sm-8">
-            <label for="department">Task Type</label>
-            <textarea  rows="4" class="form-control"  disabled  name="description">{{report.description}}</textarea>
-        </div>
-    </div>
-    <div class="row mb-10" >
-        <div class="col-md-12 text-center">
-            {% if report.owner.user == user %}
-            <a href="{% if 'director' in request.path %}{% url 'reports:director' %}{%else%}{% url 'reports:list' %}{%endif%}" class="btn btn-gray-300">Cancel</a>
-            <a href="{% url 'reports:edit' report.id %}" class="btn btn-success"  id="successAlert" >Edit </a>
-            <a href="{% url 'reports:delete' report.id %}" class="btn btn-danger" id="successAlert" >Delete</a>
-            {% elif report.status == "Pending" and report.owner.user != user and user in group  %}
-            <a href="{% url 'reports:director' %}" class="btn btn-gray-300">Cancel</a>
-            <a href="{% url 'reports:approve' report.id %}" class="btn btn-success" id="successAlert" >Approve</a>
-            {% endif %}
-        </div>
-    </div>
+                        <label for="fullname">Name</label>
+                        <input type="text" class="form-control" disabled value="{{report.owner}}" name="fullname">
 
-    </form>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="job_title">Job Title</label>
+                        <input type="text" class="form-control" disabled value="{{report.owner.job_title}}"
+                            name="job_title">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="department">Department</label>
+                        <input type="text" class="form-control" disabled value="{{report.owner.job_title.department}}"
+                            name="department">
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-sm-4">
+                        <label for="department">Task Type</label>
+                        <input type="text" class="form-control" disabled value="{{report.task_type}}" name="task_type">
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-sm-8">
+                        <label for="department">Task Type</label>
+                        <textarea rows="4" class="form-control" disabled
+                            name="description">{{report.description}}</textarea>
+                    </div>
+                </div>
+                <div class="row mb-10">
+                    <div class="col-md-12 text-center">
+                        {% if report.owner.user == user %}
+                        <a href="{% if 'director' in request.path %}{% url 'reports:director' %}{%else%}{% url 'reports:list' %}{%endif%}"
+                            class="btn btn-gray-300">Cancel</a>
+                        <a href="{% url 'reports:edit' report.id %}" class="btn btn-success" id="successAlert">Edit </a>
+                        <a href="{% url 'reports:delete' report.id %}" class="btn btn-danger"
+                            id="successAlert">Delete</a>
+                        {% elif report.status == "Pending" and report.owner.user != user and user in group  %}
+                        <a href="{% url 'reports:director' %}" class="btn btn-gray-300">Cancel</a>
+                        <a href="{% url 'reports:approve' report.id %}" class="btn btn-success"
+                            id="successAlert">Approve</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </form>
+        </div>
     </div>
-    </div> 
 </div>
 
 {% endblock content %}

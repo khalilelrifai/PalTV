@@ -16,38 +16,38 @@
 <div class="container-fluid">
     <div class="card border-0 shadow components-section">
         <div class="card-body">
-        <form method="post" >
-            {% csrf_token %}
-    <div class="row mb-5">
-        <div class="col-sm-3">
-            {{form.driver|as_crispy_field}}
-        </div>
-        <div class="col-sm-3">
-            {{form.vehicle|as_crispy_field}}
+            <form method="post">
+                {% csrf_token %}
+                <div class="row mb-5">
+                    <div class="col-sm-3">
+                        {{form.driver|as_crispy_field}}
+                    </div>
+                    <div class="col-sm-3">
+                        {{form.vehicle|as_crispy_field}}
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-sm-3">
+                        {{form.starting_location|as_crispy_field}}
+                    </div>
+                    <div class="col-sm-3">
+                        {{form.destination|as_crispy_field}}
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-sm-6">
+                        {{form.note|as_crispy_field}}
+                    </div>
+                </div>
+                <div class="row mb-10">
+                    <div class="col-md-12 text-center">
+                        <a href="{% url 'trips:main' %}" class="btn btn-gray-300">Cancel</a>
+                        <input type="submit" class="btn btn-success">
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-    <div class="row mb-5">
-        <div class="col-sm-3">
-            {{form.starting_location|as_crispy_field}}
-        </div>
-        <div class="col-sm-3">
-            {{form.destination|as_crispy_field}}
-        </div>
-    </div>
-    <div class="row mb-5">
-        <div class="col-sm-6">
-            {{form.note|as_crispy_field}}
-        </div>
-    </div>
-    <div class="row mb-10" >
-        <div class="col-md-12 text-center">
-            <a href="{% url 'trips:main' %}" class="btn btn-gray-300">Cancel</a>
-            <input type="submit" class="btn btn-success"  >
-        </div>
-    </div>
-    </form>
-    </div>
-    </div> 
 </div>
 
 {% endblock content %}

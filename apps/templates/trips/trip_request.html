@@ -3,8 +3,8 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <div class="container">
-    <div class="card border-0 shadow components-section">
+<div class="container">
+  <div class="card border-0 shadow components-section">
     <div class="row">
       <div class="col-md-6 offset-md-3">
         <div class="card mt-5">
@@ -15,9 +15,12 @@
             <form method="post" class="trip-approve-form">
               {% csrf_token %}
               <div class="text-center">
-                <button type="submit" name="action" value='approve' class="btn btn-success" onclick="confirmAction('approve')">Approve</button>
-                <button type="submit" name="action" value="reject" class="btn btn-danger" onclick="confirmAction('reject')">Reject</button>
-                <button type="submit" name="action" value="cancel" class="btn btn-secondary" onclick="confirmAction('cancel')">Cancel</button>
+                <button type="submit" name="action" value='approve' class="btn btn-success"
+                  onclick="confirmAction('approve')">Approve</button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger"
+                  onclick="confirmAction('reject')">Reject</button>
+                <button type="submit" name="action" value="cancel" class="btn btn-secondary"
+                  onclick="confirmAction('cancel')">Cancel</button>
               </div>
             </form>
           </div>
@@ -46,15 +49,15 @@
       </div>
     </div>
   </div>
-{% endblock %}
+  {% endblock %}
 
-{% block javascripts %}
-<script>
-function confirmAction(action) {
-  if (confirm("Are you sure you want to " + action + " this trip?")) {
-    // User clicked OK, submit the form
-    document.querySelector('.trip-approve-form').submit();
-  }
-}
-</script>
-{% endblock %}
+  {% block javascripts %}
+  <script>
+    function confirmAction(action) {
+      if (confirm("Are you sure you want to " + action + " this trip?")) {
+        // User clicked OK, submit the form
+        document.querySelector('.trip-approve-form').submit();
+      }
+    }
+  </script>
+  {% endblock %}

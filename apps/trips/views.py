@@ -14,7 +14,7 @@ class CreateTripView(LoginRequiredMixin, CreateView):
     model = Trip
     template_name = 'trips/trip_form.html'
     form_class = CreateTripForm
-    
+
     success_url = reverse_lazy('trips:main')
 
     def form_valid(self, form):
@@ -22,17 +22,27 @@ class CreateTripView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+class TripListView(LoginRequiredMixin, ListView):
+    model = Trip
+    paginate_by = 20
+    ordering = ['-created_at']
 
-class TripApprove(LoginRequiredMixin,UserPassesTestMixin, View):
-    template_name = 'trips/trip_approve.html'
+class TripDetailView(LoginRequiredMixin, DetailView):
+    model = Trip
     
+    
+
+class TripRequest(LoginRequiredMixin, UserPassesTestMixin, View):
+    template_name = 'trips/trip_request.html'
+
     def test_func(self):
         # Check if the user is a Security user
         return self.request.user.security is not None
-    
+
     def get(self, request, pk):
         vehicle = get_object_or_404(Vehicle, pk=pk)
-        last_trip = Trip.objects.filter(vehicle=vehicle).order_by('-created_at').first()
+        last_trip = Trip.objects.filter(
+            vehicle=vehicle).order_by('-created_at').first()
         if last_trip:
             return render(request, self.template_name, {'trip': last_trip})
         else:
@@ -40,7 +50,8 @@ class TripApprove(LoginRequiredMixin,UserPassesTestMixin, View):
 
     def post(self, request, pk):
         vehicle = get_object_or_404(Vehicle, pk=pk)
-        last_trip = Trip.objects.filter(vehicle=vehicle).order_by('-created_at').first()
+        last_trip = Trip.objects.filter(
+            vehicle=vehicle).order_by('-created_at').first()
         if last_trip:
             action = request.POST.get('action')
             if action == 'approve':
