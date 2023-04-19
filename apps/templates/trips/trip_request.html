@@ -1,4 +1,4 @@
-{% extends 'layouts/trip_base.html' %}
+{% extends 'layouts/trips_base.html' %}
 
 {% load crispy_forms_tags %}
 
@@ -15,10 +15,14 @@
             <form method="post" class="trip-approve-form">
               {% csrf_token %}
               <div class="text-center">
+                {% if not trip.check_in %}
                 <button type="submit" name="action" value='approve' class="btn btn-success"
                   onclick="confirmAction('approve')">Approve</button>
+                  {% endif %}
+                  {% if not trip.check_out %}
                 <button type="submit" name="action" value="reject" class="btn btn-danger"
                   onclick="confirmAction('reject')">Reject</button>
+                  {% endif %}
                 <button type="submit" name="action" value="cancel" class="btn btn-secondary"
                   onclick="confirmAction('cancel')">Cancel</button>
               </div>
@@ -41,8 +45,9 @@
               <li>Destination: {{ trip.destination }}</li>
               <li>Check In: {{ trip.check_in }}</li>
               <li>Check Out: {{ trip.check_out }}</li>
-              <li>Status: {{ trip.status }}</li>
+              <li>Approval Status: {{ trip.approval_request }}</li>
               <li>Verified By: {{ trip.verified_by }}</li>
+              <li>Status: {{ trip.status }}</li>
             </ul>
           </div>
         </div>

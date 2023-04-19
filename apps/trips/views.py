@@ -5,6 +5,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
+from django.utils import timezone
 
 from .forms import *
 from .models import *
@@ -54,18 +55,25 @@ class TripRequest(LoginRequiredMixin, UserPassesTestMixin, View):
             vehicle=vehicle).order_by('-created_at').first()
         if last_trip:
             action = request.POST.get('action')
-            if action == 'approve':
-                last_trip.status = 'Approved'
-                last_trip.verified_by = request.user.security
+            
+            if action == 'approve' and last_trip.check_out is not None:
+                last_trip.check_in = timezone.now()
+                last_trip.status = 'Closed'
                 last_trip.save()
-                return redirect('trip_detail', pk=vehicle.pk)
+                return redirect('trips:trip_request', pk=vehicle.pk)
+            elif action == 'approve':
+                last_trip.approval_request = 'Approved'
+                last_trip.verified_by = request.user.security
+                last_trip.check_out = timezone.now()
+                last_trip.save()
+                return redirect('trips:trip_request', pk=vehicle.pk)
             elif action == 'reject':
-                last_trip.status = 'Rejected'
+                last_trip.approval_request = 'Rejected'
                 last_trip.verified_by = request.user.security
                 last_trip.save()
-                return redirect('trip_detail', pk=vehicle.pk)
+                return redirect('trips:trip_request', pk=vehicle.pk)
             elif action == 'cancel':
-                return redirect('trip_detail', pk=vehicle.pk)
+                return redirect('trips:main')
             else:
                 return HttpResponseBadRequest('Invalid action')
         else:

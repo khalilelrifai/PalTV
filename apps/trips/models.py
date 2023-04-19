@@ -46,7 +46,7 @@ class Vehicle(Model):
             self.save()
 
     def __str__(self):
-        return f'{self.make} {self.model} ({self.license_plate})'
+        return f'{self.make} {self.model} ({self.id})'
 
 
 class Driver(Model):
