@@ -73,7 +73,7 @@ class TripRequest(LoginRequiredMixin, UserPassesTestMixin, View):
                 last_trip.save()
                 return redirect('trips:trip_request', pk=vehicle.pk)
             elif action == 'cancel':
-                return redirect('trips:main')
+                return redirect('trips:list')
             else:
                 return HttpResponseBadRequest('Invalid action')
         else:
