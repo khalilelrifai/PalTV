@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import *
+from django.core.paginator import Paginator
 
 from .forms import *
 from .models import *
@@ -23,10 +24,30 @@ class CreateTripView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class TripListView(LoginRequiredMixin, ListView):
+class TripListView(LoginRequiredMixin, View):
+    template_name = 'trips/trip_list.html'
     model = Trip
-    paginate_by = 20
-    ordering = ['-created_at']
+    paginate_by = 10
+
+    def get(self, request):
+        
+        form = TripFilterForm(request.GET)
+        if form.is_valid():
+            trips = form.filter_trips().order_by('-created_at')
+        else:
+            trips = Trip.objects.none()
+            
+            
+        paginator = Paginator(trips, self.paginate_by)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+
+        context = {'form': form, 'page_obj': page_obj}
+        return render(request, self.template_name, context)
+            
+    
+
 
 class TripDetailView(LoginRequiredMixin, DetailView):
     model = Trip

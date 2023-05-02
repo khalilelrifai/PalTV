@@ -135,9 +135,7 @@ class DirectorView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
         
-        
-        
-        
+           
         
 class HRView(LoginRequiredMixin, View):
     template_name = 'reports/hr.html'

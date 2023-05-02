@@ -7,26 +7,12 @@
 
 {% block content %}
 {% load humanize %}
+{% load crispy_forms_tags %}
 
 <div class="table-settings mb-4">
     <div class="row align-items-center justify-content-between">
         <div class="col col-md-6 col-lg-3 col-xl-4">
-            <form>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="search" {% if search %}
-                        value="{{ search }}" {% endif %}>
-                    <button type="submit" style="border: none;">
-                        <span class="input-group-text" id="basic-addon2">
-                            <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </span>
-                    </button>
-                </div>
-            </form>
+
         </div>
         <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
             <div class="dropdown">
@@ -56,6 +42,32 @@
         </div>
     </div>
 </div>
+<div class="container-fluid">
+    <form method="GET">
+        {% csrf_token %}
+        <div class="row mb-2">
+            <div class="col-sm-2">
+                {{ form.driver_name|as_crispy_field }}
+            </div>
+            <div class="col-sm-2">
+                {{form.from_date|as_crispy_field}}
+            </div>
+            <div class="col-sm-2">
+                {{form.to_date|as_crispy_field}}
+            </div>
+            <div class="col-sm-3 ">
+                <br>
+                <a href="{% url 'trips:list' %}" class="btn btn-gray-300">
+                    Reset
+                </a>
+                <button type="submit" class="btn btn-success">
+                    search
+                </button>
+
+            </div>
+        </div>
+    </form>
+</div>
 <div class="card card-body border-0 shadow table-wrapper table-responsive">
     <div class="container-fluid">
         <div class="row mb-5">
@@ -75,7 +87,7 @@
                 <tbody>
                     <!-- Item -->
                     {% if page_obj%}
-                    {% for trip in trip_list %}
+                    {% for trip in page_obj %}
                     <tr>
                         <td><span class="fw-normal">{{trip.driver.fullname}}</span></td>
                         <td><span class="fw-normal">{{trip.vehicle}}</span></td>
@@ -84,7 +96,8 @@
                         <td><span class="fw-normal">{{trip.created_at|naturalday}}</span></td>
                         <td><span class="fw-normal">{{trip.approval_request}}</span></td>
                         <td><span class="fw-normal">{{trip.status}}</span></td>
-                        <td><a style="color:blueviolet;" href="{% url 'trips:trip_detail' trip.id %}">View Details</a></td>
+                        <td><a style="color:blueviolet;" href="{% url 'trips:trip_detail' trip.id %}">View Details</a>
+                        </td>
                     </tr>
 
                     {% endfor %}
@@ -121,7 +134,8 @@
                     </ul>
                 </nav>
                 <div class="fw-normal small mt-4 mt-lg-0">Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of
-                    {{ page_obj.paginator.count }}</div>
+                    {{ page_obj.paginator.count }}
+                </div>
             </div>
         </div>
     </div>

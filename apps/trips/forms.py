@@ -50,3 +50,23 @@ class DetailTripForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows':'4','disabled':True}),
         }
         
+        
+class TripFilterForm(forms.Form):
+    driver_name = forms.ModelChoiceField(queryset=Driver.objects.all(), empty_label='Select Driver', required=False)
+    from_date = forms.DateField(required=False,widget=forms.DateInput(attrs={'type': 'date'}))
+    to_date = forms.DateField(required=False,widget=forms.DateInput(attrs={'type': 'date'}))
+
+    def filter_trips(self):
+        driver_name = self.cleaned_data.get('driver_name')
+        from_date = self.cleaned_data.get('from_date')
+        to_date = self.cleaned_data.get('to_date')
+
+        trips = Trip.objects.all()
+
+        if driver_name:
+            trips = trips.filter(driver=driver_name)
+
+        if from_date and to_date:
+            trips = trips.filter(created_at__range=[from_date, to_date])
+
+        return trips
