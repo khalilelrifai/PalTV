@@ -13,4 +13,5 @@ urlpatterns = [
     path('create/', CreateTripView.as_view(), name='create'),
     path('list/', TripListView.as_view(), name='list'),
 
+
 ]

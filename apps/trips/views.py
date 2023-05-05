@@ -1,15 +1,41 @@
 
 import qrcode
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import Http404, HttpResponse, HttpResponseBadRequest
+from django.core.paginator import Paginator
+from django.http import (FileResponse, Http404, HttpResponse,
+                         HttpResponseBadRequest)
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import get_template, render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import *
-from django.core.paginator import Paginator
+from reportlab.pdfgen import canvas
+from xhtml2pdf import pisa
 
 from .forms import *
 from .models import *
+
+
+class ExportTripsAsPDFView(TemplateView):
+    template_name = 'trips/trip_list_pdf.html'
+
+    def get(self, request, *args, **kwargs):
+        trips = self.kwargs.get('trips', [])
+
+        context = {'trips': trips}
+        template = get_template(self.template_name)
+        html = template.render(context)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="trips.pdf"'
+
+        pisa_status = pisa.CreatePDF(
+            html, dest=response, encoding='utf-8')
+
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+
+        return response
 
 
 class CreateTripView(LoginRequiredMixin, CreateView):
@@ -34,9 +60,15 @@ class TripListView(LoginRequiredMixin, View):
         form = TripFilterForm(request.GET)
         if form.is_valid():
             trips = form.filter_trips().order_by('-created_at')
+            if 'export' in request.GET:
+                pdf_view = ExportTripsAsPDFView.as_view()
+                response = pdf_view(request, trips=trips)
+                return response
+                  
+
         else:
             trips = Trip.objects.none()
-            
+      
             
         paginator = Paginator(trips, self.paginate_by)
         page_number = request.GET.get('page')
@@ -45,8 +77,11 @@ class TripListView(LoginRequiredMixin, View):
 
         context = {'form': form, 'page_obj': page_obj}
         return render(request, self.template_name, context)
-            
-    
+
+
+
+
+
 
 
 class TripDetailView(LoginRequiredMixin, DetailView):

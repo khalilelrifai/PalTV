@@ -6,9 +6,9 @@ import qrcode
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.db.models import *
+from django.db.models import Q
 from django.urls import reverse
 from PIL import Image, ImageDraw
-from django.db.models import Q
 
 
 class QrCode(Model):
