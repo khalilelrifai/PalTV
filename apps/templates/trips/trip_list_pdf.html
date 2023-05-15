@@ -26,6 +26,7 @@
     <table>
         <thead>
             <tr>
+                <th>Created date</th>
                 <th>Starting Location</th>
                 <th>Destination</th>
                 <th>Vehicle</th>
@@ -38,6 +39,7 @@
         <tbody>
             {% for trip in trips %}
             <tr>
+                <td>{{ trip.created_at }}</td>
                 <td>{{ trip.starting_location }}</td>
                 <td>{{ trip.destination }}</td>
                 <td>{{ trip.vehicle }}</td>
