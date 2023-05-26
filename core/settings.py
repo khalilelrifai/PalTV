@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django.contrib.humanize' ,
     'apps.trips',
+    'apps.bulletins',
 
     
 ]

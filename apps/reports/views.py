@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group, Permission, User
 from django.core.paginator import Paginator
@@ -5,6 +7,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import *
 
 from .forms import *
@@ -165,6 +168,21 @@ class ProfileView(LoginRequiredMixin,ListView):
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get('pk')
         reports=Report.objects.filter(owner_id=pk).order_by('-created_at')
+        
+      # Retrieve last week's records
+        last_week_start = timezone.now() - timedelta(weeks=1)
+        last_week_reports = Report.objects.filter(owner_id=pk, created_at__gte=last_week_start).count()
+        context['week'] = last_week_reports
+
+        # Retrieve last month's records
+        last_month_start = timezone.now() - timedelta(days=30)
+        last_month_reports = Report.objects.filter(owner_id=pk, created_at__gte=last_month_start).count()
+        context['month'] = last_month_reports
+
+        # Retrieve today's records
+        today_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_reports = Report.objects.filter(owner_id=pk, created_at__gte=today_start).count()
+        context['today'] = today_reports
         context['report_list']=reports
         context['name'] = reports.first().owner.fullname if reports.exists() else None
         return context

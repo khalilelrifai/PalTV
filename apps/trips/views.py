@@ -1,15 +1,12 @@
 
-import qrcode
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
-from django.http import (FileResponse, Http404, HttpResponse,
-                         HttpResponseBadRequest)
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template.loader import get_template, render_to_string
-from django.urls import reverse, reverse_lazy
+from django.template.loader import get_template
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import *
-from reportlab.pdfgen import canvas
 from xhtml2pdf import pisa
 
 from .forms import *
