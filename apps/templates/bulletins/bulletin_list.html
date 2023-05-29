@@ -1,0 +1,25 @@
+{% extends "layouts/bulletins_base.html" %}
+
+
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+<head>
+    <title>News Bulletins</title>
+</head>
+<body>
+    <h1>News Bulletins</h1>
+    <ul>
+    {% for bulletin in bulletins %}
+        <li><a href="{% url 'bulletins:bulletin_detail' bulletin.id %}">{{ bulletin.type }} - {{ bulletin.time }}</a></li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'bulletins:create_bulletin' %}">Create Bulletin</a>
+</body>
+
+{% endblock content %}
