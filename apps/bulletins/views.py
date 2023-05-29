@@ -24,5 +24,5 @@ class CreateBulletinView(View):
         form = BulletinForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('bulletin_list')
+            return redirect('bulletins:list')
         return render(request, 'bulletins/create_bulletin.html', {'form': form})

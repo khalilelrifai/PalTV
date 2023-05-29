@@ -15,11 +15,11 @@
 <body>
     <h1>News Bulletins</h1>
     <ul>
-    {% for bulletin in bulletins %}
-        <li><a href="{% url 'bulletins:bulletin_detail' bulletin.id %}">{{ bulletin.type }} - {{ bulletin.time }}</a></li>
+    {% for bulletin in bulletin_list %}
+        <li><a href="{% url 'bulletins:detail' bulletin.id %}">{{ bulletin.type }} - {{ bulletin.time }}</a></li>
     {% endfor %}
     </ul>
-    <a href="{% url 'bulletins:create_bulletin' %}">Create Bulletin</a>
+    <a href="{% url 'bulletins:create' %}">Create Bulletin</a>
 </body>
 
 {% endblock content %}
