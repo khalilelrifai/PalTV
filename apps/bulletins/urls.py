@@ -14,7 +14,7 @@ urlpatterns = [
     path('bulletins/', BulletinListView.as_view(), name='list'),
     path('bulletins/<int:bulletin_id>/', BulletinDetailView.as_view(), name='detail'),
     # path('bulletins/create/', CreateBulletinView.as_view(), name='create'),
-    # path('bulletins/create/', BulletinWizardView.as_view(TEMPLATES), name='create'),
+    path('bulletins/create/', BulletinWizardView.as_view(), name='create'),
 ]
 
 

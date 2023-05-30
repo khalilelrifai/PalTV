@@ -1,5 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends "layouts/bulletins_base.html" %}
+
+
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
 <head>
     <title>Create Bulletin</title>
 </head>
@@ -24,4 +33,5 @@
         {% endif %}
     </form>
 </body>
-</html>
+
+{% endblock %}

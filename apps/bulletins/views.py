@@ -12,42 +12,36 @@ from django.views.generic.edit import FormView
 from .forms import *
 from .models import Bulletin
 
-# FORMS = [
-#     ('step1', BulletinStep1Form),
-#     ('step2', BulletinStep2Form),
-#     ('step3', BulletinStep3Form),
-#     ('step4', BulletinStep4Form),
-#     ('step5', BulletinStep5Form),
-# ]
+FORMS = [
+    ('step1', BulletinStep1Form),
+    ('step2', BulletinStep2Form),
+    ('step3', BulletinStep3Form),
+    ('step4', BulletinStep4Form),
+    ('step5', BulletinStep5Form),
+]
 
-# TEMPLATES = {
-#     'step1': 'bulletin_step1.html',
-#     'step2': 'bulletin_step2.html',
-#     'step3': 'bulletin_step3.html',
-#     'step4': 'bulletin_step4.html',
-#     'step5': 'bulletin_step5.html',
-# }
+TEMPLATES = {
+    'step1': 'bulletins/bulletin_step1.html',
+    'step2': 'bulletins/bulletin_step2.html',
+    'step3': 'bulletins/bulletin_step3.html',
+    'step4': 'bulletins/bulletin_step4.html',
+    'step5': 'bulletins/bulletin_step5.html',
+}
 
-# class BulletinWizardView(SessionWizardView):
-#     template_name = 'bulletin_wizard.html'
-#     form_list = FORMS
+class BulletinWizardView(SessionWizardView):
+    template_name = 'bulletins/bulletin_wizard.html'
+    form_list = FORMS
+    condition_dict = {'step3': lambda wizard: wizard.request.POST.get('type') == 'Mojaz'}
+    
+    def done(self, form_list, **kwargs):
+        bulletin = Bulletin()
+        for form in form_list:
+            bulletin.__dict__.update(form.cleaned_data)
+        bulletin.save()
+        return redirect('bulletins:list')
 
-#     def get_form_initial(self, step):
-#         initial = self.initial_dict.get(step, {})
-#         if step == 'step5':
-#             initial.update({'type': self.get_cleaned_data_for_step('step1')['type'],
-#                             'time': self.get_cleaned_data_for_step('step1')['time'],
-#                             'resources': self.get_cleaned_data_for_step('step2')['resources'],
-#                             'producers': self.get_cleaned_data_for_step('step3')['producers'],
-#                             'editors': self.get_cleaned_data_for_step('step4')['editors']})
-#         return initial
-
-#     def done(self, form_list, **kwargs):
-#         bulletin = Bulletin()
-#         for form in form_list:
-#             bulletin.__dict__.update(form.cleaned_data)
-#         bulletin.save()
-#         return redirect('bulletin_list')
+    def get_template_names(self):
+        return [TEMPLATES[self.steps.current]]
 
 
 
