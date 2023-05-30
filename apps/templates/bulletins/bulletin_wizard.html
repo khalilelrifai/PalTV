@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Bulletin</title>
+</head>
+<body>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {% if wizard.form.errors %}
+            {% for form in wizard.form_list %}
+                {{ form.errors }}
+            {% endfor %}
+        {% endif %}
+
+        {% if wizard.steps.current != wizard.steps.first %}
+            <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Prev</button>
+        {% endif %}
+        
+        {% if wizard.steps.current != wizard.steps.last %}
+            <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.next }}">Next</button>
+        {% else %}
+            <button type="submit">Finish</button>
+        {% endif %}
+    </form>
+</body>
+</html>

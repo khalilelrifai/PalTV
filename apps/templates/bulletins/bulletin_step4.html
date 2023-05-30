@@ -1,0 +1,12 @@
+{% extends 'bulletin_wizard.html' %}
+
+{% block content %}
+    <h1>Step 4: Step 4 Content</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.as_p }}
+
+        <input type="submit" value="Next">
+    </form>
+{% endblock %}

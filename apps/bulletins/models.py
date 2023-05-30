@@ -79,5 +79,6 @@ class Bulletin(models.Model):
     time = models.CharField(max_length=50, choices=TIME_CHOICES,default='14')
     created_at=models.DateTimeField(auto_now_add=True)
     resources = models.TextField(null=True)
-    editors = models.ManyToManyField(Editor,null=True)
+    editors = models.ManyToManyField(Editor)
+    producers = models.ManyToManyField(Producer)
     
