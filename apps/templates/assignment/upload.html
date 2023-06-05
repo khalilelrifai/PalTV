@@ -1,4 +1,4 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/assignment_base.html" %}
 
 
 {% block title %} Dashboard {% endblock %}
@@ -12,8 +12,17 @@
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
+    <div class="row mb-5">
+        <div class="col-sm-5">
+        {{ form|crispy }}
+    </div>
+    </div>
+    <div class="row mb-5">
+    <div class="col-sm-5">
+        <button type="submit" class="btn btn-success" >Upload</button>
+    </div>
+</div>
+
 </form>
 
 {% endblock %}
