@@ -19,8 +19,8 @@ def upload_video(request):
             return redirect('video_list')
     else:
         form = VideoForm()
-    return render(request, 'videos/upload.html', {'form': form})
+    return render(request, 'assignment/upload.html', {'form': form})
 
 def video_list(request):
     videos = Video.objects.all()
-    return render(request, 'videos/list.html', {'videos': videos})
+    return render(request, 'assignment/list.html', {'videos': videos})
