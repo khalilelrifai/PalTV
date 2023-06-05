@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize' ,
     'apps.trips',
     'apps.bulletins',
+    'apps.assignment',
     'formtools',
 
     
@@ -194,3 +195,8 @@ if GITHUB_AUTH:
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 LOGIN_URL = '/login/'
+
+FTP_HOST = 'your_ftp_host'
+FTP_USER = 'your_ftp_username'
+FTP_PASSWORD = 'your_ftp_password'
+FTP_UPLOAD_DIR = '/path/to/upload/directory/'
