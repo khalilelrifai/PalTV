@@ -15,14 +15,17 @@
     <div class="row mb-5">
         <div class="col-sm-5">
         {{ form|crispy }}
+
     </div>
     </div>
     <div class="row mb-5">
+        <p>{{ video.upload_status }}</p> <!-- Add this line to display the upload status -->
     <div class="col-sm-5">
         <button type="submit" class="btn btn-success" >Upload</button>
     </div>
 </div>
 
 </form>
+
 
 {% endblock %}
