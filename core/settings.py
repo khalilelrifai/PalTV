@@ -196,7 +196,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 LOGIN_URL = '/login/'
 
-FTP_HOST = 'your_ftp_host'
-FTP_USER = 'your_ftp_username'
-FTP_PASSWORD = 'your_ftp_password'
-FTP_UPLOAD_DIR = '/path/to/upload/directory/'
+FTP_HOST = '172.16.0.8'
+FTP_USER = 'test'
+FTP_PASSWORD = 'test'
+FTP_UPLOAD_DIR = '//'
