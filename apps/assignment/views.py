@@ -31,17 +31,11 @@ def upload_video(request):
         form = VideoForm()
     return render(request, 'assignment/upload.html', {'form': form})
 
-
 def video_list(request):
     videos = Video.objects.all()
     for video in videos:
         if video.upload_status == 'Uploaded successfully!':
             video.check_ftp_exists()
-    return render(request, 'videos/list.html', {'videos': videos})
-
-
-
-
-def video_list(request):
-    videos = Video.objects.all()
+            
+    videos = Video.objects.all()  # Retrieve the updated videos
     return render(request, 'assignment/list.html', {'videos': videos})
