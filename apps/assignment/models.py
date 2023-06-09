@@ -8,7 +8,7 @@ from django.db.models import *
 class Video(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    file = models.FileField()
+    file = models.FileField(upload_to='videos/')
     upload_status = models.CharField(max_length=100, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     ftp_exists = models.BooleanField(default=False)
