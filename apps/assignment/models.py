@@ -22,7 +22,8 @@ class Video(models.Model):
             ftp.login(user=settings.FTP_USER, passwd=settings.FTP_PASSWORD)
             ftp.cwd(settings.FTP_UPLOAD_DIR)
             file_name = self.file.name
-            file_exists = file_name in ftp.nlst('videos/')
+            files_List = [file_name.replace('videos/', '') for file_name in ftp.nlst('videos/')]
+            file_exists = file_name in files_List
             self.ftp_exists = file_exists
             self.save()
             ftp.quit()
