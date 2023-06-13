@@ -3,7 +3,7 @@ from ftplib import FTP
 from django.conf import settings
 from django.db import models
 from django.db.models import *
-
+from django.contrib.auth.models import User
 
 class Video(models.Model):
     title = models.CharField(max_length=100)
@@ -11,6 +11,7 @@ class Video(models.Model):
     upload_status = models.CharField(max_length=100, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     ftp_exists = models.BooleanField(default=False)
+    owner = ForeignKey(User,on_delete=SET_NULL,null=True)
 
     def __str__(self):
         return self.title
@@ -23,7 +24,6 @@ class Video(models.Model):
             file_name = self.title
             files_List = [file_name.replace('videos/', '').split('.')[0] for file_name in ftp.nlst('videos/')]
             file_exists = file_name in files_List
-            print(files_List)
             self.ftp_exists = file_exists
             self.save()
             ftp.quit()
