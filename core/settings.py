@@ -30,7 +30,7 @@ DEBUG = env('DEBUG')
 ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets') 
 
 # load production server from .env
-ALLOWED_HOSTS        = ['localhost', 'localhost:5085', '127.0.0.1', env('SERVER', default='127.0.0.1') ]
+ALLOWED_HOSTS        = ['*']
 CSRF_TRUSTED_ORIGINS = ['http://localhost:5085', 'http://127.0.0.1', 'https://' + env('SERVER', default='127.0.0.1') ]
 
 # Application definition
@@ -196,7 +196,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 LOGIN_URL = '/login/'
 
-FTP_HOST = '172.16.0.8'
+FTP_HOST = '213.175.174.116'
 FTP_USER = 'test'
 FTP_PASSWORD = 'test'
 FTP_UPLOAD_DIR = '//'

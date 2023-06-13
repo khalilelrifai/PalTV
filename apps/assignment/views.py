@@ -39,7 +39,6 @@ def upload_video(request):
                 # Update the video object with the new file name
                 video.upload_status = 'Uploaded successfully!'
                 video.file = new_file_name
-                video.check_ftp_exists()
                 video.save()
 
                 return redirect('assignment:video_list')
@@ -56,14 +55,27 @@ def upload_video(request):
     return render(request, 'assignment/upload.html', {'form': form})
 
 
+def ftp_list():
+    try:
+        ftp = FTP(settings.FTP_HOST)
+        ftp.login(user=settings.FTP_USER, passwd=settings.FTP_PASSWORD)
+        ftp.cwd(settings.FTP_UPLOAD_DIR)
+        files_List = [file_name.replace('videos/', '').split('.')[0] for file_name in ftp.nlst('videos/')]
+        ftp.quit()
+    except Exception as e:
+        # Handle FTP connection or error exception here
+        return False
+    
+    return files_List
 
 
 
 def video_list(request):
     videos = Video.objects.all()
-    
+    list = ftp_list()
     for video in videos:
-        video.check_ftp_exists()
+        if video.title in list:
+            video.ftp_exists = True
     
     return render(request, 'assignment/list.html', {'videos': videos})
 
