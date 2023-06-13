@@ -22,15 +22,15 @@ def upload_video(request):
                 
                 # Get the title from the form
                 title = form.cleaned_data['title']
-                
+                file = request.FILES['file']
                 # Generate new file name using the title
                 new_file_name = f'{title}.mp4'
                 
                 ftp.cwd('videos')
                 
-                with open(video.file.path, 'rb') as file:
+
                     # Use the new file name for FTP storage
-                    ftp.storbinary(f'STOR {new_file_name}', file)
+                ftp.storbinary(f'STOR {new_file_name}', file)
                 ftp.quit()
                 
                 # Update the video object with the new file name
