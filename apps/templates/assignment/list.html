@@ -51,6 +51,7 @@
                   <th class="border-gray-200">Video Name</th>
                   <th class="border-gray-200">Status</th>
                   <th class="border-gray-200">Existing</th>
+                  <th class="border-gray-200">Date</th>
 
               </tr>
           </thead>
@@ -67,7 +68,7 @@
                             <td><span class="fw-normal">{% if video.upload_status == 'Uploaded successfully!' %}
                                 FTP Existence: {% if video.ftp_exists %}Exists{% else %}Doesn't Exist{% endif %}<br>
                             {% endif %}</span></td>
-                            
+                            <td><span class="fw-normal">{{ video.uploaded_at }}</span></td>
                         </tr>
 
                 {% endfor %}
