@@ -3,11 +3,12 @@ from .forms import VideoForm
 from ftplib import FTP
 from django.conf import settings
 from .models import *
-
+from django.contrib.auth.decorators import permission_required
 import os
 
 from django.core.files.base import ContentFile
 
+@permission_required('assignment.add_video')
 def upload_video(request):
     if request.method == 'POST':
         form = VideoForm(request.POST, request.FILES)
@@ -69,7 +70,7 @@ def ftp_list():
     return files_List
 
 
-
+@permission_required('assignment.view_video')
 def video_list(request):
     videos = Video.objects.all()
     list = ftp_list()

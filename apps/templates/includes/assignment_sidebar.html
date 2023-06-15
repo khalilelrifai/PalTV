@@ -45,6 +45,7 @@
                   <span class="mt-1 ms-1 sidebar-text">Volt Overview</span>
                 </a>
               </li> -->
+              {% if perms.assignment.add_video %}
               <li class="nav-item {% if 'upload' in request.path %} active {% endif %}">
                 <a href="{% url 'assignment:upload_video' %}" class="nav-link">
                   <span class="sidebar-icon">
@@ -53,6 +54,8 @@
                   <span class="sidebar-text">Upload Video</span>
                 </a>
               </li>
+              {% endif %}
+              {% if perms.assignment.view_video %}
               <li class="nav-item {% if 'list' in request.path %} active {% endif %}">
                 <a href="{% url 'assignment:video_list' %}" class="nav-link">
                   <span class="sidebar-icon">
@@ -61,6 +64,7 @@
                   <span class="sidebar-text">Videos List</span>
                 </a>
               </li>
+              {% endif %}
               <!--
               {% if request.user|has_group:"Director" %} 
               <li class="nav-item {% if 'director' in request.path %} active {% endif %}">
