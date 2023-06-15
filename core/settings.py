@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'apps.bulletins',
     'apps.assignment',
     'formtools',
+    'django_keycloak.apps.KeycloakAppConfig',
 
     
 ]
@@ -70,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_keycloak.middleware.BaseKeycloakMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -173,10 +175,7 @@ GITHUB_ID     = os.getenv('GITHUB_ID', None)
 GITHUB_SECRET = os.getenv('GITHUB_SECRET', None)
 GITHUB_AUTH   = GITHUB_SECRET is not None and GITHUB_ID is not None
 
-AUTHENTICATION_BACKENDS = (
-    "core.custom-auth-backend.CustomBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
+
 
 SITE_ID                    = 1 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -200,3 +199,23 @@ FTP_HOST = '213.175.174.116'
 FTP_USER = 'test'
 FTP_PASSWORD = 'test'
 FTP_UPLOAD_DIR = '//'
+
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    'django_keycloak.auth.backends.KeycloakAuthorizationCodeBackend',)
+
+KEYCLOAK_OIDC_PROFILE_MODEL = 'django_keycloak.OpenIdConnectProfile'
+
+KEYCLOAK_SERVER_URL = 'http://localhost:8080/'
+KEYCLOAK_REALM = 'myrealm'
+KEYCLOAK_CLIENT_ID = 'myclient'
+KEYCLOAK_CLIENT_SECRET = 'NX4WP9JqZGg2K0xzGakDGEEyZpr2Kp2H'
+KEYCLOAK_PERMISSIONS_METHOD = 'role'
+
+
+LOGIN_URL = 'keycloak_login'
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

@@ -10,7 +10,7 @@ from django.template import loader
 from django.urls import reverse
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="keycloak_login")
 def index(request):
     context = {'segment': 'index'}
 
