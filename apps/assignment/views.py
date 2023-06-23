@@ -5,8 +5,9 @@ from django.conf import settings
 from .models import *
 from django.contrib.auth.decorators import permission_required
 import os
-
+from django.views.generic import *
 from django.core.files.base import ContentFile
+from django.core.paginator import Paginator
 
 @permission_required('assignment.add_video')
 def upload_video(request):
@@ -81,3 +82,33 @@ def video_list(request):
             video.ftp_exists = False
     
     return render(request, 'assignment/list.html', {'videos': videos})
+
+
+
+class VideoListView(View):
+    template_name = 'assignment/list.html'
+    paginate_by = 10
+
+    def get(self, request):
+        strval = request.GET.get("search", False)
+        
+        if request.user.is_authenticated:
+            if strval:
+                query = Q(description__icontains=strval)
+                query.add(Q(title__icontains=strval), Q.OR)
+
+                video_list = Video.objects.filter(query).select_related().order_by('-uploaded_at')
+            else:
+                video_list = Video.objects.all().order_by('-uploaded_at')
+                
+            paginator = Paginator(video_list, self.paginate_by)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            
+            context = {
+
+                'page_obj':page_obj,
+                'search': strval,
+            }
+
+            return render(request, self.template_name, context)
