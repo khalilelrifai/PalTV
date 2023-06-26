@@ -1,0 +1,17 @@
+{% extends "layouts/assignment_base.html" %}
+
+{% block title %} Upload Detail {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block content %}
+
+<h2>Upload Detail</h2>
+
+<p><strong>Video Title:</strong> {{ video.title }}</p>
+<p><strong>Upload Status:</strong> {{ video.upload_status }}</p>
+<p><strong>Upload Progress:</strong> {{ video.upload_progress }}%</p>
+
+{% endblock %}
