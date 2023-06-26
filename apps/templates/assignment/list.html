@@ -58,7 +58,9 @@
           <tbody>
               <!-- Item -->
 
-              {% for video in videos %}
+              {% if page_obj%}
+              {% for video in page_obj %}
+
                         <tr>
                             <!-- <td><span class="fw-bold">{{i.report_id}}</span></td> -->
                             <!-- <td><span class="fw-normal">{{report.owner.fullname}}</span></td> -->
@@ -72,11 +74,12 @@
                         </tr>
 
                 {% endfor %}
+                {% endif %}
 
               <!-- Item -->                                
           </tbody>
       </table>
-      <!-- <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+      <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
           <nav aria-label="Page navigation example">
               <ul class="pagination mb-0">
                 {% if page_obj %}
@@ -103,7 +106,7 @@
               </ul>
           </nav>
           <div class="fw-normal small mt-4 mt-lg-0">Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }}</div>
-      </div> -->
+      </div>
     </div>
 </div>
   </div>
