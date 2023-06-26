@@ -13,17 +13,17 @@
     {% csrf_token %}
     <div class="row mb-5">
         <div class="col-sm-5">
-            {{ form|crispy }}
+        {{ form|crispy }}
             <br>
-            <input type="file" name="file" class="form-control"/>
-        </div>
+        <input type="file" name="file" class="form-control"/>
+    </div>
     </div>
     <div class="row mb-5">
         <p id="upload-status"></p> <!-- Add an ID to the element that displays the upload status -->
-        <div class="col-sm-5">
-            <button type="submit" class="btn btn-success">Upload</button>
-        </div>
+    <div class="col-sm-5">
+        <button type="submit" class="btn btn-success">Upload</button>
     </div>
+</div>
 </form>
 
 <script>
@@ -56,12 +56,6 @@
             }
         };
 
-        // Send the form data using sendBeacon when the user navigates away from the page
-        window.addEventListener('unload', () => {
-            navigator.sendBeacon('/assignment/upload/', formData);
-        });
-
-        // Send the form data using XMLHttpRequest
         request.send(formData);
     });
 </script>

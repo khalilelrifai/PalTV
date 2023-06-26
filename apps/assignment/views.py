@@ -80,5 +80,34 @@ def video_exist():
             video.ftp_exists = True
         else:
             video.ftp_exists = False
-    
-    return render(request, 'assignment/list.html', {'videos': videos})
+        video.save()
+
+
+
+class VideoListView(View):
+    template_name = 'assignment/list.html'
+    paginate_by = 10
+
+    def get(self, request):
+        strval = request.GET.get("search", False)
+        video_exist()
+        if request.user.is_authenticated:
+            if strval:
+                query = Q(description__icontains=strval)
+                query.add(Q(title__icontains=strval), Q.OR)
+
+                video_list = Video.objects.filter(query).select_related().order_by('-uploaded_at')
+            else:
+                video_list = Video.objects.all().order_by('-uploaded_at')
+                
+            paginator = Paginator(video_list, self.paginate_by)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            
+            context = {
+
+                'page_obj':page_obj,
+                'search': strval,
+            }
+
+            return render(request, self.template_name, context)
