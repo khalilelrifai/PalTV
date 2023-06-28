@@ -8,8 +8,9 @@ import os
 from django.views.generic import *
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
-@permission_required('assignment.add_video')
+@permission_required('assignment.upload_video')
 def upload_video(request):
     if request.method == 'POST':
         form = VideoForm(request.POST, request.FILES)
@@ -43,7 +44,7 @@ def upload_video(request):
                 video.file = new_file_name
                 video.save()
 
-                return redirect('assignment:video_list')
+                return redirect('assignment:video_detail', video.id)
 
             except Exception as e:
                 video.upload_status = f'Upload failed: {str(e)}'
@@ -84,30 +85,60 @@ def video_exist():
 
 
 
-class VideoListView(View):
+# class VideoListView(View):
+#     template_name = 'assignment/list.html'
+#     paginate_by = 10
+
+#     def get(self, request):
+#         strval = request.GET.get("search", False)
+#         video_exist()
+#         if request.user.is_authenticated:
+#             if strval:
+#                 query = Q(description__icontains=strval)
+#                 query.add(Q(title__icontains=strval), Q.OR)
+
+#                 video_list = Video.objects.filter(query).select_related().order_by('-uploaded_at')
+#             else:
+#                 video_list = Video.objects.all().order_by('-uploaded_at')
+                
+#             paginator = Paginator(video_list, self.paginate_by)
+#             page_number = request.GET.get('page')
+#             page_obj = paginator.get_page(page_number)
+            
+#             context = {
+
+#                 'page_obj':page_obj,
+#                 'search': strval,
+#             }
+
+#             return render(request, self.template_name, context)
+        
+class VideoListView(PermissionRequiredMixin,ListView):
+    permission_required = 'assignment.admin_user'
+    model = Video
     template_name = 'assignment/list.html'
+    context_object_name = 'videos'
+    ordering = '-uploaded_at'
     paginate_by = 10
 
-    def get(self, request):
-        strval = request.GET.get("search", False)
+
+
+class OwnerVideoListView(PermissionRequiredMixin,ListView):
+    permission_required = 'assignment.normal_user'
+    model = Video
+    template_name = 'assignment/list.html'
+    context_object_name = 'videos'
+    paginate_by = 10
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(owner=self.request.user).order_by('-uploaded_at')
         video_exist()
-        if request.user.is_authenticated:
-            if strval:
-                query = Q(description__icontains=strval)
-                query.add(Q(title__icontains=strval), Q.OR)
-
-                video_list = Video.objects.filter(query).select_related().order_by('-uploaded_at')
-            else:
-                video_list = Video.objects.all().order_by('-uploaded_at')
-                
-            paginator = Paginator(video_list, self.paginate_by)
-            page_number = request.GET.get('page')
-            page_obj = paginator.get_page(page_number)
-            
-            context = {
-
-                'page_obj':page_obj,
-                'search': strval,
-            }
-
-            return render(request, self.template_name, context)
+        return queryset
+        
+class VideoDetailView(PermissionRequiredMixin,DetailView):
+    permission_required = 'assignment.normal_user'
+    model = Video
+    template_name= "assignment/video_detail.html"
+    
+    
+    

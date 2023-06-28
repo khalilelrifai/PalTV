@@ -12,7 +12,14 @@ class Video(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     ftp_exists = models.BooleanField(default=False)
     owner = ForeignKey(User,on_delete=SET_NULL,null=True)
-    upload_progress = models.IntegerField(default=0)  # New field for tracking progress
 
+
+
+    class Meta:
+        permissions = [
+            ("normal_user", "Normal User"),
+            ("admin_user", "Admin User"),
+            ("upload_video","Upload Video")
+        ]
     def __str__(self):
         return self.title
