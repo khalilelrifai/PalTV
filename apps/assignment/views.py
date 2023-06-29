@@ -9,6 +9,8 @@ from django.views.generic import *
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import PermissionRequiredMixin
+import time
+from django.http import JsonResponse
 
 @permission_required('assignment.upload_video')
 def upload_video(request):
@@ -22,33 +24,55 @@ def upload_video(request):
 
             try:
                 # Upload the video file to the FTP server
-                ftp = FTP(settings.FTP_HOST)
-                ftp.login(user=settings.FTP_USER, passwd=settings.FTP_PASSWORD)
-                ftp.cwd(settings.FTP_UPLOAD_DIR)
+                with FTP(settings.FTP_HOST) as ftp:
+                    ftp.login(user=settings.FTP_USER, passwd=settings.FTP_PASSWORD)
+                    ftp.cwd(settings.FTP_UPLOAD_DIR)
 
-                # Get the title from the form
-                title = form.cleaned_data['title']
-                file = request.FILES['file']
-                # Generate new file name using the title
-                new_file_name = f'{title}.mp4'
+                    # Get the title from the form
+                    title = form.cleaned_data['title']
+                    file = request.FILES['file']
+                    
+                    # Generate new file name using the title
+                    new_file_name = f'{title}.mp4'
 
-                ftp.cwd('videos')
+                    ftp.cwd('videos')
+                    
+                    # Read and upload the file in chunks
+                    chunk_size = 64 * 1024  # 64KB
+                    total_size = file.size
+                    bytes_uploaded = 0
+                    start_time = time.time()
+                    with file.open('rb') as file_stream:
+                        while True:
+                            chunk = file_stream.read(chunk_size)
+                            if not chunk:
+                                break
+                            ftp.storbinary(f'APPE {new_file_name}', ContentFile(chunk))
+                            bytes_uploaded += len(chunk)
+                            
+                            # Calculate progress and estimated time
+                            progress = bytes_uploaded / total_size
+                            elapsed_time = time.time() - start_time
+                            if progress > 0:
+                                estimated_time = elapsed_time / progress - elapsed_time
+                            else:
+                                estimated_time = 0
+                            
+                            # Update the video object with progress and estimated time
+                            uploaded_file_size = ftp.size(new_file_name)
 
-                # Read the file content and upload it to the FTP server
-                file_content = file.read()
-                ftp.storbinary(f'STOR {new_file_name}', ContentFile(file_content))
-                ftp.quit()
 
-                # Update the video object with the new file name
+                            video.upload_status = f'Uploading... Progress: {progress:.2%}. Estimated time: {estimated_time:.2f}s'
+                            video.save()
+                            if uploaded_file_size == total_size:break
+                            
+                # Update the video object after successful upload
                 video.upload_status = 'Uploaded successfully!'
-                video.file = new_file_name
                 video.save()
-
-                return redirect('assignment:video_detail', video.id)
+                return redirect('assignment:my_list')
 
             except Exception as e:
                 video.upload_status = f'Upload failed: {str(e)}'
-                video.check_ftp_exists()
                 video.save()
                 return redirect('assignment:video_list')
 
@@ -56,6 +80,8 @@ def upload_video(request):
         form = VideoForm()
 
     return render(request, 'assignment/upload.html', {'form': form})
+
+
 
 
 def ftp_list():
@@ -118,9 +144,12 @@ class VideoListView(PermissionRequiredMixin,ListView):
     model = Video
     template_name = 'assignment/list.html'
     context_object_name = 'videos'
-    ordering = '-uploaded_at'
     paginate_by = 10
-
+    def get_queryset(self):
+        video_exist()
+        queryset = super().get_queryset()
+        queryset = queryset.filter().order_by('-uploaded_at')
+        return queryset
 
 
 class OwnerVideoListView(PermissionRequiredMixin,ListView):
@@ -130,9 +159,9 @@ class OwnerVideoListView(PermissionRequiredMixin,ListView):
     context_object_name = 'videos'
     paginate_by = 10
     def get_queryset(self):
+        video_exist()
         queryset = super().get_queryset()
         queryset = queryset.filter(owner=self.request.user).order_by('-uploaded_at')
-        video_exist()
         return queryset
         
 class VideoDetailView(PermissionRequiredMixin,DetailView):
@@ -142,3 +171,6 @@ class VideoDetailView(PermissionRequiredMixin,DetailView):
     
     
     
+
+
+
