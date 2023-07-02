@@ -143,7 +143,7 @@
                         </div>
                     </a>
                     </div>
-                    {% if perms.assignment.view_video %}
+                    {% if perms.assignment.normal_user %}
                      <div class="col-12 col-sm-6 col-lg-3">
                         <a href="{% url 'assignment:main' %}">
                         <div class="card bg-white shadow-soft text-primary rounded mb-4">

@@ -9,7 +9,7 @@
 
 {% block content %}
 
-<form method="post" enctype="multipart/form-data">
+<form id="upload-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row mb-5">
         <div class="col-sm-5">
@@ -26,13 +26,23 @@
     </div>
 </form>
 
+{% endblock content %}
+
+{% block javascripts %}
 <script>
     // Add JavaScript code to track the uploading progress
-    const form = document.querySelector('form');
+    const form = document.getElementById('upload-form');
     const uploadStatus = document.getElementById('upload-status');
+
+    let uploadInProgress = false; // Keep track of whether an upload is in progress
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
+
+        if (uploadInProgress) {
+            // If an upload is already in progress, prevent the form submission
+            return;
+        }
 
         const formData = new FormData(form);
 
@@ -50,20 +60,27 @@
             if (request.readyState === XMLHttpRequest.DONE) {
                 if (request.status === 200) {
                     uploadStatus.textContent = 'Upload complete';
+                    form.reset(); // Clear the form after successful upload
                 } else {
                     uploadStatus.textContent = 'Upload failed';
                 }
+
+                uploadInProgress = false; // Reset the flag when the upload is complete
+                window.removeEventListener('beforeunload', preventExitDuringUpload); // Remove the event listener
             }
         };
 
-        // Send the form data using sendBeacon when the user navigates away from the page
-        window.addEventListener('unload', () => {
-            navigator.sendBeacon('/assignment/upload/', formData);
-        });
+        // Set the flag to indicate that an upload is in progress
+        uploadInProgress = true;
+        // Add event listener to prevent the user from leaving the page during upload
+        window.addEventListener('beforeunload', preventExitDuringUpload);
 
-        // Send the form data using XMLHttpRequest
         request.send(formData);
     });
-</script>
 
-{% endblock %}
+    function preventExitDuringUpload(event) {
+        event.preventDefault();
+        event.returnValue = ''; // This is necessary for older browsers
+    }
+</script>
+{% endblock javascripts %}
