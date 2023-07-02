@@ -78,8 +78,6 @@ def video_list(request):
     for video in videos:
         if video.title in list:
             video.ftp_exists = True
-        else:
-            video.ftp_exists = False
     
     return render(request, 'assignment/list.html', {'videos': videos})
 
