@@ -1,16 +1,17 @@
-from django.shortcuts import render, redirect
-from .forms import VideoForm
-from ftplib import FTP
-from django.conf import settings
-from .models import *
-from django.contrib.auth.decorators import permission_required
-import os
-from django.views.generic import *
-from django.core.files.base import ContentFile
-from django.core.paginator import Paginator
-from django.contrib.auth.mixins import PermissionRequiredMixin
 import time
-from django.http import JsonResponse
+from ftplib import FTP
+
+from django.conf import settings
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.files.base import ContentFile
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect, render
+from django.views.generic import *
+
+from .forms import VideoForm
+from .models import *
+
 
 @permission_required('assignment.upload_video')
 def upload_video(request):
@@ -20,6 +21,7 @@ def upload_video(request):
             video = form.save(commit=False)
             video.owner = request.user
             video.upload_status = 'Uploading...'
+            video.in_progress = True
             video.save()
 
             try:
@@ -62,17 +64,21 @@ def upload_video(request):
                             uploaded_file_size = ftp.size(new_file_name)
 
 
-                            video.upload_status = f'Uploading... Progress: {progress:.2%}. Estimated time: {estimated_time:.2f}s'
+                            video.upload_status = f' Progress: {progress:.2%}. Estimated time: {estimated_time:.2f}s'
                             video.save()
-                            if uploaded_file_size == total_size:break
+                            if uploaded_file_size == total_size:
+                                video.in_progress = False
+                                break
                             
                 # Update the video object after successful upload
                 video.upload_status = 'Uploaded successfully!'
+                video.in_progress = False
                 video.save()
                 return redirect('assignment:my_list')
 
             except Exception as e:
                 video.upload_status = f'Upload failed: {str(e)}'
+                video.in_progress = False
                 video.save()
                 return redirect('assignment:video_list')
 
@@ -109,35 +115,6 @@ def video_exist():
             video.ftp_exists = False
         video.save()
 
-
-
-# class VideoListView(View):
-#     template_name = 'assignment/list.html'
-#     paginate_by = 10
-
-#     def get(self, request):
-#         strval = request.GET.get("search", False)
-#         video_exist()
-#         if request.user.is_authenticated:
-#             if strval:
-#                 query = Q(description__icontains=strval)
-#                 query.add(Q(title__icontains=strval), Q.OR)
-
-#                 video_list = Video.objects.filter(query).select_related().order_by('-uploaded_at')
-#             else:
-#                 video_list = Video.objects.all().order_by('-uploaded_at')
-                
-#             paginator = Paginator(video_list, self.paginate_by)
-#             page_number = request.GET.get('page')
-#             page_obj = paginator.get_page(page_number)
-            
-#             context = {
-
-#                 'page_obj':page_obj,
-#                 'search': strval,
-#             }
-
-#             return render(request, self.template_name, context)
         
 class VideoListView(PermissionRequiredMixin,ListView):
     permission_required = 'assignment.admin_user'
@@ -171,6 +148,16 @@ class VideoDetailView(PermissionRequiredMixin,DetailView):
     
     
     
-
+class UpdateStatus(View):
+    def get(self, request):
+        videos = Video.objects.filter(in_progress=True)
+        result = {}
+        for video in videos:
+            result[video.id] = video.upload_status
+        print(result)
+        if result:
+            return JsonResponse(result, safe=False)
+        else:
+            return HttpResponse(status=204)
 
 

@@ -1,35 +1,4 @@
-{% extends "layouts/assignment_base.html" %}
 
-{% block title %} Dashboard {% endblock %}
-
-<!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}
-{% load crispy_forms_tags %}
-{% endblock stylesheets %}
-
-{% block content %}
-
-<form id="upload-form" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="row mb-5">
-        <div class="col-sm-5">
-            {{ form|crispy }}
-            <br>
-            <input type="file" name="file" class="form-control"/>
-        </div>
-    </div>
-    <div class="row mb-5">
-        <p id="upload-status"></p> <!-- Add an ID to the element that displays the upload status -->
-        <div class="col-sm-5">
-            <button type="submit" class="btn btn-success">Upload</button>
-        </div>
-    </div>
-</form>
-
-{% endblock content %}
-
-{% block javascripts %}
-<script>
     // Add JavaScript code to track the uploading progress
     const form = document.getElementById('upload-form');
     const uploadStatus = document.getElementById('upload-status');
@@ -85,7 +54,3 @@
         event.preventDefault();
         event.returnValue = ''; // This is necessary for older browsers
     }
-
-</script>
-
-{% endblock javascripts %}

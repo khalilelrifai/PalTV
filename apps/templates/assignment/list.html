@@ -54,30 +54,30 @@
                   <th class="border-gray-200">Date</th>
                   <th class="border-gray-200">Details</th>
 
-
               </tr>
           </thead>
           <tbody>
               <!-- Item -->
-
-              {% if page_obj%}
+              {% if page_obj %}
               {% for video in page_obj %}
-
-                        <tr>
-                            <!-- <td><span class="fw-bold">{{i.report_id}}</span></td> -->
-                            <!-- <td><span class="fw-normal">{{report.owner.fullname}}</span></td> -->
-                            <td><span class="fw-normal">{{ video.owner }}</span></td>                        
-                            <td><span class="fw-normal">{{ video.title }}</span></td>
-                            <td><span class="fw-normal">{{ video.upload_status }}</span></td>
-                            <td><span class="fw-normal">{% if video.upload_status == 'Uploaded successfully!' %}
-                                FTP Existence: {% if video.ftp_exists %}Exists{% else %}Doesn't Exist{% endif %}<br>
-                            {% endif %}</span></td>
-                            <td><span class="fw-normal">{{ video.uploaded_at }}</span></td>
-                            <td><a style="color:blueviolet;" href="{% url 'assignment:video_detail' video.id %}">View Details</a>
-                        </tr>
-
-                {% endfor %}
-                {% endif %}
+                <tr class="video-row" data-video-id="{{ video.id }}">
+                  <td><span class="fw-normal">{{ video.owner }}</span></td>
+                  <td><span class="fw-normal">{{ video.title }}</span></td>
+                  <td><span class="fw-normal upload-status">{{ video.upload_status }}</span></td>
+                  <td>
+                    <span class="fw-normal">
+                      {% if video.upload_status == 'Uploaded successfully!' %}
+                        FTP Existence: {% if video.ftp_exists %}Exists{% else %}Doesn't Exist{% endif %}
+                      {% endif %}
+                    </span>
+                  </td>
+                  <td><span class="fw-normal">{{ video.uploaded_at }}</span></td>
+                  <td>
+                    <a style="color: blueviolet;" href="{% url 'assignment:video_detail' video.id %}">View Details</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% endif %}
 
               <!-- Item -->                                
           </tbody>
@@ -119,6 +119,60 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script>
 
 
+    function updateVideoStatus(videoId, uploadStatus) {
+      const videoRow = document.querySelector(`.video-row[data-video-id="${videoId}"]`);
+      if (videoRow) {
+        const statusElement = videoRow.querySelector('.upload-status');
+        statusElement.textContent = uploadStatus;
+      }
+    }
+  
+    function fetchDataAndUpdateTemplate() {
+      fetch('/assignment/status/')
+        .then(response => {
+          if (response.status === 204) {
+            throw new Error('No Content');
+          } else if (!response.ok) {
+            throw new Error('Network response was not OK');
+          }
+
+          
+          return response.json();
+        }
+        )
+        .then(data => {
+          const videoIds = Object.keys(data);
+  
+          // Iterate over the videos in the template
+          const videos = document.querySelectorAll('.video-row');
+          videos.forEach(video => {
+            const videoId = video.dataset.videoId;
+            if (videoIds.includes(videoId)) {
+              const uploadStatus = data[videoId];
+              updateVideoStatus(videoId, uploadStatus);
+            }
+
+          });
+
+        })
+        .catch(error => {
+          if (error.message === 'No Content') {
+            clearInterval(fetchInterval); // Stop fetching if response is 204
+          } else {
+            console.error(error);
+          }
+        });
+    }
+
+
+
+  document.addEventListener('DOMContentLoaded', fetchDataAndUpdateTemplate);
+  const fetchInterval = setInterval(fetchDataAndUpdateTemplate, 1000);
+
+    
+  </script>
+  
 {% endblock javascripts %}

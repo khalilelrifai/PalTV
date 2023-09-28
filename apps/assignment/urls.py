@@ -11,4 +11,5 @@ urlpatterns = [
     path('videoslist/', login_required(VideoListView.as_view()), name='video_list'),
     path('mylist/', login_required(OwnerVideoListView.as_view()), name='my_list'),
     path('list/detail/<int:pk>/', login_required(VideoDetailView.as_view()), name='video_detail'),
+    path('status/', UpdateStatus.as_view(), name='status'),
 ]

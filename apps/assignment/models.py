@@ -12,6 +12,7 @@ class Video(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     ftp_exists = models.BooleanField(default=False)
     owner = ForeignKey(User,on_delete=SET_NULL,null=True)
+    in_progress = BooleanField(default=False)
 
 
 
