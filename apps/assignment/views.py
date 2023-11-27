@@ -13,18 +13,58 @@ from .forms import VideoForm
 from .models import *
 
 
-@permission_required('assignment.upload_video')
-def upload_video(request):
-    if request.method == 'POST':
-        form = VideoForm(request.POST, request.FILES)
-        if form.is_valid():
-            video = form.save(commit=False)
-            video.owner = request.user
-            video.upload_status = 'Uploading...'
-            video.in_progress = True
-            video.save()
 
-            try:
+
+def upload_file_to_ftp(file, ftp, new_file_name, video):
+    chunk_size = 64 * 1024  # 64KB
+    total_size = file.size
+    bytes_uploaded = 0
+    start_time = time.time()
+
+    with file.open('rb') as file_stream:
+        while True:
+            chunk = file_stream.read(chunk_size)
+            if not chunk:
+                break
+            ftp.storbinary(f'APPE {new_file_name}', ContentFile(chunk))
+            bytes_uploaded += len(chunk)
+            
+            # Calculate progress and estimated time
+            progress = bytes_uploaded / total_size
+            elapsed_time = time.time() - start_time
+            if progress > 0:
+                estimated_time = elapsed_time / progress - elapsed_time
+            else:
+                estimated_time = 0
+            
+            # Update the video object with progress and estimated time
+            uploaded_file_size = ftp.size(new_file_name)
+
+
+            video.upload_status = f' Progress: {progress:.2%}. Estimated time: {estimated_time:.2f}s'
+            video.save()
+            if uploaded_file_size == total_size:
+                video.in_progress = False
+                break
+
+
+
+
+
+class VideoUploadView(PermissionRequiredMixin, FormView):
+    permission_required = 'assignment.upload_video'
+    template_name = 'assignment/upload.html'
+    form_class = VideoForm
+    success_url = 'assignment:my_list'
+
+    def form_valid(self, form):
+        video = form.save(commit=False)
+        video.owner = self.request.user
+        video.upload_status = 'Uploading...'
+        video.in_progress = True
+        video.save()
+
+        try:
                 # Upload the video file to the FTP server
                 with FTP(settings.FTP_HOST) as ftp:
                     ftp.login(user=settings.FTP_USER, passwd=settings.FTP_PASSWORD)
@@ -32,62 +72,25 @@ def upload_video(request):
 
                     # Get the title from the form
                     title = form.cleaned_data['title']
-                    file = request.FILES['file']
+                    file = self.request.FILES['file']
                     
                     # Generate new file name using the title
                     new_file_name = f'{title}.mp4'
 
                     ftp.cwd('videos')
                     
-                    # Read and upload the file in chunks
-                    chunk_size = 64 * 1024  # 64KB
-                    total_size = file.size
-                    bytes_uploaded = 0
-                    start_time = time.time()
-                    with file.open('rb') as file_stream:
-                        while True:
-                            chunk = file_stream.read(chunk_size)
-                            if not chunk:
-                                break
-                            ftp.storbinary(f'APPE {new_file_name}', ContentFile(chunk))
-                            bytes_uploaded += len(chunk)
-                            
-                            # Calculate progress and estimated time
-                            progress = bytes_uploaded / total_size
-                            elapsed_time = time.time() - start_time
-                            if progress > 0:
-                                estimated_time = elapsed_time / progress - elapsed_time
-                            else:
-                                estimated_time = 0
-                            
-                            # Update the video object with progress and estimated time
-                            uploaded_file_size = ftp.size(new_file_name)
-
-
-                            video.upload_status = f' Progress: {progress:.2%}. Estimated time: {estimated_time:.2f}s'
-                            video.save()
-                            if uploaded_file_size == total_size:
-                                video.in_progress = False
-                                break
+                    upload_file_to_ftp(file, ftp, new_file_name, video)
                             
                 # Update the video object after successful upload
                 video.upload_status = 'Uploaded successfully!'
                 video.in_progress = False
                 video.save()
                 return redirect('assignment:my_list')
-
-            except Exception as e:
-                video.upload_status = f'Upload failed: {str(e)}'
-                video.in_progress = False
-                video.save()
-                return redirect('assignment:video_list')
-
-    else:
-        form = VideoForm()
-
-    return render(request, 'assignment/upload.html', {'form': form})
-
-
+        except Exception as e:
+            video.upload_status = f'Upload failed: {str(e)}'
+            video.in_progress = False
+            video.save()
+            return redirect('assignment:video_list')
 
 
 def ftp_list():
@@ -104,15 +107,11 @@ def ftp_list():
     return files_List
 
 
-
 def video_exist():
     videos = Video.objects.all()
-    list = ftp_list()
+    ftp_file_list = ftp_list()
     for video in videos:
-        if video.title in list:
-            video.ftp_exists = True
-        else:
-            video.ftp_exists = False
+        video.ftp_exists = video.title in ftp_file_list
         video.save()
 
         
@@ -124,8 +123,7 @@ class VideoListView(PermissionRequiredMixin,ListView):
     paginate_by = 10
     def get_queryset(self):
         video_exist()
-        queryset = super().get_queryset()
-        queryset = queryset.filter().order_by('-uploaded_at')
+        queryset = Video.objects.filter().order_by('-uploaded_at')
         return queryset
 
 
@@ -154,7 +152,6 @@ class UpdateStatus(View):
         result = {}
         for video in videos:
             result[video.id] = video.upload_status
-        print(result)
         if result:
             return JsonResponse(result, safe=False)
         else:

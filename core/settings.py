@@ -56,10 +56,14 @@ INSTALLED_APPS = [
     'apps.assignment',
     'formtools',
     'django_python3_ldap',
+    "crispy_bootstrap4",
+
+
+
 
     
 ]
-
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK ='bootstrap4'
 
 MIDDLEWARE = [
