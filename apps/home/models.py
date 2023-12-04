@@ -22,7 +22,7 @@ class Employee(Model):
     id=AutoField(primary_key=True,editable=False)
     user = OneToOneField(User,on_delete=CASCADE)
     department = ForeignKey(Department,on_delete=SET_NULL,null=True)
-
+    job_title = ForeignKey(Job_title,on_delete=SET_NULL,null=True)
 
 
     def __str__(self):

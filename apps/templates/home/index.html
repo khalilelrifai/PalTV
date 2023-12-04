@@ -88,16 +88,12 @@
                         <!-- <li class="nav-item me-2">
                             <a href="/dashboard.html" class="nav-link">Dashboard</a>
                         </li> -->
-                        <li class="nav-item me-2">
+                        <!-- <li class="nav-item me-2">
                             <a href="{% url 'reports:create' %}" class="nav-link">Reports</a>
-                        </li>
+                        </li> -->
                         {% if user.is_superuser %}
                             <li class="nav-item me-2">
                                 <a href="/admin/auth/user/" class="nav-link">Admin</a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item me-2">
-                                <a href="/settings.html" class="nav-link">Settings</a>
                             </li>
                         {% endif %}                      
                     </ul>
@@ -135,7 +131,7 @@
                         </div>
                     </a>
                     </div>
-                    <div class="col-12 col-sm-6 col-lg-3">
+                    <!-- <div class="col-12 col-sm-6 col-lg-3">
                         <a href="{% url 'trips:create' %}">
                         <div class="card bg-white shadow-soft text-primary rounded mb-4">
                             <div class="px-3 px-lg-4 py-5 text-center">
@@ -145,7 +141,7 @@
                             </div>
                         </div>
                     </a>
-                    </div>
+                    </div> -->
                     {% if perms.assignment.normal_user %}
                      <div class="col-12 col-sm-6 col-lg-3">
                         <a href="{% url 'assignment:main' %}">

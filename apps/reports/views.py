@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import *
 
+from apps.home.models import *
 from .forms import *
 from .models import *
 
