@@ -1,0 +1,127 @@
+{% extends "layouts/task_base.html" %}
+
+{% block title %} New Task {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% load crispy_forms_tags %}
+{% endblock stylesheets %}
+
+{% block content %}
+{% load auth_extras %}   
+
+<div class="container-fluid">
+    <div class="mb-3 mb-lg-0">
+        <h1 class="h4">Task Details</h1>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="card border-0 shadow components-section">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row mb-5">
+                    <div class="col-sm-2">
+
+                        <label for="fullname">Created By</label>
+                        <input type="text" class="form-control" disabled value="{{task.owner}}" name="fullname">
+
+                    </div>
+                    <div class="col-sm-2">
+                        <label for="job_title">Created Date</label>
+                        <input type="text" class="form-control" disabled value="{{task.created_date}}"
+                            name="created_date">
+                    </div>
+                    <div class="col-sm-2">
+                        <label for="department">Category</label>
+                        <input type="text" class="form-control" disabled value="{{task.category}}"
+                            name="category">
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-sm-2">
+                        <label for="department">Status</label>
+                        <input type="text" class="form-control" disabled value="{{task.status}}"
+                            name="category">
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-sm-4">
+                        <label for="department">Task Title</label>
+                        <input type="text" class="form-control" disabled value="{{task.title}}" name="title">
+                    </div>
+                    <div class="col-sm-2">
+                        {% if request.user|has_group:"Admin" %} 
+                        <label for="department">Assigned To</label>
+                        <div class="form-check">
+                            {% for employee in task.assigned_to.all %}
+                                <input type="checkbox" class="form-check-input"  name="assigned_to"  checked disabled>
+                                <label class="form-check-label" for="employee_{{ employee.id }}">{{ employee.fullname }}</label>
+                                <br>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+                <div class="row mb-5">
+
+                </div>
+                <div class="row mb-10">
+                    <div class="col-md-12 text-center">
+                        {% if task.owner.user == user %}
+                        <a href="{% if 'director' in request.path %}{% url 'task:director' %}{%else%}{% url 'task:list' %}{%endif%}"
+                            class="btn btn-gray-300">Cancel</a>
+                        <a href="{% url 'task:edit' task.id %}" class="btn btn-success" id="successAlert">Edit </a>
+                        <a href="{% url 'task:delete' task.id %}" class="btn btn-danger"
+                            id="successAlert">Delete</a>
+                            {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+        $("#successAlert").on("click", function() {
+            
+            if($("#form1")[0].checkValidity()) {
+                var title = $("#form1 [name='title']").val();
+
+            const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-gray'
+            },
+            buttonsStyling: false
+        });
+
+            swalWithBootstrapButtons.fire({
+                icon: 'success',
+                title: 'Success alert',
+                text: 'Your work has been saved',
+                showConfirmButton: true,
+                timer: 1500
+            });
+            document.getElementById("form1").reset();
+
+
+                // ajax here
+            } else {
+                $("#form1")[0].reportValidity();
+            }
+
+            
+        });
+    }) -->
+
+
+{% endblock javascripts %}

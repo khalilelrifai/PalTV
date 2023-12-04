@@ -1,0 +1,152 @@
+{% extends "layouts/task_base.html" %}
+
+{% block title %} New Task {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% load crispy_forms_tags %}
+{% endblock stylesheets %}
+
+{% block content %}
+{% load auth_extras %}   
+
+<div class="container-fluid">
+    <div class="mb-3 mb-lg-0">
+        <h1 class="h4">Create Task</h1>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="card border-0 shadow components-section">
+        <div class="card-body">
+            <form method="post">
+            {% csrf_token %}
+
+    <div class="row mb-5">
+        <div class="col-sm-6">
+            {{form.title|as_crispy_field}}
+        </div>
+        <div class="col-sm-3">
+            {{form.concern_company|as_crispy_field}}
+        </div>
+        <div class="col-sm-3">
+            {{form.target_date|as_crispy_field}}
+        </div>
+    </div>
+    <div class="row mb-5">
+
+        <div class="col-sm-3">
+            <label for="department">Select Department:</label>
+            <select name="department" class="form-select" id="departmentSelect" disabled >
+                <option value="">-- Select Department --</option>
+                
+                    <option value="{{ department.id }}" selected >{{ department }} </option>
+                
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <label for="role">Select Category:</label>
+            <select name="role" class="form-select" id="roleSelect" required>
+                <option value="">-- Select Category --</option>
+                {% for role in roles %}
+                    <option value="{{ role.id }}" {% if role.id == selected_role.id %}selected{% endif %}>{{ role.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if request.user|has_group:"Admin" %} 
+        <div class="col-sm-3" id="assignedToSection" style="display: none;">
+
+                <p>Assign To:</p>
+                <div id="assignedToCheckbox">
+                    <!-- Assigned to checkboxes will be added here -->
+                </div>
+        </div>
+        {% endif %}
+        <div class="col-sm-3">
+            {{form.status|as_crispy_field}}
+        </div>
+    </div>
+    <div class="row mb-5">
+
+        <div class="col-sm-6">
+            {{form.reviews|as_crispy_field}}
+        </div>
+        <div class="col-sm-6">
+            {{form.remarks|as_crispy_field}}
+        </div>
+        
+
+    </div>
+    <div class="row mb-10" >
+        <div class="col-md-12 text-center">
+            <a href="{% if 'list' in request.path %} {% url 'task:list' %} {% else %} {% url 'task:main' %} {% endif %} " class="btn btn-gray-300">Cancel</a>
+            <input type="submit" class="btn btn-success"  >
+        </div>
+    </div>
+    </form>
+    </div>
+    </div> 
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+    document.getElementById('departmentSelect').addEventListener('change', updateAssignedTo);
+    document.getElementById('roleSelect').addEventListener('change', updateAssignedTo);
+
+    function updateAssignedTo() {
+        const department = document.getElementById('departmentSelect').value;
+        const role = document.getElementById('roleSelect').value;
+
+        if (department && role) {
+            fetch(`get_employees/?department=${department}&role=${role}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received data:', data); // Log the received data
+
+                    const assignedToCheckbox = document.getElementById('assignedToCheckbox');
+                    assignedToCheckbox.innerHTML = ''; // Clear existing checkboxes
+
+                    if (data && data.length > 0) {
+                            data.forEach(employee => {
+                                const checkboxDiv = document.createElement('div'); // Create a div for each checkbox
+
+                                const checkbox = document.createElement('input');
+                                checkbox.type = 'checkbox';
+                                checkbox.name = 'assigned_to';
+                                checkbox.value = employee.id;
+                                checkbox.classList.add('form-check-input');
+                                checkboxDiv.required = true;
+                                 // Add class to the checkbox
+                                
+                                const label = document.createElement('label');
+                                label.appendChild(checkbox);
+                                label.appendChild(document.createTextNode(' '+ employee.user__first_name + ' ' + employee.user__last_name));
+                                
+                                checkboxDiv.appendChild(label); // Append label to the div
+                                assignedToCheckbox.appendChild(checkboxDiv); // Append div to the main container
+                            });
+                            document.getElementById('assignedToSection').style.display = 'block';
+                        }
+ else {
+                        console.log('No data received or empty data.'); // Log if no or empty data received
+                        document.getElementById('assignedToSection').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        } else {
+            document.getElementById('assignedToSection').style.display = 'none';
+        }
+    }
+</script>
+
+{% endblock javascripts %}

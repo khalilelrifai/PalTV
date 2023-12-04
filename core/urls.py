@@ -18,7 +18,7 @@ urlpatterns = [
     path("", include("apps.authentication.urls")), # Auth routes - login / register
 
     # Leave `Home.Urls` as last the last line
-
+    path("task/", include("apps.task.urls")),
     path("reports/", include("apps.reports.urls")),
     path("trips/", include("apps.trips.urls")),
     path("bulletins/", include("apps.bulletins.urls")),
