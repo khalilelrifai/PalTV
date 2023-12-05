@@ -11,10 +11,9 @@ class CreateTaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ['title', 'remarks', 'status', 'target_date', 'reviews', 'concern_company']
+        fields = ['title', 'remarks', 'status', 'target_date', 'reviews',]
         widgets = {
             'title': forms.Textarea(attrs={'rows': '1','required':True}),
-            'concern_company': forms.TextInput(attrs={'rows': '1'}),
             'remarks': forms.Textarea(attrs={'rows': '4'}),
             'reviews': forms.Textarea(attrs={'rows': '4'}),
             'status': forms.Select(attrs={'class': 'form-select'}),
