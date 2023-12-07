@@ -21,7 +21,7 @@ def get_filtered_employees(request):
 
     if department_id :
         try:
-            filtered_employees = Employee.objects.filter(department_id=department_id).values('id', 'user__first_name', 'user__last_name')
+            filtered_employees = Employee.objects.filter(department_id=department_id).exclude(user_id=request.user.id).values('id', 'user__first_name', 'user__last_name')
             # Filter the employees based on the department and role
 
             employees_list = list(filtered_employees)
@@ -38,7 +38,7 @@ class CreateTask(LoginRequiredMixin,View):
 
     def get(self, request):
         form = CreateTaskForm()
-        if Group.objects.filter(name='Admin').exists() and request.user.groups.filter(name='Admin').exists():
+        if request.user.employee.job_title.title == "Director":
             form.fields['remarks'].disabled = 'disabled'
         else:
             form.fields['reviews'].disabled = 'disabled'
@@ -109,7 +109,7 @@ class TaskListView(LoginRequiredMixin, View):
                 task_list = Task.objects.filter(query).select_related().order_by('-created_date')
             else:
                 # Check if the user is in the admin group
-                if Group.objects.filter(name='Admin').exists() and request.user.groups.filter(name='Admin').exists():
+                if request.user.employee.job_title.title == "Director":
                     # If admin, display all tasks in the department
                     task_list = Task.objects.filter(owner__department=employee.department).order_by('-created_date')
                 else:
@@ -173,7 +173,7 @@ class TaskUpdateView(LoginRequiredMixin,UpdateView):
         form = super().get_form(form_class)
         
         # Edit the attributes of the widgets
-        if Group.objects.filter(name='Admin').exists() and self.request.user.groups.filter(name='Admin').exists():
+        if self.request.user.employee.job_title.title == "Director":
             form.fields['remarks'].disabled = 'disabled'
         else:
             form.fields['reviews'].disabled = 'disabled'
@@ -189,10 +189,10 @@ class DashboardView(View):
     def get_context_data(self):
         # Fetch data for your dashboard
         user = self.request.user
-        is_admin = user.groups.filter(name='Admin').exists()
+        is_admin = self.request.user.employee.job_title.title == "Director"
         last_month_start = timezone.now() - timedelta(days=30)
         last_week_start = timezone.now() - timedelta(weeks=1)
-        team_members = Employee.objects.filter(department=user.employee.department).exclude(id=user.id)
+        team_members = Employee.objects.filter(department=user.employee.department).exclude(user_id=user.id)
         employee = Employee.objects.get(user=self.request.user)
         last_assigned_tasks = Task.objects.filter(
                 Q(assigned_to=employee ) & Q(created_date__gte=last_week_start)

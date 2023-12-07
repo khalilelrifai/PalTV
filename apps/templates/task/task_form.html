@@ -25,9 +25,7 @@
         <div class="col-sm-6">
             {{form.title|as_crispy_field}}
         </div>
-        <div class="col-sm-3">
-            {{form.concern_company|as_crispy_field}}
-        </div>
+
         <div class="col-sm-3">
             {{form.target_date|as_crispy_field}}
         </div>
@@ -35,7 +33,7 @@
     <div class="row mb-5">
 
         <div class="col-sm-3">
-            <label for="department">Select Department:</label>
+            <label for="department">Department:</label>
             <select name="department" class="form-select" id="departmentSelect" disabled >
                 <option value="">-- Select Department --</option>
                 
@@ -52,7 +50,7 @@
                 {% endfor %}
             </select>
         </div>
-        {% if request.user|has_group:"Admin" %} 
+        {% if request.user.employee.job_title.title == "Director" %}
         <div class="col-sm-3" id="assignedToSection" style="display: none;">
 
                 <p>Assign To:</p>

@@ -48,6 +48,7 @@ class Task(Model):
     title = CharField(max_length=200)
     created_date = DateTimeField(auto_now_add=True)
     target_date = DateField()
+    category = ForeignKey(Role, on_delete=SET_NULL,null=True)
     remarks = TextField(blank=True)
     reviews = TextField(blank=True)
     assigned_to = ManyToManyField(Employee, related_name='tasks')

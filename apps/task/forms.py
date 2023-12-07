@@ -20,6 +20,10 @@ class CreateTaskForm(forms.ModelForm):
             'target_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
         }
         
+        labels = {
+            'reviews': ('Director Notes:'),
+            'remarks': ('User Notes:'),
+        }
         
 
         
