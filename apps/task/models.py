@@ -52,10 +52,11 @@ class Task(Model):
     remarks = TextField(blank=True)
     reviews = TextField(blank=True)
     assigned_to = ManyToManyField(Employee, related_name='tasks')
+    
 
 
     def __str__(self):
-        return str(self.owner)
+        return str(self.title)
 
     # class Meta:
     #     permissions=[('can_view_submitted_reports','Can View Submitted Reports'),('can_view_journalists_profiles','Can View Journalists Profiles'),(('can_view_all','Can View Journalists ALL'))]

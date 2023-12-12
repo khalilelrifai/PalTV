@@ -2,6 +2,10 @@ from django.contrib import admin
 
 from .models import *
 
-admin.site.register(Employee)
+class RAdmin(admin.ModelAdmin):
+
+    list_display =['fullname','location']
+
+admin.site.register(Employee,RAdmin)
 admin.site.register(Department)
 admin.site.register(Job_title)

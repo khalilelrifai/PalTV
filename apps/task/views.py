@@ -232,3 +232,38 @@ class DashboardView(View):
         context = self.get_context_data()
         return render(request, self.template_name, context)
     
+
+
+
+from datetime import date
+from django.utils import formats
+class Agenda(View):
+    template_name = 'task/agenda.html'
+
+    def get(self, request, *args, **kwargs):
+        # Get unique locations
+        employees = Employee.objects.values_list('location', flat=True).distinct()
+
+        # Set the default date to the current date
+        selected_date = request.GET.get('selected_date', date.today())
+        formatted_selected_date = formats.date_format(selected_date, 'Y-m-d')
+        print(formatted_selected_date)
+        tasks_for_date = Task.objects.filter(created_date__date=selected_date)
+
+        # Categorize tasks based on employee location
+        categorized_tasks = {}
+
+        for location in employees:
+            tasks_for_location = tasks_for_date.filter(assigned_to__location=location)
+
+            if location not in categorized_tasks:
+                categorized_tasks[location] = {'tasks': tasks_for_location}
+            else:
+                categorized_tasks[location]['tasks'] |= tasks_for_location
+
+        context = {
+            'categorized_tasks': categorized_tasks,
+            'selected_date': formatted_selected_date,
+        }
+        return render(request, self.template_name, context)
+

@@ -1,0 +1,92 @@
+
+{% extends "layouts/task_base.html" %}
+
+{% block title %} New Task {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% load crispy_forms_tags %}
+{% endblock stylesheets %}
+
+{% block content %}
+
+<title>Task Agenda</title>
+<style>
+    /* Add some basic styling for better presentation */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    .location-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .location-table {
+        flex: 0 0 calc(50% - 20px);
+        margin: 10px;
+    }
+    .card {
+        border: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 10px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+<h1>Agenda of {{ selected_date }}</h1>
+
+<form method="get" action="">
+    <label for="selected_date">Select Date:</label>
+    <input type="date"  name="selected_date" id="selected_date" value="{{ selected_date }}" >
+    <button type="submit">Filter</button>
+</form>
+
+<div class="location-container">
+    {% for location, category in categorized_tasks.items %}
+        <div class="location-table">
+            <div class="card card-body border-0 shadow table-wrapper table-responsive">
+                <div class="container-fluid">
+                    <h2>{{ location }}</h2>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Task Title</th>
+                                <th>Assigned to</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in category.tasks %}
+                                <tr>
+                                    <td>{{ task.title }}</td>
+                                    <td>{% for employee in task.assigned_to.all %}{{ employee.fullname }}{% endfor %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+
+
+
+
+{% endblock content %}
