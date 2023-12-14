@@ -16,6 +16,7 @@ urlpatterns = [
     path('create',views.CreateTask.as_view(),name='create'),
     path('list',views.TaskListView.as_view(),name='list'),
     path('agenda',views.Agenda.as_view(),name='agenda'),
+    path('agenda/<str:location>/<str:selected_date>/', views.AgendaDetailsView.as_view(), name='agenda_details'),
     path('get_employees/', views.get_filtered_employees, name='get_employees'),
     path('list/detail/<int:pk>',views.TaskDetailView.as_view(),name='L-detail'),
     path('list/edit/<int:pk>',views.TaskUpdateView.as_view(),name='edit'),

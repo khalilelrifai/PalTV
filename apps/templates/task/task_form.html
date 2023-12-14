@@ -42,15 +42,18 @@
             </select>
         </div>
         <div class="col-sm-3">
-            <label for="role">Select Category:</label>
-            <select name="role" class="form-select" id="roleSelect" required>
-                <option value="">-- Select Category --</option>
-                {% for role in roles %}
-                    <option value="{{ role.id }}" {% if role.id == selected_role.id %}selected{% endif %}>{{ role.title }}</option>
-                {% endfor %}
+            {{form.category|as_crispy_field}}
+        </div>
+        <div class="col-sm-3">
+            <label for="location">Select Location:</label>
+            <select name="location" class="form-select" id="locationSelect" required>
+                <option value="">-- Select Location --</option>
+                <!-- Add options for locations -->
+                    {% for location in locations %}
+                    <option value="{{location}}">{{location}}</option>
+                    {% endfor %}
             </select>
         </div>
-        {% if request.user.employee.job_title.title == "Director" %}
         <div class="col-sm-3" id="assignedToSection" style="display: none;">
 
                 <p>Assign To:</p>
@@ -58,7 +61,6 @@
                     <!-- Assigned to checkboxes will be added here -->
                 </div>
         </div>
-        {% endif %}
         <div class="col-sm-3">
             {{form.status|as_crispy_field}}
         </div>
@@ -92,14 +94,14 @@
 
 <script>
     document.getElementById('departmentSelect').addEventListener('change', updateAssignedTo);
-    document.getElementById('roleSelect').addEventListener('change', updateAssignedTo);
+    document.getElementById('locationSelect').addEventListener('change', updateAssignedTo);
 
     function updateAssignedTo() {
         const department = document.getElementById('departmentSelect').value;
-        const role = document.getElementById('roleSelect').value;
+        const location = document.getElementById('locationSelect').value; // Add this line
 
-        if (department && role) {
-            fetch(`get_employees/?department=${department}&role=${role}`)
+        if (department  && location) { // Modify this condition to include location
+            fetch(`get_employees/?department=${department}&location=${location}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');

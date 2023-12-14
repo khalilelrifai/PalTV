@@ -11,12 +11,13 @@ class CreateTaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ['title', 'remarks', 'status', 'target_date', 'reviews',]
+        fields = ['title','category', 'remarks', 'status', 'target_date', 'reviews',]
         widgets = {
             'title': forms.Textarea(attrs={'rows': '1','required':True}),
             'remarks': forms.Textarea(attrs={'rows': '4'}),
             'reviews': forms.Textarea(attrs={'rows': '4'}),
             'status': forms.Select(attrs={'class': 'form-select'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
             'target_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
         }
         

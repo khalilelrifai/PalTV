@@ -1,7 +1,6 @@
-
 {% extends "layouts/task_base.html" %}
 
-{% block title %} New Task {% endblock %}
+{% block title %} Agenda Details{% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
@@ -10,7 +9,7 @@
 
 {% block content %}
 
-<title>Task Agenda</title>
+<title>Agenda Details</title>
 <style>
     /* Add some basic styling for better presentation */
     body {
@@ -49,41 +48,30 @@
         background-color: #f2f2f2;
     }
 </style>
-<h1>Agenda of {{ selected_date }}</h1>
+<h1>{{ location }} Details</h1>
 
-<form method="get" action="">
-    <label for="selected_date">Select Date:</label>
-    <input type="date"  name="selected_date" id="selected_date" value="{{ selected_date }}" >
-    <button type="submit" class="btn btn-github" >Filter</button>
-</form>
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <div class="container-fluid">
+        <div class="row mb-5">
 
-<div class="location-container">
-    {% for location, category in categorized_tasks.items %}
-        <div class="location-table">
-            <div class="card card-body border-0 shadow table-wrapper table-responsive">
-                <div class="container-fluid">
-                    <div class="row mb-1">
-                        <div class="col-sm-10">
-                        <h2>{{ location }}</h2>
-                    </div>
-                    <div class="col-sm-2">
-                        <a style="color: blueviolet;" href="{% url 'task:agenda_details' location=location selected_date=selected_date %}">view details</a>
-                    </div>
-                    </div>
-                    
                     <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th class="border-dark-200 fa-bold ">Assigned to</th>
                                 <th class="border-dark-200 fa-bold">Task Title</th>
+                                <th class="border-dark-200 fa-bold ">Category</th>
+                                <th class="border-dark-200 fa-bold">Description</th>
                                 
                             </tr>
                         </thead>
                         <tbody>
-                            {% for task in category.tasks %}
+                            {% for task in tasks_for_location %}
                                 <tr>
-                                    <td> <span class="fw-normal">{% for employee in task.assigned_to.all %}{{ employee.fullname }}, {% endfor %}</span></td>
+                                    <td> <span class="fw-normal">{% for employee in task.assigned_to.all %}{{ employee.fullname }}{% endfor %}</span></td>
                                     <td><span class="fw-normal">{{ task.title }}</span></td>
+                                    <td><span class="fw-normal">{{ task.category }}</span></td>
+                                    <td><span class="fw-normal">{{ task.reviews }}</span></td>
+
                                     
                                 </tr>
                             {% endfor %}
@@ -92,8 +80,7 @@
                 </div>
             </div>
         </div>
-    {% endfor %}
-</div>
+
 
 
 
