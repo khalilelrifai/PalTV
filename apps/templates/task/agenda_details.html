@@ -1,0 +1,53 @@
+{% extends "layouts/task_base.html" %}
+
+{% block title %} Agenda Details{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+{% load crispy_forms_tags %}
+{% endblock stylesheets %}
+
+{% block content %}
+
+<title>Agenda Details</title>
+
+<h1>{{ location }} Details</h1>
+
+<div class="card card-body border-0 shadow table-wrapper table-responsive">
+    <div class="container-fluid">
+        <div class="row mb-5">
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="border-dark-200 fa-bold ">Assigned to</th>
+                                <th class="border-dark-200 fa-bold">Task Title</th>
+                                <th class="border-dark-200 fa-bold ">Category</th>
+                                <th class="border-dark-200 fa-bold">Description</th>
+                                <th class="border-dark-200 fa-bold"></th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks_for_location %}
+                                <tr>
+                                    <td> <span class="fw-normal">{% for employee in task.assigned_to.all %}{{ employee.fullname }}, {% endfor %}</span></td>
+                                    <td><span class="fw-normal">{{ task.title }}</span></td>
+                                    <td><span class="fw-normal">{{ task.category }}</span></td>
+                                    <td> <span  class="fw-normal">{{ task.reviews }}</span></td>
+                                    <td> <span><a style="color: blueviolet;" href="{% url 'task:edit' task.id %}">Edit</a></span></td>
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+{% endblock content %}

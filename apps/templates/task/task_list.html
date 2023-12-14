@@ -54,7 +54,6 @@
                   <th class="border-gray-200">Category <i class="fa fa-sort"></i></th>
                   {% endif %}
                   <th class="border-gray-200">Created Date <i class="fa fa-sort"></i></th>
-                  <th class="border-gray-200">Concern To <i class="fa fa-sort"></i></th>
                   <th class="border-gray-200">Target Date <i class="fa fa-sort"></i></th>
                   <th class="border-gray-200">Status <i class="fa fa-sort"></i></th>
                   <th class="border-gray-200">Details <i class="fa fa-sort"></i></th>
@@ -78,7 +77,6 @@
                             <td><span class="fw-normal">{{task.category}}</span></td>     
                             {% endif %}                  
                             <td><span class="fw-normal">{{ task.created_date|date:"d-M-y @ h:i A" }}</span></td>
-                            <td><span class="fw-normal">{{task.concern_company}}</span></td>
                             <td><span class="fw-normal">{{task.target_date|naturalday}}</span></td>
                             <td>
                                 <span class="form-check form-switch">

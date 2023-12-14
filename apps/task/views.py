@@ -10,6 +10,7 @@ from django.template import loader
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import *
+from datetime import date
 
 from .forms import *
 from .models import *
@@ -17,11 +18,11 @@ from .models import *
 
 def get_filtered_employees(request):
     department_id = request.GET.get('department')
+    location = request.GET.get('location')
     
-
-    if department_id :
+    if (department_id and location) :
         try:
-            filtered_employees = Employee.objects.filter(department_id=department_id).exclude(user_id=request.user.id).values('id', 'user__first_name', 'user__last_name')
+            filtered_employees = Employee.objects.filter(department_id=department_id,location=location).exclude(user_id=request.user.id).values('id', 'user__first_name', 'user__last_name')
             # Filter the employees based on the department and role
 
             employees_list = list(filtered_employees)
@@ -43,13 +44,12 @@ class CreateTask(LoginRequiredMixin,View):
         else:
             form.fields['reviews'].disabled = 'disabled'
         department = get_object_or_404 (Department,employee__user=self.request.user)
-        print(department)
-        roles = Role.objects.all()
+        locations = Employee.objects.values_list('location', flat=True).distinct()
 
         context = {
             'form':form,
             'department': department,
-            'roles': roles,
+            'locations': locations,
         }
         return render(request, self.template_name, context)
 
@@ -67,19 +67,10 @@ class CreateTask(LoginRequiredMixin,View):
     
         # Retrieve other POST data
         department = request.POST.get('department')
-        role = request.POST.get('role')
         assigned_to = request.POST.getlist('assigned_to')
         
         # Update 'data' with additional form fields and POST data
-        if Group.objects.filter(name='User').exists() and request.user.groups.filter(name='User').exists():
-            assigned_to = [current_employee]
-
-            data.department_id = department
-            data.role_id = role
-            data.category_id =role
-
-
-            
+        data.department_id = department
         data.department = current_employee.department
         data.save()
         data.assigned_to.add(*assigned_to)
@@ -158,14 +149,15 @@ class TaskUpdateView(LoginRequiredMixin,UpdateView):
         # Retrieve the task instance being updated
         task = self.get_object()
 
-        # Get the department and role associated with the task
+        # Get the department with the task
         department = task.owner.department
-        role = task.category
+        location = Task.objects.filter(assigned_to__location=location)
+
 
         # Add extra context
-        context['roles'] = Role.objects.all()
         context['department'] = department
-        context['selected_role'] = role
+        context['location'] = location
+
 
         return context
 
@@ -235,8 +227,7 @@ class DashboardView(View):
 
 
 
-from datetime import date
-from django.utils import formats
+
 class Agenda(View):
     template_name = 'task/agenda.html'
 
@@ -246,8 +237,8 @@ class Agenda(View):
 
         # Set the default date to the current date
         selected_date = request.GET.get('selected_date', date.today())
-        formatted_selected_date = formats.date_format(selected_date, 'Y-m-d')
-        print(formatted_selected_date)
+        # formatted_selected_date = formats.date_format(selected_date, 'Y-m-d')
+        # print(formatted_selected_date)
         tasks_for_date = Task.objects.filter(created_date__date=selected_date)
 
         # Categorize tasks based on employee location
@@ -255,15 +246,37 @@ class Agenda(View):
 
         for location in employees:
             tasks_for_location = tasks_for_date.filter(assigned_to__location=location)
+            
 
             if location not in categorized_tasks:
                 categorized_tasks[location] = {'tasks': tasks_for_location}
             else:
                 categorized_tasks[location]['tasks'] |= tasks_for_location
-
         context = {
             'categorized_tasks': categorized_tasks,
-            'selected_date': formatted_selected_date,
+            'selected_date': selected_date,
+
         }
         return render(request, self.template_name, context)
 
+
+
+
+
+class AgendaDetailsView(View):
+    template_name = 'task/agenda_details.html'
+
+
+    def get(self, request, location,selected_date, *args, **kwargs):
+        # Get tasks for the specified location
+        
+        
+        tasks_for_location = Task.objects.filter(assigned_to__location=location,created_date__date=selected_date)
+
+        context = {
+            'location': location,
+            'tasks_for_location': tasks_for_location,
+            # Add other context variables as needed
+        }
+
+        return render(request, self.template_name, context)

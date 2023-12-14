@@ -30,17 +30,18 @@ class GuestCSV(models.Model):
     def __str__(self):
         return f"CSV File - {self.uploaded_at}"
 
-class Role(Model):
-    id=AutoField(primary_key=True,editable=False)
-    title=CharField(max_length=50,null=True)
-
-    def __str__(self):
-        return self.title
 
 class Task(Model):
     STATUS_CHOICES= (
     ('On Hold', 'On Hold'),
     ('Done', 'Done'),
+    )
+    
+    CAT_CHOICES= (
+    ('TVU', 'TVU'),
+    ('SNG', 'SNG'),
+    ('VT', 'VT'),
+    ('RKG', 'RKG'),
     )
     id=AutoField(primary_key=True,editable=False)
     owner = ForeignKey(Employee,on_delete=SET_NULL,null=True)
@@ -48,7 +49,7 @@ class Task(Model):
     title = CharField(max_length=200)
     created_date = DateTimeField(auto_now_add=True)
     target_date = DateField()
-    category = ForeignKey(Role, on_delete=SET_NULL,null=True)
+    category = CharField(max_length=50,choices=CAT_CHOICES,null=True)
     remarks = TextField(blank=True)
     reviews = TextField(blank=True)
     assigned_to = ManyToManyField(Employee, related_name='tasks')
