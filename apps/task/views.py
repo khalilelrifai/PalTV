@@ -4,16 +4,43 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group, Permission, User
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import *
 from datetime import date
+from xhtml2pdf import pisa
+from django.template.loader import get_template
 
 from .forms import *
 from .models import *
+
+
+
+
+class ExportAgendaAsPDFView(TemplateView):
+    template_name = 'task/agenda_pdf.html'
+
+    def get(self, request, *args, **kwargs):
+        agenda = self.kwargs.get('agenda', [])
+
+        context = {'agenda': agenda}
+        template = get_template(self.template_name)
+        html = template.render(context)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="agenda.pdf"'
+
+        pisa_status = pisa.CreatePDF(
+            html, dest=response, encoding='utf-8')
+
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+
+        return response
+
 
 
 def get_filtered_employees(request):
@@ -143,20 +170,23 @@ class TaskUpdateView(LoginRequiredMixin,UpdateView):
     form_class = CreateTaskForm
     success_url = reverse_lazy('task:list')
     template_name = 'task/task_form.html'
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         # Retrieve the task instance being updated
+        
         task = self.get_object()
-
+        location = [emp.location for emp in task.assigned_to.all()]
+        print(location[0])
         # Get the department with the task
         department = task.owner.department
-        location = Task.objects.filter(assigned_to__location=location)
+        # location = Task.objects.filter(assigned_to__location=location)
 
 
         # Add extra context
         context['department'] = department
-        context['location'] = location
+        context['selected_location'] = location[0]
 
 
         return context
@@ -270,8 +300,14 @@ class AgendaDetailsView(View):
     def get(self, request, location,selected_date, *args, **kwargs):
         # Get tasks for the specified location
         
-        
         tasks_for_location = Task.objects.filter(assigned_to__location=location,created_date__date=selected_date)
+        print(request.GET)
+        if 'export' in request.GET:
+            pdf_view = ExportAgendaAsPDFView.as_view()
+            response = pdf_view(request, agenda=tasks_for_location)
+            
+            return response
+
 
         context = {
             'location': location,

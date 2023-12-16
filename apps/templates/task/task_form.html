@@ -49,8 +49,11 @@
             <select name="location" class="form-select" id="locationSelect" required>
                 <option value="">-- Select Location --</option>
                 <!-- Add options for locations -->
-                    {% for location in locations %}
-                    <option value="{{location}}">{{location}}</option>
+                    {% if selected_location %}
+                    <option value="{{selected_location}}" selected>{{selected_location}}</option>
+                    {% endif %}
+                    {%  for location in locations %}
+                    <option value="{{location}}" >{{location}}</option>
                     {% endfor %}
             </select>
         </div>

@@ -8,39 +8,45 @@
 {% endblock stylesheets %}
 
 {% block content %}
-
+{% load humanize %}
 <title>Agenda Details</title>
+<form method="GET">
+    {% csrf_token %}
 
-<h1>{{ location }} Details</h1>
-
+<h1>{{ location }} Details <input type="submit" class="btn btn-primary" name="export" value="Export to PDF"></h1>
+</form>
 <div class="card card-body border-0 shadow table-wrapper table-responsive">
     <div class="container-fluid">
         <div class="row mb-5">
-
-                    <table class="table table-hover">
+                    
+                    <table class="table table-hover" >
                         <thead>
-                            <tr>
+                            <tr >
                                 <th class="border-dark-200 fa-bold ">Assigned to</th>
+                                <th class="border-dark-200 fa-bold ">Target Date</th>
                                 <th class="border-dark-200 fa-bold">Task Title</th>
                                 <th class="border-dark-200 fa-bold ">Category</th>
                                 <th class="border-dark-200 fa-bold">Description</th>
-                                <th class="border-dark-200 fa-bold"></th>
+                                <th class="border-dark-200 fa-bold">Feedback</th>
+                                <th class="border-dark-200 fa-bold">Edit</th>
                                 
                             </tr>
                         </thead>
                         <tbody>
                             {% for task in tasks_for_location %}
-                                <tr>
+                                <tr style="height: 100px;">
                                     <td> <span class="fw-normal">{% for employee in task.assigned_to.all %}{{ employee.fullname }}, {% endfor %}</span></td>
+                                    <td><span class="fw-normal">{{ task.target_date|naturalday }}</span></td>
                                     <td><span class="fw-normal">{{ task.title }}</span></td>
                                     <td><span class="fw-normal">{{ task.category }}</span></td>
-                                    <td> <span  class="fw-normal">{{ task.reviews }}</span></td>
+                                    <td> <span class="fw-normal" >{{ task.reviews }}</span></td>
+                                    <td> <span class="fw-normal">{{ task.remarks }}</span></td>
                                     <td> <span><a style="color: blueviolet;" href="{% url 'task:edit' task.id %}">Edit</a></span></td>
-
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>
