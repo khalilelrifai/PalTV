@@ -21,10 +21,10 @@ from .models import *
 class ExportAgendaAsPDFView(TemplateView):
     template_name = 'task/agenda_pdf.html'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request,location, *args, **kwargs):
         agenda = self.kwargs.get('agenda', [])
 
-        context = {'agenda': agenda}
+        context = {'agenda': agenda,'location':location}
         template = get_template(self.template_name)
         html = template.render(context)
 
@@ -199,6 +199,9 @@ class TaskUpdateView(LoginRequiredMixin,UpdateView):
             form.fields['remarks'].disabled = 'disabled'
         else:
             form.fields['reviews'].disabled = 'disabled'
+            form.fields['title'].disabled = 'disabled'
+            form.fields['target_date'].disabled = 'disabled'
+            form.fields['category'].disabled = 'disabled'
 
         return form
     
@@ -304,7 +307,7 @@ class AgendaDetailsView(View):
         print(request.GET)
         if 'export' in request.GET:
             pdf_view = ExportAgendaAsPDFView.as_view()
-            response = pdf_view(request, agenda=tasks_for_location)
+            response = pdf_view(request, agenda=tasks_for_location,location=location)
             
             return response
 

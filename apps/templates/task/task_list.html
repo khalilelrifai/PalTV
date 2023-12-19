@@ -96,9 +96,11 @@
                                         <span class="">Action</span>
                                     </button>
                                     <div class="dropdown-menu py-0">
-                                            <a class="dropdown-item rounded-top" href="{% url 'task:L-detail' task.id %}"><span ></span>View Details</a>
+
+                                            {% if request.user|has_group:"assignment" %}
+                                            {% endif %}
                                             <a class="dropdown-item" href="{% url 'task:edit' task.id %}"><span ></span>Edit</a>
-                                            {% if task.owner.user == user %}
+                                            {% if request.user|has_group:"assignment_add" %}
                                             <a class="dropdown-item text-danger rounded-bottom" href="{% url 'task:delete' task.id %}"><span ></span>Remove</a>
                                             {% endif %}
 

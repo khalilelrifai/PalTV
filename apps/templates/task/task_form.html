@@ -46,7 +46,7 @@
         </div>
         <div class="col-sm-3">
             <label for="location">Select Location:</label>
-            <select name="location" class="form-select" id="locationSelect" required>
+            <select name="location" class="form-select" id="locationSelect" required {% if request.user|has_group:"assignment_assign" %} disabled{% endif %}>
                 <option value="">-- Select Location --</option>
                 <!-- Add options for locations -->
                     {% if selected_location %}

@@ -70,12 +70,10 @@
                 </div>
                 <div class="row mb-10">
                     <div class="col-md-12 text-center">
-                        {% if task.owner.user == user %}
-                        <a href="{% if 'director' in request.path %}{% url 'task:director' %}{%else%}{% url 'task:list' %}{%endif%}"
+                        {% if request.user|has_group:"assignment" %}
+                        <a href="{% if 'agendaD' in request.path %}{% url 'task:agenda' %}{%else%}{% url 'task:list' %}{%endif%}"
                             class="btn btn-gray-300">Cancel</a>
                         <a href="{% url 'task:edit' task.id %}" class="btn btn-success" id="successAlert">Edit </a>
-                        <a href="{% url 'task:delete' task.id %}" class="btn btn-danger"
-                            id="successAlert">Delete</a>
                             {% endif %}
                     </div>
                 </div>
