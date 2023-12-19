@@ -13,10 +13,8 @@ from django.views.generic import *
 from datetime import date
 from xhtml2pdf import pisa
 from django.template.loader import get_template
-
 from .forms import *
 from .models import *
-
 
 
 
@@ -60,47 +58,49 @@ def get_filtered_employees(request):
         return JsonResponse([], safe=False)
 
 
-class CreateTask(LoginRequiredMixin,View):
+class CreateTask(LoginRequiredMixin, View):
     success_url = reverse_lazy('task:main')
     template_name = 'task/task_form.html'
 
-    def get(self, request):
-        form = CreateTaskForm()
-        if request.user.employee.job_title.title == "Director":
+    def get_context_data(self, form):
+        
+        if self.request.user.employee.job_title.title == "Director":
             form.fields['remarks'].disabled = 'disabled'
         else:
             form.fields['reviews'].disabled = 'disabled'
-        department = get_object_or_404 (Department,employee__user=self.request.user)
-        locations = Employee.objects.values_list('location', flat=True).distinct()
-
         context = {
-            'form':form,
-            'department': department,
-            'locations': locations,
+            'form': form,
+            'department': get_object_or_404(Department, employee__user=self.request.user),
+            'locations': Employee.objects.values_list('location', flat=True).distinct(),
         }
+        return context
+
+    def get(self, request):
+        form = CreateTaskForm()
+
+        context = self.get_context_data(form)
         return render(request, self.template_name, context)
-
-
 
     def post(self, request):
         form = CreateTaskForm(request.POST)
-        current_employee = get_object_or_404(Employee, user=request.user)
         if not form.is_valid():
-            context = {'form': form}
+            context = self.get_context_data(form)
             return render(request, self.template_name, context)
-        
+
+        current_employee = get_object_or_404(Employee, user=request.user)
         data = form.save(commit=False)
-        data.owner_id = Employee.objects.get(user=self.request.user).id
-    
+        data.owner_id = current_employee.id
+
         # Retrieve other POST data
         department = request.POST.get('department')
         assigned_to = request.POST.getlist('assigned_to')
-        
+
         # Update 'data' with additional form fields and POST data
         data.department_id = department
         data.department = current_employee.department
         data.save()
         data.assigned_to.add(*assigned_to)
+
         # Assign selected employees to the task
         return redirect(self.success_url)
 
@@ -131,7 +131,7 @@ class TaskListView(LoginRequiredMixin, View):
                     # If admin, display all tasks in the department
                     task_list = Task.objects.filter(owner__department=employee.department).order_by('-created_date')
                 else:
-                    # If not admin, display tasks based on ownership or assignment
+                    # If not admin, display tasks based on ownership or 
                     task_list = Task.objects.filter(
                         Q(owner__user=self.request.user) | Q(assigned_to=employee)
                     ).order_by('-created_date').distinct()

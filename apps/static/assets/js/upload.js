@@ -16,7 +16,7 @@
         const formData = new FormData(form);
 
         const request = new XMLHttpRequest();
-        request.open('POST', '/assignment/upload/'); // Replace with your actual upload endpoint
+        request.open('POST', '/ftp/upload/'); // Replace with your actual upload endpoint
 
         request.upload.addEventListener('progress', (event) => {
             if (event.lengthComputable) {
@@ -32,7 +32,7 @@
                     window.removeEventListener('beforeunload', preventExitDuringUpload);
                     form.reset();
                     // Redirect to the list page
-                    window.location.href = '{% url 'assignment:my_list' %}'; // Replace with the URL of your list page
+                    window.location.href = '{% url 'ftp:my_list' %}'; // Replace with the URL of your list page
                 } else {
                     uploadStatus.textContent = 'Upload failed';
                 }

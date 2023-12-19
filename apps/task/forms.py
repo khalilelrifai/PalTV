@@ -8,24 +8,26 @@ from django import forms
 
 class CreateTaskForm(forms.ModelForm):
 
+    
 
     class Meta:
         model = Task
         fields = ['title','category', 'remarks', 'status', 'target_date', 'reviews',]
         widgets = {
-            'title': forms.Textarea(attrs={'rows': '1','required':True}),
-            'remarks': forms.Textarea(attrs={'rows': '4'}),
-            'reviews': forms.Textarea(attrs={'rows': '4'}),
+            'title': forms.Textarea(attrs={'rows': '1','required':True, 'style': 'text-align: right;'}),
+            'remarks': forms.Textarea(attrs={'rows': '4', 'style': 'text-align: right;'}),
+            'reviews': forms.Textarea(attrs={'rows': '4', 'style': 'text-align: right;'}),
             'status': forms.Select(attrs={'class': 'form-select'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
             'target_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
         }
+
         
         labels = {
             'reviews': ('Director Notes:'),
             'remarks': ('User Notes:'),
         }
-        
+
 
         
 class DetailTaskForm(forms.ModelForm):

@@ -51,11 +51,11 @@ def upload_file_to_ftp(file, ftp, new_file_name, video):
 
 
 
-class VideoUploadView(PermissionRequiredMixin, FormView):
-    permission_required = 'assignment.upload_video'
-    template_name = 'assignment/upload.html'
+class VideoUploadView(PermissionRequiredMixin,FormView):
+    permission_required = 'ftp.add_video'
+    template_name = 'ftp/upload.html'
     form_class = VideoForm
-    success_url = 'assignment:my_list'
+    success_url = 'ftp:my_list'
 
     def form_valid(self, form):
         video = form.save(commit=False)
@@ -85,12 +85,12 @@ class VideoUploadView(PermissionRequiredMixin, FormView):
                 video.upload_status = 'Uploaded successfully!'
                 video.in_progress = False
                 video.save()
-                return redirect('assignment:my_list')
+                return redirect('ftp:my_list')
         except Exception as e:
             video.upload_status = f'Upload failed: {str(e)}'
             video.in_progress = False
             video.save()
-            return redirect('assignment:video_list')
+            return redirect('ftp:video_list')
 
 
 def ftp_list():
@@ -116,9 +116,9 @@ def video_exist():
 
         
 class VideoListView(PermissionRequiredMixin,ListView):
-    permission_required = 'assignment.admin_user'
+    permission_required = 'ftp.view_video'
     model = Video
-    template_name = 'assignment/list.html'
+    template_name = 'ftp/list.html'
     context_object_name = 'videos'
     paginate_by = 10
     def get_queryset(self):
@@ -128,9 +128,9 @@ class VideoListView(PermissionRequiredMixin,ListView):
 
 
 class OwnerVideoListView(PermissionRequiredMixin,ListView):
-    permission_required = 'assignment.normal_user'
+    permission_required = 'ftp.add_video'
     model = Video
-    template_name = 'assignment/list.html'
+    template_name = 'ftp/list.html'
     context_object_name = 'videos'
     paginate_by = 10
     def get_queryset(self):
@@ -140,9 +140,9 @@ class OwnerVideoListView(PermissionRequiredMixin,ListView):
         return queryset
         
 class VideoDetailView(PermissionRequiredMixin,DetailView):
-    permission_required = 'assignment.normal_user'
+    permission_required = 'ftp.view_video'
     model = Video
-    template_name= "assignment/video_detail.html"
+    template_name= "ftp/video_detail.html"
     
     
     

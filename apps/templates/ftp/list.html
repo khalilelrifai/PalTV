@@ -1,5 +1,5 @@
 
-{% extends "layouts/assignment_base.html" %}
+{% extends "layouts/ftp_base.html" %}
 
 {% block title %} Videos List {% endblock %} 
 
@@ -73,7 +73,7 @@
                   </td>
                   <td><span class="fw-normal">{{ video.uploaded_at }}</span></td>
                   <td>
-                    <a style="color: blueviolet;" href="{% url 'assignment:video_detail' video.id %}">View Details</a>
+                    <a style="color: blueviolet;" href="{% url 'ftp:video_detail' video.id %}">View Details</a>
                   </td>
                 </tr>
               {% endfor %}
@@ -131,7 +131,7 @@
     }
   
     function fetchDataAndUpdateTemplate() {
-      fetch('/assignment/status/')
+      fetch('/ftp/status/')
         .then(response => {
           if (response.status === 204) {
             throw new Error('No Content');

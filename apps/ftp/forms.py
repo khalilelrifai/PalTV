@@ -7,6 +7,11 @@ class VideoForm(forms.ModelForm):
         model = Video
         fields = ('title', 'description')
         
+        widgets = { 
+            'title':forms.TextInput(attrs={ 'style': 'text-align: right;'}),
+            'description': forms.Textarea(attrs={'rows':'8', 'style': 'text-align: right;'}),
+
+        }
         
 class DetailForm(forms.ModelForm):
     class Meta:

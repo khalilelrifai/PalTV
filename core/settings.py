@@ -54,10 +54,11 @@ INSTALLED_APPS = [
     'apps.trips',
     'apps.task',
     'apps.bulletins',
-    'apps.assignment',
+    'apps.ftp',
     'formtools',
     'django_python3_ldap',
     "crispy_bootstrap4",
+
 
 
 
