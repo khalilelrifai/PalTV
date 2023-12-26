@@ -293,3 +293,10 @@ LOGGING = {
         },
     },
 }
+
+
+# try:
+#     from .logger_settings import *
+# except Exception as e:
+#     print("Unable to load logger settings")
+#     pass

@@ -25,6 +25,8 @@ urlpatterns = [
     path("ftp/", include("apps.ftp.urls")),
     path("", include("apps.home.urls")),
 
+
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
