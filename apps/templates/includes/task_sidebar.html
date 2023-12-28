@@ -38,7 +38,7 @@
             </div>
             <ul class="nav flex-column pt-3 pt-md-0">
               {% for group in user.groups.all %}
-              {% if group.name == 'assignment' %}
+              {% if group.name == 'assignment_dep' %}
               <li class="nav-item {% if 'main' in request.path %} active {% endif %}">
                 <a href="{% url 'task:main' %}" class="nav-link">
                   <span class="sidebar-icon">

@@ -10,6 +10,7 @@
 
 {% block content %}
 {% load auth_extras %}  
+{% load static %}
 
     <div class="py-4">
         
@@ -97,12 +98,14 @@
     <div class="row">
         <div class="col-12 col-xl-8">
             <div class="row">
+                {% if request.user|has_group:"assignment_add" %} 
                 <div class="col-12 col-xxl-6 mb-4">
                     <div class="card border-0 shadow">
                         <div class="card-header border-bottom d-flex align-items-center justify-content-between">
                             <h2 class="fs-5 fw-bold mb-0">Team members</h2>
                             <a href="#" class="btn btn-sm btn-primary">See all</a>
                         </div>
+                        
                         <div class="card-body">
                             <ul class="list-group list-group-flush list my--3">
                                 {% if team_members %}
@@ -139,8 +142,10 @@
                                 
                             </ul>
                         </div>
+                        
                     </div>
                 </div>
+                {% endif %}
                 <div class="col-12 col-xxl-6 mb-4">
                     <div class="card border-0 shadow">
                         {% if request.user|has_group:"Admin" %}
@@ -245,23 +250,7 @@
 <!-- Include jQuery UI -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-<script>
-    $(function() {
-        function moveProgressBar() {
-            // Animate the progress bar from 0% to 100%
-            $(".progress-wrapper .progress-bar").animate({ height: "100%" }, 3000, function() {
-                // Reset the progress bar to 0% when the animation is complete
-                $(this).css("height", "0%");
-                // Recursively call the function to create an infinite loop
-                moveProgressBar();
-            });
-        }
-
-        // Call the function to start the infinite loop
-        moveProgressBar();
-    });
-</script>
+<script src="{% static 'assets/js/progress_bar.js' %}" ></script>
 
 
 

@@ -9,6 +9,9 @@
 
 {% block content %}
 {% load humanize %}
+{% load auth_extras %} 
+
+
 <title>Agenda Details</title>
 <form method="GET">
     {% csrf_token %}
@@ -27,8 +30,10 @@
                                 <th class="border-dark-200 fa-bold">Task Title</th>
                                 <th class="border-dark-200 fa-bold ">Category</th>
                                 <th class="border-dark-200 fa-bold">Description</th>
+                                {% if request.user|has_group:"assignment_dep"%} 
                                 <th class="border-dark-200 fa-bold">Feedback</th>
-                                <th class="border-dark-200 fa-bold">Edit</th>
+                                <th class="border-dark-200 fa-bold">View</th>
+                                {% endif %}
                                 
                             </tr>
                         </thead>
@@ -40,8 +45,10 @@
                                     <td><span class="fw-normal">{{ task.title }}</span></td>
                                     <td><span class="fw-normal">{{ task.category }}</span></td>
                                     <td> <span class="fw-normal" >{{ task.reviews }}</span></td>
+                                    {% if request.user|has_group:"assignment_dep"%} 
                                     <td> <span class="fw-normal">{{ task.remarks }}</span></td>
                                     <td> <span><a style="color: blueviolet;" href="{% url 'task:edit' task.id %}">View</a></span></td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </tbody>
