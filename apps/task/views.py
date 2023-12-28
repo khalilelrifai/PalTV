@@ -107,32 +107,46 @@ class CreateTask(LoginRequiredMixin, View):
 class TaskListView(LoginRequiredMixin, View):
     template_name = 'task/task_list.html'
     paginate_by = 5
+
     def get(self, request):
         employee = Employee.objects.get(user=self.request.user)
-        if request.user.is_authenticated:
 
-            # Check if the user is in the admin group
+        if request.user.is_authenticated:
             if request.user.employee.job_title.title == "Director":
-                # If admin, display all tasks in the department
                 task_list = Task.objects.filter(
-                    owner__department=employee.department).order_by('-created_date')
+                    owner__department=employee.department
+                ).order_by('-created_date')
             else:
-                # If not admin, display tasks based on ownership or
                 task_list = Task.objects.filter(
-                    Q(owner__user=self.request.user) | Q(
-                        assigned_to=employee)
+                    Q(owner__user=self.request.user) | Q(assigned_to=employee)
                 ).order_by('-created_date').distinct()
 
-            paginator = Paginator(task_list, self.paginate_by)
-            page_number = request.GET.get('page')
-            page_obj = paginator.get_page(page_number)
-            context = {
+            # Serialize task data to JSON
+            task_data = [
+                {
+                    'id': task.id,
+                    'title': task.title,
+                    'assigned_to': [employee.fullname for employee in task.assigned_to.all()],
+                    'category': task.category,
+                    'created_date': task.created_date.strftime('%d-%b-%y @ %I:%M %p'),
+                    'target_date': task.target_date.strftime('%d %b %Y'),
+                    'status': task.status,
+                }
+                for task in task_list
+            ]
 
-                'page_obj': page_obj,
+            # Prepare context for template
+            context = {
+                'task_data': task_data,
                 'locations': Employee.objects.values_list('location', flat=True).distinct(),
                 'department': get_object_or_404(Department, employee__user=self.request.user),
             }
 
+            if request.is_ajax():
+                # If the request is AJAX, return JSON response
+                return JsonResponse({'task_data': task_data})
+
+            # Otherwise, render the template with the context
             return render(request, self.template_name, context)
 
 
