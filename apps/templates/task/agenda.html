@@ -1,60 +1,60 @@
-
 {% extends "layouts/task_base.html" %}
 
 {% block title %} New Task {% endblock %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-{% load crispy_forms_tags %}
+    {% load crispy_forms_tags %}
+    <style>
+        /* Additional styles for better presentation */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .location-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .location-table {
+            flex: 0 0 calc(50% - 20px); /* Divide into two columns */
+            margin: 10px;
+        }
+        .card {
+            border: 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .table td {
+            padding: 8px;
+            text-align: left;
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 {% endblock stylesheets %}
 
 {% block content %}
 
 <title>Task Agenda</title>
-<style>
-    /* Add some basic styling for better presentation */
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    h1 {
-        margin-bottom: 20px;
-    }
-    .location-container {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .location-table {
-        flex: 0 0 calc(50% - 20px);
-        margin: 10px;
-    }
-    .card {
-        border: 0;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .table-wrapper {
-        overflow-x: auto;
-    }
-    .table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 10px;
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-</style>
 <h1>Agenda of {{ selected_date }}</h1>
 
 <form method="get" action="">
     <label for="selected_date">Select Date:</label>
-    <input type="date"  name="selected_date" id="selected_date" value="{{ selected_date }}" >
-    <button type="submit" class="btn btn-github" >Filter</button>
+    <input type="date" name="selected_date" id="selected_date" value="{{ selected_date }}">
+    <button type="submit" class="btn btn-github">Filter</button>
 </form>
 
 <div class="location-container">
@@ -64,27 +64,24 @@
                 <div class="container-fluid">
                     <div class="row mb-1">
                         <div class="col-sm-10">
-                        <h2>{{ location }}</h2>
+                            <h2>{{ location }}</h2>
+                        </div>
+                        <div class="col-sm-2">
+                            <a style="color: blueviolet;" href="{% url 'task:agenda_details' location=location selected_date=selected_date %}">view details</a>
+                        </div>
                     </div>
-                    <div class="col-sm-2">
-                        <a style="color: blueviolet;" href="{% url 'task:agenda_details' location=location selected_date=selected_date %}">view details</a>
-                    </div>
-                    </div>
-                    
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th class="border-dark-200 fa-bold ">Assigned to</th>
+                                <th class="border-dark-200 fa-bold">Assigned to</th>
                                 <th class="border-dark-200 fa-bold">Task Title</th>
-                                
                             </tr>
                         </thead>
                         <tbody>
                             {% for task in category.tasks %}
                                 <tr>
-                                    <td> <span class="fw-normal">{% for employee in task.assigned_to.all %}{{ employee.fullname }}, {% endfor %}</span></td>
+                                    <td><span class="fw-normal">{% for employee in task.assigned_to.all %}{{ employee.fullname }}, {% endfor %}</span></td>
                                     <td><span class="fw-normal">{{ task.title }}</span></td>
-                                    
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -94,9 +91,5 @@
         </div>
     {% endfor %}
 </div>
-
-
-
-
 
 {% endblock content %}

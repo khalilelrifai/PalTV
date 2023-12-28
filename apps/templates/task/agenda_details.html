@@ -4,6 +4,20 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
+<style>
+    /* Add this style block at the top or in your CSS file */
+
+    .table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #c5c5c5;
+        white-space: normal; /* Allow content to extend vertically */
+        word-break: break-word; /* Break words to the next line */
+        overflow-wrap: break-word;
+    }
+
+    /* Add any additional styling as needed */
+</style>
 {% load crispy_forms_tags %}
 {% endblock stylesheets %}
 
