@@ -17,14 +17,13 @@ from .forms import *
 from .models import *
 
 
-
 class ExportAgendaAsPDFView(TemplateView):
     template_name = 'task/agenda_pdf.html'
 
-    def get(self, request,location, *args, **kwargs):
+    def get(self, request, location, *args, **kwargs):
         agenda = self.kwargs.get('agenda', [])
 
-        context = {'agenda': agenda,'location':location}
+        context = {'agenda': agenda, 'location': location}
         template = get_template(self.template_name)
         html = template.render(context)
 
@@ -40,14 +39,14 @@ class ExportAgendaAsPDFView(TemplateView):
         return response
 
 
-
 def get_filtered_employees(request):
     department_id = request.GET.get('department')
     location = request.GET.get('location')
-    
-    if (department_id and location) :
+
+    if (department_id and location):
         try:
-            filtered_employees = Employee.objects.filter(department_id=department_id,location=location).exclude(user_id=request.user.id).values('id', 'user__first_name', 'user__last_name')
+            filtered_employees = Employee.objects.filter(department_id=department_id, location=location).exclude(
+                user_id=request.user.id).values('id', 'user__first_name', 'user__last_name')
             # Filter the employees based on the department and role
 
             employees_list = list(filtered_employees)
@@ -63,7 +62,7 @@ class CreateTask(LoginRequiredMixin, View):
     template_name = 'task/task_form.html'
 
     def get_context_data(self, form):
-        
+
         if self.request.user.employee.job_title.title == "Director":
             form.fields['remarks'].disabled = 'disabled'
         else:
@@ -105,95 +104,81 @@ class CreateTask(LoginRequiredMixin, View):
         return redirect(self.success_url)
 
 
-
-
-    
-
 class TaskListView(LoginRequiredMixin, View):
     template_name = 'task/task_list.html'
     paginate_by = 5
-
-
     def get(self, request):
         employee = Employee.objects.get(user=self.request.user)
-        strval = request.GET.get("search", False)
-        
         if request.user.is_authenticated:
-            if strval:
-                query = Q(remarks__icontains=strval)
-                query.add(Q(owner__user__first_name__icontains=strval), Q.OR)
-                query.add(Q(owner__user__last_name__icontains=strval), Q.OR)
-                query.add(Q(owner__user=self.request.user), Q.AND)
-                task_list = Task.objects.filter(query).select_related().order_by('-created_date')
+
+            # Check if the user is in the admin group
+            if request.user.employee.job_title.title == "Director":
+                # If admin, display all tasks in the department
+                task_list = Task.objects.filter(
+                    owner__department=employee.department).order_by('-created_date')
             else:
-                # Check if the user is in the admin group
-                if request.user.employee.job_title.title == "Director":
-                    # If admin, display all tasks in the department
-                    task_list = Task.objects.filter(owner__department=employee.department).order_by('-created_date')
-                else:
-                    # If not admin, display tasks based on ownership or 
-                    task_list = Task.objects.filter(
-                        Q(owner__user=self.request.user) | Q(assigned_to=employee)
-                    ).order_by('-created_date').distinct()
-                
-                
+                # If not admin, display tasks based on ownership or
+                task_list = Task.objects.filter(
+                    Q(owner__user=self.request.user) | Q(
+                        assigned_to=employee)
+                ).order_by('-created_date').distinct()
+
             paginator = Paginator(task_list, self.paginate_by)
             page_number = request.GET.get('page')
             page_obj = paginator.get_page(page_number)
-            
             context = {
 
-                'page_obj':page_obj,
-                'search': strval,
+                'page_obj': page_obj,
+                'locations': Employee.objects.values_list('location', flat=True).distinct(),
+                'department': get_object_or_404(Department, employee__user=self.request.user),
             }
 
             return render(request, self.template_name, context)
 
 
-class TaskDeleteView(LoginRequiredMixin,DeleteView):
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     success_url = reverse_lazy('task:list')
 
 
-class TaskDetailView(LoginRequiredMixin,DetailView):
+class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
-    template_name= "task/task_detail.html"
-    
+    template_name = "task/task_detail.html"
+
     # def get_context_data(self, **kwargs) :
     #     context = super().get_context_data(**kwargs)
     #     context['group'] = User.objects.filter(groups__name__contains='admin')
     #     return context
-     
 
-class TaskUpdateView(LoginRequiredMixin,UpdateView):
+
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = CreateTaskForm
     success_url = reverse_lazy('task:list')
     template_name = 'task/task_form.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         # Retrieve the task instance being updated
-        
+
         task = self.get_object()
         location = [emp.location for emp in task.assigned_to.all()]
-        print(location[0])
         # Get the department with the task
         department = task.owner.department
         # location = Task.objects.filter(assigned_to__location=location)
 
-
         # Add extra context
         context['department'] = department
-        context['selected_location'] = location[0]
-
+        if location:
+            context['selected_location'] = location[0]
+            print(location[0])
 
         return context
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        
+
         # Edit the attributes of the widgets
         if self.request.user.employee.job_title.title == "Director":
             form.fields['remarks'].disabled = 'disabled'
@@ -204,10 +189,8 @@ class TaskUpdateView(LoginRequiredMixin,UpdateView):
             form.fields['category'].disabled = 'disabled'
 
         return form
-    
-    
-   
-    
+
+
 class DashboardView(View):
     template_name = 'task/main.html'
 
@@ -217,38 +200,41 @@ class DashboardView(View):
         is_admin = self.request.user.employee.job_title.title == "Director"
         last_month_start = timezone.now() - timedelta(days=30)
         last_week_start = timezone.now() - timedelta(weeks=1)
-        team_members = Employee.objects.filter(department=user.employee.department).exclude(user_id=user.id)
+        team_members = Employee.objects.filter(
+            department=user.employee.department).exclude(user_id=user.id)
         employee = Employee.objects.get(user=self.request.user)
         last_assigned_tasks = Task.objects.filter(
-                Q(assigned_to=employee ) & Q(created_date__gte=last_week_start)
+            Q(assigned_to=employee) & Q(created_date__gte=last_week_start)
         ).order_by('-created_date').distinct()
         if is_admin:
             # User is in admin group, can see all stats
-            
-            total_tasks = Task.objects.filter(created_date__gte=last_month_start).count()
-            completed_tasks = Task.objects.filter(status='Done', created_date__gte=last_month_start).count()
-            inprogress_tasks = Task.objects.filter(status='In Progress', created_date__gte=last_month_start).count()
+
+            total_tasks = Task.objects.filter(
+                created_date__gte=last_month_start).count()
+            completed_tasks = Task.objects.filter(
+                status='Done', created_date__gte=last_month_start).count()
+            inprogress_tasks = Task.objects.filter(
+                status='In Progress', created_date__gte=last_month_start).count()
             in_progress = Task.objects.filter(status='In Progress')
 
         else:
             # User is a normal user, can only see their own stats
-            q=(Q(assigned_to=employee ) | Q(owner__user=user)) & Q(created_date__gte=last_month_start)
+            q = (Q(assigned_to=employee) | Q(owner__user=user)) & Q(
+                created_date__gte=last_month_start)
             total_tasks = Task.objects.filter(q).count()
-            completed_tasks = Task.objects.filter(Q(status = 'Done') & q ).count()
-            inprogress_tasks = Task.objects.filter(Q(status = 'In Progress') & q).count()
-            in_progress = Task.objects.filter(status='In Progress', owner__user=user)
+            completed_tasks = Task.objects.filter(Q(status='Done') & q).count()
+            inprogress_tasks = Task.objects.filter(
+                Q(status='In Progress') & q).count()
+            in_progress = Task.objects.filter(
+                status='In Progress', owner__user=user)
 
-
-
- 
-        
         context = {
             'total_tasks': total_tasks,
             'completed_tasks': completed_tasks,
             'inprogress_tasks': inprogress_tasks,
             'in_progress': in_progress,
-            'team_members':team_members,
-            'last_assigned':last_assigned_tasks,
+            'team_members': team_members,
+            'last_assigned': last_assigned_tasks,
             # Add more data as needed
         }
         return context
@@ -256,9 +242,6 @@ class DashboardView(View):
     def get(self, request):
         context = self.get_context_data()
         return render(request, self.template_name, context)
-    
-
-
 
 
 class Agenda(View):
@@ -266,7 +249,8 @@ class Agenda(View):
 
     def get(self, request, *args, **kwargs):
         # Get unique locations
-        employees = Employee.objects.values_list('location', flat=True).distinct()
+        employees = Employee.objects.values_list(
+            'location', flat=True).distinct()
 
         # Set the default date to the current date
         selected_date = request.GET.get('selected_date', date.today())
@@ -278,8 +262,8 @@ class Agenda(View):
         categorized_tasks = {}
 
         for location in employees:
-            tasks_for_location = tasks_for_date.filter(assigned_to__location=location)
-            
+            tasks_for_location = tasks_for_date.filter(
+                assigned_to__location=location)
 
             if location not in categorized_tasks:
                 categorized_tasks[location] = {'tasks': tasks_for_location}
@@ -293,24 +277,21 @@ class Agenda(View):
         return render(request, self.template_name, context)
 
 
-
-
-
 class AgendaDetailsView(View):
     template_name = 'task/agenda_details.html'
 
-
-    def get(self, request, location,selected_date, *args, **kwargs):
+    def get(self, request, location, selected_date, *args, **kwargs):
         # Get tasks for the specified location
-        
-        tasks_for_location = Task.objects.filter(assigned_to__location=location,created_date__date=selected_date)
+
+        tasks_for_location = Task.objects.filter(
+            assigned_to__location=location, created_date__date=selected_date)
         print(request.GET)
         if 'export' in request.GET:
             pdf_view = ExportAgendaAsPDFView.as_view()
-            response = pdf_view(request, agenda=tasks_for_location,location=location)
-            
-            return response
+            response = pdf_view(
+                request, agenda=tasks_for_location, location=location)
 
+            return response
 
         context = {
             'location': location,
