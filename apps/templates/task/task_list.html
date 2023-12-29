@@ -14,7 +14,7 @@
 
 {% if request.user|has_group:"assignment_add" %} 
 <div class="container-fluid">
-    <form method="GET">
+    <form method="GET" id="filterForm">
         {% csrf_token %}
         <div class="row mb-2">
             <div class="col-sm-3" hidden>
@@ -83,99 +83,134 @@
 <script src="{% static 'assets/js/table_sort.js' %}" ></script>
 <script src="{% static 'assets/js/list_select.js' %}"></script>
 <script>
-    // Fetch task data using AJAX
+
+
+// Function to fetch tasks data via AJAX
+function fetchTasksData(successCallback) {
     $.ajax({
         url: '{% url "task:list" %}',  // Replace with the actual URL of your view
         type: 'GET',
         dataType: 'json',
-        success: function(data) {
-            // Process data and dynamically populate the table using jQuery
-            var tableBody = $('#taskTable tbody');
-            tableBody.empty();
-
-            $.each(data.task_data, function(index, task) {
-                var row = $('<tr>');
-                row.append('<td>' + task.title + '</td>');
-                
-                {% if request.user|has_group:"assignment_add" %} 
-                    row.append('<td>' + task.assigned_to.join(', ') + '</td>');
-                    row.append('<td>' + task.category + '</td>');
-                {% endif %}
-
-                row.append('<td>' + task.created_date + '</td>');
-                row.append('<td>' + task.target_date + '</td>');
-                row.append('<td>' + task.status + '</td>');
-
-                // Add the dropdown column
-                var dropdownCell = $('<td>');
-                var dropdownButton = $('<button>', {
-                    'type': 'button',
-                    'class': 'btn btn-secondary dropdown-toggle dropdown-toggle-split',
-                    'id': 'dropdownMenuReference_' + index, // Unique ID for each dropdown
-                    'data-bs-toggle': 'dropdown',
-                    'aria-expanded': 'false',
-                    'data-bs-reference': 'parent'
-                });
-
-                var icon = $('<svg>', {
-                    'class': 'icon icon-xs',
-                    'fill': 'currentColor',
-                    'viewBox': '0 0 20 20',
-                    'xmlns': 'http://www.w3.org/2000/svg'
-                }).append($('<path>', {
-                    'fill-rule': 'evenodd',
-                    'd': 'M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z',
-                    'clip-rule': 'evenodd'
-                }));
-
-                var span = $('<span>', {
-                    'class': '',
-                    'text': 'Action'
-                });
-
-                dropdownButton.append(icon);
-                dropdownButton.append(span);
-
-                var dropdownMenu = $('<div>', {
-                    'class': 'dropdown-menu py-0'
-                });
-
-                // Add actions to the dropdown menu
-                {% if request.user|has_group:"assignment" %}
-                    // Add specific actions for the assignment group if needed
-                {% endif %}
-
-                var viewAction = $('<a>', {
-                    'class': 'dropdown-item',
-                    'href': '{% url "task:edit" 0 %}'.replace('0', task.id),  // Replace with the actual URL for view
-                    'text': 'View'
-                });
-
-                dropdownMenu.append(viewAction);
-
-                {% if request.user|has_group:"assignment_add" %}
-                    var removeAction = $('<a>', {
-                        'class': 'dropdown-item text-danger rounded-bottom',
-                        'href': '{% url "task:delete" 0 %}'.replace('0', task.id),  // Replace with the actual URL for delete
-                        'text': 'Remove'
-                    });
-
-                    dropdownMenu.append(removeAction);
-                {% endif %}
-
-                dropdownCell.append(dropdownButton);
-                dropdownCell.append(dropdownMenu);
-
-                row.append(dropdownCell);
-
-                tableBody.append(row);
-            });
-        },
+        success: successCallback,
         error: function(error) {
             console.log('Error fetching task data:', error);
         }
     });
+
+}
+// Function to filter and populate tasks
+// Function to filter and populate tasks based on the selected user
+function filterAndPopulateTasks(data) {
+    // Process data and dynamically populate the table using jQuery
+    var tableBody = $('#taskTable tbody');
+    tableBody.empty();
+
+    // Filter data based on the selected user
+    // var userFilter = $('#UserSelect').val();
+    var userFilter = $('#UserSelect option:selected').text();
+    var filteredData = data.task_data.filter(function(task) {
+        // Add additional conditions based on your form fields
+        return (!userFilter || task.assigned_to.includes(userFilter));
+    });
+
+    // Update the table with the filtered data
+    $.each(filteredData, function(index, task) {
+        var row = $('<tr>');
+        row.append('<td>' + task.title + '</td>');
+
+        {% if request.user|has_group:"assignment_add" %} 
+            row.append('<td>' + task.assigned_to.join(', ') + '</td>');
+            row.append('<td>' + task.category + '</td>');
+        {% endif %}
+
+        row.append('<td>' + task.created_date + '</td>');
+        row.append('<td>' + task.target_date + '</td>');
+        row.append('<td>' + task.status + '</td>');
+
+        // Add the dropdown column
+        var dropdownCell = $('<td>');
+        var dropdownButton = $('<button>', {
+            'type': 'button',
+            'class': 'btn btn-secondary dropdown-toggle dropdown-toggle-split',
+            'id': 'dropdownMenuReference_' + index, // Unique ID for each dropdown
+            'data-bs-toggle': 'dropdown',
+            'aria-expanded': 'false',
+            'data-bs-reference': 'parent'
+        });
+
+        var icon = $('<svg>', {
+            'class': 'icon icon-xs',
+            'fill': 'currentColor',
+            'viewBox': '0 0 20 20',
+            'xmlns': 'http://www.w3.org/2000/svg'
+        }).append($('<path>', {
+            'fill-rule': 'evenodd',
+            'd': 'M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z',
+            'clip-rule': 'evenodd'
+        }));
+
+        var span = $('<span>', {
+            'class': '',
+            'text': 'Action'
+        });
+
+        dropdownButton.append(icon);
+        dropdownButton.append(span);
+
+        var dropdownMenu = $('<div>', {
+            'class': 'dropdown-menu py-0'
+        });
+
+        // Add actions to the dropdown menu
+        {% if request.user|has_group:"assignment" %}
+            // Add specific actions for the assignment group if needed
+        {% endif %}
+
+        var viewAction = $('<a>', {
+            'class': 'dropdown-item',
+            'href': '{% url "task:edit" 0 %}'.replace('0', task.id),  // Replace with the actual URL for view
+            'text': 'View'
+        });
+
+        dropdownMenu.append(viewAction);
+
+        {% if request.user|has_group:"assignment_add" %}
+            var removeAction = $('<a>', {
+                'class': 'dropdown-item text-danger rounded-bottom',
+                'href': '{% url "task:delete" 0 %}'.replace('0', task.id),  // Replace with the actual URL for delete
+                'text': 'Remove'
+            });
+
+            dropdownMenu.append(removeAction);
+        {% endif %}
+
+        dropdownCell.append(dropdownButton);
+        dropdownCell.append(dropdownMenu);
+
+        row.append(dropdownCell);
+
+        tableBody.append(row);
+    });
+}
+
+
+// Function to handle form submission and form field changes
+function handleFormChanges() {
+    $('#filterForm').on('submit change', function(event) {
+        event.preventDefault();
+        fetchTasksData(filterAndPopulateTasks);
+    });
+}
+
+// Initial fetch and populate on document ready
+$(document).ready(function() {
+    fetchTasksData(filterAndPopulateTasks);
+    handleFormChanges();
+});
+
+
 </script>
+
 
 
 
