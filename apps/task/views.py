@@ -42,8 +42,8 @@ class ExportAgendaAsPDFView(TemplateView):
 def get_filtered_employees(request):
     department_id = request.GET.get('department')
     location = request.GET.get('location')
-
     if (department_id and location):
+
         try:
             filtered_employees = Employee.objects.filter(department_id=department_id, location=location).exclude(
                 user_id=request.user.id).values('id', 'user__first_name', 'user__last_name')
